@@ -9,13 +9,23 @@ import { NotFoundPage } from "./pages/NotFoundPage";
 import { ServiceDetailPage } from "./pages/ServiceDetailPage";
 
 function ScrollAndLocaleEffects({ locale }: { locale: "fa" | "en" | "es" }) {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
     document.documentElement.lang = locale;
     document.documentElement.dir = textDirection(locale);
     document.body.dataset.locale = locale;
-  }, [locale, pathname]);
+
+    if (hash) {
+      const target = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (target) {
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        return;
+      }
+    }
+
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [hash, locale, pathname]);
   return null;
 }
 

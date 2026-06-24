@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export function DestinationCard({ country, title, city, description, services, href, action }: { country: "spain" | "argentina"; title: string; city: string; description: string; services: string[]; href: string; action: string }) {
   return (
-    <article className={`destination-card destination-${country}`}>
+    <article id={country} className={`destination-card destination-${country} scene-reveal`}>
       <div className="destination-map" aria-hidden="true"><span>{country === "spain" ? "ES" : "AR"}</span><i /></div>
       <div className="destination-content">
         <p className="eyebrow">{city}</p>

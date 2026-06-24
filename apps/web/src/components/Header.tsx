@@ -10,8 +10,17 @@ import { MobileNav } from "./MobileNav";
 export function Header({ locale }: { locale: Locale }) {
   const c = getCopy(locale);
   const [menuOpen, setMenuOpen] = useState(false);
-  const { pathname } = useLocation();
-  useEffect(() => setMenuOpen(false), [pathname]);
+  const { pathname, hash } = useLocation();
+  const home = routeFor(locale, "/");
+  const navItems = [
+    [c.nav.story, `${home}#story`],
+    [c.nav.spain, `${home}#spain`],
+    [c.nav.argentina, `${home}#argentina`],
+    [c.nav.services, `${home}#services`],
+    [locale === "fa" ? "زندگی واقعی" : locale === "es" ? "Vida real" : "Real life", `${home}#real-life`],
+  ] as const;
+
+  useEffect(() => setMenuOpen(false), [hash, pathname]);
   useEffect(() => { document.body.style.overflow = menuOpen ? "hidden" : ""; return () => { document.body.style.overflow = ""; }; }, [menuOpen]);
 
   return (
@@ -22,11 +31,7 @@ export function Header({ locale }: { locale: Locale }) {
           <span><strong>VIDA FAMILIA</strong><small>SPAIN · ARGENTINA</small></span>
         </Link>
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <Link to={routeFor(locale, "/about")}>{c.nav.story}</Link>
-          <Link to={routeFor(locale, "/spain")}>{c.nav.spain}</Link>
-          <Link to={routeFor(locale, "/argentina")}>{c.nav.argentina}</Link>
-          <Link to={routeFor(locale, "/services")}>{c.nav.services}</Link>
-          <Link to={routeFor(locale, "/resources")}>{c.nav.resources}</Link>
+          {navItems.map(([label, href]) => <Link key={href} to={href}>{label}</Link>)}
         </nav>
         <div className="header-actions">
           <LanguageSwitcher locale={locale} compact />

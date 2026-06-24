@@ -71,6 +71,45 @@ This section is updated after the local verification run.
 | Browser console | **Pass** — no warnings or errors after final navigation checks |
 | Pages/Worker config separation | **Pass** — recursive typecheck/build and local D1 migration use the correct explicit configs |
 
+## Design revamp
+
+Completed on 24 June 2026 as a frontend-only pass. The Pages/Worker Wrangler split, Worker API, D1 migrations, form submission logic, routes, SEO, robots, and sitemap were deliberately left intact.
+
+### What changed
+
+- Rebuilt the homepage as one cinematic scroll narrative: opening scene, brand difference, documentary family cast, Spain/Argentina destinations, pathways, presence, packages, qualification, real-life media, trust boundaries, and final CTA.
+- Reworked the hero around the existing `banner.png` so its embedded typography remains legible, with the narrative and four CTA routes placed in a separate dark panel.
+- Replaced the page-like header with a floating, sticky platform header and one-page story anchors; the mobile menu keeps its language switcher and assessment CTA visible.
+- Expanded the lived family story to cover business/financial/family settlement decisions, Dentistry at the Complutense University of Madrid, and the ASIR/IT/cybersecurity/Deloitte path.
+- Added a clearly framed presence network on the homepage and contact page for **Kanghan / کنگان**, **Shiraz / شیراز**, and **Madrid / مادرید** without presenting invented corporate branches.
+- Changed package groups into progressive-disclosure panels so the full service range remains available without turning the homepage into a wall of cards.
+- Added CSS-only cinematic motion with a reduced-motion fallback, stronger Spain/Argentina color worlds, documentary cards, view-linked reveals, and a theatrical final assessment scene.
+- Added Vazirmatn and Manrope font loading while retaining safe system fallbacks.
+
+### Inspiration translated
+
+- `shottadoj.org`: institutional dark polish, disciplined CTA treatment, and compact navigation.
+- `rockstargames.com/VI`: scene changes, cinematic contrast, and restrained theatrical scale only; no layout, artwork, or branding was copied.
+- `stinwo.es`: relocation-service clarity, readable pathways, and prominent consultation flow.
+- Persian market references in the brief informed RTL hierarchy, trust cues, and visible qualification/contact actions; no source design was copied.
+
+### Visual checks completed
+
+- Desktop Persian homepage at 1440 × 1000, including hero, documentary cast, destinations, presence map, and packages.
+- Mobile Persian homepage at 390 × 844 with RTL, compact header, clean hamburger menu, CTA visibility, and zero horizontal overflow.
+- Mobile FA → EN language switch, including RTL-to-LTR document direction and closed-menu state.
+- Persian `/fa/apply` form and its existing fields/submission UI.
+- Persian `/fa/services/spain/student-visa` service page.
+- Persian contact presence section with Kanghan, Shiraz, and Madrid.
+- Homepage anchor landing offsets below the floating header and browser console warnings/errors.
+
+### Later improvements
+
+- Replace abstract documentary monograms with an owner-approved family photo/video library when consented, optimized source assets are available.
+- Consider self-hosting the webfonts if the owner wants to remove the external Google Fonts request.
+- Add real editorial articles/video episodes as the content calendar is produced; current media cards remain the launch slate.
+- Run production Core Web Vitals and accessibility audits after the first Cloudflare Pages deployment and real-domain caching are active.
+
 ## Launch decision
 
 **Code status:** verified and domain-ready.

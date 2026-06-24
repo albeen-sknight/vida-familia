@@ -1,28 +1,43 @@
 import type { Locale } from "@vida-familia/shared";
-import { ArrowDown, ArrowUpLeft } from "lucide-react";
+import { ArrowDown, ArrowUpLeft, Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getCopy } from "../data/i18n";
 import { routeFor } from "../lib/locale";
 
 export function HeroBanner({ locale }: { locale: Locale }) {
   const c = getCopy(locale);
+  const home = routeFor(locale, "/");
+  const sceneLabel = locale === "fa" ? "یک خانواده · دو مقصد · یک تجربه واقعی" : locale === "es" ? "Una familia · Dos destinos · Una experiencia real" : "One family · Two destinations · Real experience";
+  const pathLabel = locale === "fa" ? "انتخاب مسیر" : locale === "es" ? "Elige tu ruta" : "Choose a path";
+
   return (
-    <section className="hero">
-      <img className="hero-image" src="/assets/banner.png" alt="Vida Familia — Spain and Argentina" fetchPriority="high" onError={(event) => { event.currentTarget.style.display = "none"; }} />
-      <div className="hero-overlay" />
-      <div className="hero-side hero-side-spain"><span>ES</span><p>MADRID</p></div>
-      <div className="hero-side hero-side-argentina"><span>AR</span><p>BUENOS AIRES</p></div>
+    <section className="hero" id="top">
+      <div className="hero-stage">
+        <img className="hero-image" src="/assets/banner.png" alt="Vida Familia — Spain and Argentina" fetchPriority="high" onError={(event) => { event.currentTarget.style.display = "none"; }} />
+        <div className="hero-overlay" />
+        <div className="hero-frame" aria-hidden="true"><span>VIDA / 01</span><span>{sceneLabel}</span></div>
+        <div className="hero-side hero-side-spain"><span>ES</span><p>MADRID</p></div>
+        <div className="hero-side hero-side-argentina"><span>AR</span><p>BUENOS AIRES</p></div>
+      </div>
+
       <div className="hero-content">
-        <p className="eyebrow hero-eyebrow">{c.heroEyebrow}</p>
-        <h1>{c.heroTitle}</h1>
-        <p className="hero-subtitle">{c.heroSubtitle}</p>
-        <p className="hero-note">{c.heroNote}</p>
-        <div className="hero-actions">
-          <Link className="button button-gold" to={routeFor(locale, "/apply")}>{c.applyCta}<ArrowUpLeft size={18} aria-hidden="true" /></Link>
-          <Link className="button button-ghost" to={routeFor(locale, "/about")}>{c.nav.story}</Link>
+        <div className="hero-heading scene-reveal">
+          <p className="eyebrow hero-eyebrow">{c.heroEyebrow}</p>
+          <h1>{c.heroTitle}</h1>
+          <p className="hero-subtitle">{c.heroSubtitle}</p>
+        </div>
+        <div className="hero-intro scene-reveal">
+          <p className="hero-note">{c.heroNote}</p>
+          <p className="hero-path-label"><Compass size={15} />{pathLabel}</p>
+          <div className="hero-actions">
+            <Link className="button button-gold" to={routeFor(locale, "/apply")}>{c.applyCta}<ArrowUpLeft size={18} aria-hidden="true" /></Link>
+            <Link className="button button-spain" to={`${home}#spain`}>{c.nav.spain}</Link>
+            <Link className="button button-argentina" to={`${home}#argentina`}>{c.nav.argentina}</Link>
+            <Link className="button button-ghost" to={`${home}#story`}>{c.nav.story}</Link>
+          </div>
         </div>
       </div>
-      <a className="scroll-cue" href="#story"><ArrowDown size={18} /><span>SCROLL</span></a>
+      <a className="scroll-cue" href="#story"><ArrowDown size={18} /><span>SCROLL / DISCOVER</span></a>
     </section>
   );
 }
