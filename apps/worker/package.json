@@ -1,0 +1,19 @@
+{
+  "name": "@vida-familia/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "wrangler deploy --dry-run --outdir dist",
+    "typecheck": "wrangler types src/worker-configuration.d.ts && tsc --noEmit -p tsconfig.json",
+    "lint": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@vida-familia/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260624.0",
+    "@types/node": "^22.15.0",
+    "typescript": "^6.0.3"
+  }
+}

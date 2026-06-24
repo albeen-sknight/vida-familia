@@ -1,0 +1,19 @@
+{
+  "name": "Vida Familia",
+  "short_name": "Vida Familia",
+  "description": "Spain and Argentina relocation through real family experience.",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#081e35",
+  "theme_color": "#081e35",
+  "icons": [
+    {
+      "src": "/assets/favikon.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "vida-familia",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.12.4",
+  "engines": {
+    "node": ">=20.19.0",
+    "pnpm": ">=9.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently -n web,api -c blue,magenta \"pnpm dev:web\" \"pnpm dev:worker\"",
+    "dev:web": "pnpm --filter @vida-familia/web dev",
+    "dev:worker": "wrangler dev --port 8787",
+    "build": "pnpm -r --if-present build",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "lint": "pnpm -r --if-present lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "preview": "pnpm --filter @vida-familia/web preview",
+    "cf:typegen": "wrangler types apps/worker/src/worker-configuration.d.ts",
+    "db:migrate:local": "wrangler d1 migrations apply vida-familia-db --local",
+    "db:migrate:prod": "wrangler d1 migrations apply vida-familia-db --remote",
+    "deploy:worker": "wrangler deploy",
+    "deploy:worker:dry": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "prettier": "^3.6.2",
+    "wrangler": "^4.104.0"
+  }
+}

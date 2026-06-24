@@ -1,0 +1,6 @@
+PUBLIC_SITE_URL=http://localhost:5173
+ALLOWED_ORIGINS=http://localhost:5173,https://vidafamilia.es,https://www.vidafamilia.es
+ADMIN_EMAIL=
+ADMIN_API_TOKEN=
+LEADS_NOTIFICATION_EMAIL=
+TURNSTILE_SECRET_KEY=
