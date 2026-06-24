@@ -4,6 +4,9 @@ account_id = "ca7869ce6645cfb64973a55c625e1419"
 compatibility_date = "2026-06-24"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
+pages_build_output_dir = "apps/web/dist"
+
+
 
 [vars]
 PUBLIC_SITE_URL = "https://vidafamilia.es"
