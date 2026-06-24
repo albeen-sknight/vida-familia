@@ -2,12 +2,14 @@ import { countries, desiredPaths, isLocale, type LeadPayload } from "@vida-famil
 
 type Bindings = Env & {
   ADMIN_API_TOKEN?: string;
+  ALLOWED_ORIGINS?: string;
 };
 
 type NormalizedLead = Omit<LeadPayload, "website">;
 
 const MAX_BODY_BYTES = 32 * 1024;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const DEFAULT_ALLOWED_ORIGINS = "http://localhost:5173,https://vidafamilia.es,https://www.vidafamilia.es";
 
 class ApiError extends Error {
   constructor(public readonly status: number, message: string, public readonly fields?: string[]) {
@@ -20,7 +22,7 @@ function json(data: unknown, status = 200, headers?: HeadersInit): Response {
 }
 
 function allowedOrigins(env: Bindings): Set<string> {
-  return new Set(env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim()).filter(Boolean));
+  return new Set((env.ALLOWED_ORIGINS ?? DEFAULT_ALLOWED_ORIGINS).split(",").map((origin) => origin.trim()).filter(Boolean));
 }
 
 function corsHeaders(request: Request, env: Bindings): Headers {

@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "wrangler deploy --dry-run --outdir dist",
-    "typecheck": "wrangler types src/worker-configuration.d.ts && tsc --noEmit -p tsconfig.json",
+    "build": "wrangler deploy --dry-run --outdir dist -c ../../wrangler.worker.toml",
+    "typecheck": "wrangler types src/worker-configuration.d.ts -c ../../wrangler.worker.toml && tsc --noEmit -p tsconfig.json",
     "lint": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {

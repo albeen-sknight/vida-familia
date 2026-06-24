@@ -5,7 +5,7 @@ Target: first domain-ready production MVP
 
 ## Executive status
 
-The codebase is prepared for `vidafamilia.es`. The domain has been purchased from GoDaddy but may still be processing. Cloudflare zone activation, nameserver delegation, resource creation, deployment, and custom-domain attachment remain owner actions.
+The codebase is prepared for `vidafamilia.es`. The domain has been purchased and GoDaddy now uses Cloudflare nameservers. Cloudflare zone activation/propagation, resource creation, deployment, and custom-domain attachment remain owner actions.
 
 ## Prepared in code
 
@@ -21,25 +21,25 @@ The codebase is prepared for `vidafamilia.es`. The domain has been purchased fro
 | D1 | Ready in code | Schema, checks, indexes, seed catalog |
 | SEO/domain | Ready in code | Canonical, OG, Twitter, Organization/Service JSON-LD, sitemap, robots |
 | Static delivery | Ready in code | Pages SPA redirect, security headers, asset caching |
+| Wrangler config split | Ready in code | Root `wrangler.toml` is Pages-only; `wrangler.worker.toml` owns Worker/D1 |
 | Owner docs | Ready | README, config handoff, phased deployment checklist |
 | Secrets hygiene | Ready | Only example env files; real env/vars ignored |
 
 ## Domain status
 
 - **Purchased:** `vidafamilia.es` at GoDaddy.
-- **Possibly processing:** GoDaddy showed “¡vidafamilia.es es tuyo!” and “Registro del dominio en curso.”
-- **Not yet assumed active:** Cloudflare zone and delegated nameservers.
+- **Nameservers delegated:** `hayes.ns.cloudflare.com`, `novalee.ns.cloudflare.com`.
+- **Not yet assumed active:** Cloudflare may still be propagating/activating the zone.
 - **Not yet attached:** apex/WWW Pages domains and API Worker domain.
 
 ## Owner-gated launch items
 
-1. Wait for GoDaddy registration completion if necessary.
-2. Add the zone to Cloudflare and delegate the assigned nameservers at GoDaddy.
-3. Create D1 and replace the Wrangler placeholder with the real ID.
-4. Apply remote migrations and deploy the Worker.
-5. Connect the GitHub repository to Pages and set build-time environment variables.
-6. Attach `api.vidafamilia.es`, `vidafamilia.es`, and `www.vidafamilia.es`.
-7. Submit and verify a production test lead.
+1. Wait for Cloudflare to mark the delegated zone **Active**.
+2. Create D1 and replace the placeholder in `wrangler.worker.toml` with the real ID.
+3. Apply remote migrations and deploy the Worker using the Worker-specific scripts.
+4. Confirm Pages build-time variables and wait for the newest `main` deployment.
+5. Attach `api.vidafamilia.es`, `vidafamilia.es`, and `www.vidafamilia.es`.
+6. Submit and verify a production test lead.
 
 ## Known MVP limitations / deliberate placeholders
 
@@ -69,6 +69,7 @@ This section is updated after the local verification run.
 | Desktop visual check | **Pass** — Persian hero, navigation, banner, and hierarchy reviewed at 1280 × 720 |
 | Mobile visual/navigation check | **Pass** — 390 × 844 layout, menu, language switch, RTL/LTR direction |
 | Browser console | **Pass** — no warnings or errors after final navigation checks |
+| Pages/Worker config separation | **Pass** — recursive typecheck/build and local D1 migration use the correct explicit configs |
 
 ## Launch decision
 

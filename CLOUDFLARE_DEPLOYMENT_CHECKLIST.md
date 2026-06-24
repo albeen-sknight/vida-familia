@@ -1,6 +1,6 @@
 # Cloudflare deployment checklist
 
-Use the owner account at <https://dash.cloudflare.com/ca7869ce6645cfb64973a55c625e1419/workers-and-pages>. The domain is purchased, but GoDaddy registration may still be processing and Cloudflare activation is pending.
+Use the owner account at <https://dash.cloudflare.com/ca7869ce6645cfb64973a55c625e1419/workers-and-pages>. The domain is purchased and GoDaddy now delegates to Cloudflare; zone activation may still be propagating.
 
 ## Phase 1 — Repository readiness (prepared in code)
 
@@ -10,7 +10,10 @@ Use the owner account at <https://dash.cloudflare.com/ca7869ce6645cfb64973a55c62
 - [x] D1 migrations and seed catalog prepared
 - [x] Environment examples prepared without secrets
 - [x] Pages build and SPA routing prepared
-- [ ] Owner: confirm the latest commit is on `main` at <https://github.com/albeen-sknight/vida-familia>
+- [x] Root `wrangler.toml` is Pages-only
+- [x] `wrangler.worker.toml` contains Worker API + D1 configuration
+- [x] Pages is connected to `albeen-sknight/vida-familia` on `main`
+- [ ] Confirm the newest config-split commit reaches `main`
 
 Local preflight:
 
@@ -21,25 +24,18 @@ pnpm build
 pnpm db:migrate:local
 ```
 
-## Phase 2 — GoDaddy registration (purchased; completion may be pending)
+## Phase 2 — GoDaddy and nameservers (completed)
 
 - [x] `vidafamilia.es` was purchased from GoDaddy
-- [ ] Wait until GoDaddy no longer shows “Registro del dominio en curso,” if still present
-- [ ] Confirm the domain is visible and manageable in Domain Portfolio
-- [ ] Do not keep GoDaddy DNS as the long-term authoritative DNS; Cloudflare nameservers will replace it
+- [x] GoDaddy nameservers were changed to `hayes.ns.cloudflare.com` and `novalee.ns.cloudflare.com`
+- [ ] Wait for DNS propagation/Cloudflare activation if the zone is not yet active
 
-## Phase 3 — Cloudflare domain and nameservers (owner action)
+## Phase 3 — Cloudflare domain activation (owner action)
 
-1. In Cloudflare, go to **Websites → Add a domain/site**.
-2. Enter `vidafamilia.es` and choose the standard/full DNS setup.
-3. Review imported DNS records; no production app records are expected yet.
-4. Cloudflare will show two assigned nameservers. Copy both exactly.
-5. In GoDaddy: **Domain Portfolio → vidafamilia.es → DNS → Nameservers → Change nameservers**.
-6. Choose custom/own nameservers, remove GoDaddy's, and paste the two Cloudflare values.
-7. Save. DNS propagation may take time.
-8. Return to Cloudflare and wait until the zone status is **Active**.
-
-Do not create guessed nameserver values, and do not attach custom domains before Cloudflare recognizes the zone.
+1. Return to the `vidafamilia.es` zone in Cloudflare.
+2. Confirm the assigned nameservers still match `hayes.ns.cloudflare.com` and `novalee.ns.cloudflare.com`.
+3. Wait until the zone status is **Active**.
+4. Do not attach production custom domains before Cloudflare recognizes the zone.
 
 ## Phase 4 — D1 (owner action)
 
@@ -51,20 +47,22 @@ pnpm exec wrangler whoami
 - [ ] Confirm account ID is `ca7869ce6645cfb64973a55c625e1419`
 
 ```bash
-pnpm exec wrangler d1 create vida-familia-db
+pnpm exec wrangler d1 create vida-familia-db -c wrangler.worker.toml
 ```
 
 - [ ] Copy the returned `database_id`
-- [ ] Replace `REPLACE_WITH_REAL_D1_DATABASE_ID_AFTER_RUNNING_WRANGLER_D1_CREATE` in `wrangler.toml`
+- [ ] Replace `REPLACE_WITH_REAL_D1_DATABASE_ID_AFTER_RUNNING_WRANGLER_D1_CREATE` in `wrangler.worker.toml`
 - [ ] Do not change binding `DB` or database name `vida-familia-db`
 
 ```bash
 pnpm db:migrate:local
-pnpm exec wrangler d1 migrations list vida-familia-db --remote
+pnpm exec wrangler d1 migrations list vida-familia-db --remote -c wrangler.worker.toml
 pnpm db:migrate:prod
 ```
 
 - [ ] Confirm migrations `0001_initial_schema.sql` and `0002_seed_catalog.sql` applied remotely
+
+Both `pnpm db:migrate:local` and `pnpm db:migrate:prod` select `wrangler.worker.toml` automatically.
 
 ## Phase 5 — Worker (owner action)
 
@@ -80,34 +78,36 @@ pnpm deploy:worker
 - [ ] Test <https://api.vidafamilia.es/api/health>
 - [ ] Optional: set `ADMIN_API_TOKEN` as a Worker secret; never store it in Git
 
+`pnpm deploy:worker` and `pnpm deploy:worker:dry` select `wrangler.worker.toml` automatically.
+
 ## Phase 6 — Cloudflare Pages (owner action)
 
-1. Open **Workers & Pages → Create → Pages → Connect to Git**.
-2. Authorize/select GitHub repository `albeen-sknight/vida-familia`.
-3. Project name: `vida-familia-web`.
-4. Production branch: `main`.
-5. Configure:
+1. Open the existing Pages project `vida-familia-web`, already connected to `albeen-sknight/vida-familia`.
+2. Confirm production branch `main`.
+3. Confirm build configuration:
 
 ```text
-Framework preset: Vite
+Framework preset: React (Vite), Vite, or None
 Root directory: leave blank
 Build command: pnpm --filter @vida-familia/web build
 Build output directory: apps/web/dist
 ```
 
-6. Set production environment variables:
+4. Confirm production environment variables:
 
-```text
-VITE_API_BASE_URL=https://api.vidafamilia.es
-VITE_SITE_URL=https://vidafamilia.es
-PUBLIC_SITE_URL=https://vidafamilia.es
-VITE_TURNSTILE_SITE_KEY=
-```
+| Variable name | Value |
+|---|---|
+| `PUBLIC_SITE_URL` | `https://vidafamilia.es` |
+| `VITE_API_BASE_URL` | `https://api.vidafamilia.es` |
+| `VITE_SITE_URL` | `https://vidafamilia.es` |
+| `VITE_TURNSTILE_SITE_KEY` | Empty for MVP |
 
-7. Deploy and test the generated `pages.dev` URL first.
-8. Under **Custom domains**, attach `vidafamilia.es`.
-9. Attach `www.vidafamilia.es`.
-10. Optionally create a Redirect Rule to make WWW redirect permanently to the apex while preserving path/query.
+The variable name is exactly `VITE_TURNSTILE_SITE_KEY`; do not include `=` in the name. An empty value is okay.
+
+5. After the config-split commit is pushed, wait for a **new deployment from that latest commit**. Do not retry an old failed deployment.
+6. Test the generated `pages.dev` URL first.
+7. After the zone is Active, attach `vidafamilia.es` and `www.vidafamilia.es`.
+8. Optionally create a Redirect Rule to make WWW redirect permanently to the apex while preserving path/query.
 
 Preview variables should use the real Worker `workers.dev` URL and the preview Pages URL, not the production apex.
 
@@ -127,7 +127,7 @@ Preview variables should use the real Worker `workers.dev` URL and the preview P
 - [ ] Verify it in D1:
 
 ```bash
-pnpm exec wrangler d1 execute vida-familia-db --remote --command "SELECT id, created_at, email, target_country, status FROM leads ORDER BY created_at DESC LIMIT 5"
+pnpm exec wrangler d1 execute vida-familia-db --remote --command "SELECT id, created_at, email, target_country, status FROM leads ORDER BY created_at DESC LIMIT 5" -c wrangler.worker.toml
 ```
 
 - [ ] Remove/archive the test lead according to the launch data policy

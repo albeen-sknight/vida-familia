@@ -2,7 +2,7 @@
 
 Vida Familia is a Persian-first, family-led relocation, education, lifestyle, and advisory platform for Spain and Argentina. This repository contains a multilingual React site, a Cloudflare Worker lead API, a D1 schema, and the deployment handoff for `vidafamilia.es`.
 
-The domain **has been purchased from GoDaddy**. GoDaddy may still show the registration as processing. The domain is not considered live until registration completes, Cloudflare activates the zone, nameservers are delegated, and the Pages/Worker custom domains are attached.
+The domain **has been purchased from GoDaddy** and its nameservers have been changed to Cloudflare (`hayes.ns.cloudflare.com` and `novalee.ns.cloudflare.com`). Cloudflare activation may still be propagating. The domain is not considered live until Cloudflare marks the zone active and the Pages/Worker custom domains are attached.
 
 ## Architecture
 
@@ -12,6 +12,11 @@ apps/worker    Cloudflare Worker API
 packages/shared  Shared types and constants
 migrations     Cloudflare D1 schema and seed catalog
 ```
+
+Cloudflare configuration is intentionally split:
+
+- Root `wrangler.toml` is **Pages-only** (`vida-familia-web` and `apps/web/dist`). Cloudflare Pages reads this file during Git deployments.
+- Root `wrangler.worker.toml` is **Worker + D1 only** (`vida-familia-api`, binding `DB`). Every Worker/D1 script selects it explicitly with `-c wrangler.worker.toml`.
 
 Production plan:
 
@@ -80,15 +85,15 @@ to `apps/web/public/assets/`. Missing images fail gracefully to branded CSS back
 |---|---|
 | `pnpm dev` | Run frontend and Worker together |
 | `pnpm dev:web` | Run Vite on port 5173 |
-| `pnpm dev:worker` | Run Wrangler on port 8787 |
+| `pnpm dev:worker` | Run the API with `wrangler.worker.toml` on Wrangler's default port 8787 |
 | `pnpm typecheck` | Type-check all packages and generate Worker bindings |
 | `pnpm build` | Build shared types, frontend, and Worker dry-run bundle |
 | `pnpm lint` | Run strict TypeScript checks |
 | `pnpm format` | Format source/docs with Prettier |
 | `pnpm preview` | Preview the built frontend |
-| `pnpm db:migrate:local` | Apply D1 migrations locally |
-| `pnpm db:migrate:prod` | Apply migrations to remote D1 |
-| `pnpm deploy:worker` | Deploy `vida-familia-api` |
+| `pnpm db:migrate:local` | Apply D1 migrations locally through `wrangler.worker.toml` |
+| `pnpm db:migrate:prod` | Apply remote D1 migrations through `wrangler.worker.toml` |
+| `pnpm deploy:worker` | Deploy `vida-familia-api` through `wrangler.worker.toml` |
 | `pnpm deploy:worker:dry` | Validate the Worker bundle without deployment |
 
 ## Frontend
@@ -116,7 +121,7 @@ Accepts the shared `LeadPayload`, validates and normalizes it, enforces a 32 KiB
 
 ### `GET /api/admin/leads?limit=25&before=<ISO timestamp>`
 
-Optional temporary admin endpoint. It returns `404` while `ADMIN_API_TOKEN` is unset and requires `Authorization: Bearer <token>` when enabled. Set the production token with the Cloudflare dashboard or the interactive command `pnpm exec wrangler secret put ADMIN_API_TOKEN`. Replace this route with real identity/auth before exposing an operational admin UI.
+Optional temporary admin endpoint. It returns `404` while `ADMIN_API_TOKEN` is unset and requires `Authorization: Bearer <token>` when enabled. Set the production token with the Cloudflare dashboard or the interactive command `pnpm exec wrangler secret put ADMIN_API_TOKEN -c wrangler.worker.toml`. Replace this route with real identity/auth before exposing an operational admin UI.
 
 ## D1
 
@@ -128,17 +133,17 @@ Local:
 pnpm db:migrate:local
 ```
 
-Remote (after the owner creates D1 and replaces the placeholder ID in `wrangler.toml`):
+Remote (after the owner creates D1 and replaces the placeholder ID in `wrangler.worker.toml`):
 
 ```bash
-pnpm exec wrangler d1 migrations list vida-familia-db --remote
+pnpm exec wrangler d1 migrations list vida-familia-db --remote -c wrangler.worker.toml
 pnpm db:migrate:prod
 ```
 
 Inspect local leads:
 
 ```bash
-pnpm exec wrangler d1 execute vida-familia-db --local --command "SELECT id, created_at, email, status FROM leads ORDER BY created_at DESC LIMIT 10"
+pnpm exec wrangler d1 execute vida-familia-db --local --command "SELECT id, created_at, email, status FROM leads ORDER BY created_at DESC LIMIT 10" -c wrangler.worker.toml
 ```
 
 ## Environment values
@@ -147,31 +152,33 @@ Frontend builds read `VITE_*` values. Metadata uses `VITE_SITE_URL` with a produ
 
 Cloudflare Pages production variables:
 
-```text
-VITE_API_BASE_URL=https://api.vidafamilia.es
-VITE_SITE_URL=https://vidafamilia.es
-PUBLIC_SITE_URL=https://vidafamilia.es
-VITE_TURNSTILE_SITE_KEY=
-```
+| Variable name | Value |
+|---|---|
+| `PUBLIC_SITE_URL` | `https://vidafamilia.es` |
+| `VITE_API_BASE_URL` | `https://api.vidafamilia.es` |
+| `VITE_SITE_URL` | `https://vidafamilia.es` |
+| `VITE_TURNSTILE_SITE_KEY` | Leave empty for MVP |
+
+In the Cloudflare UI, the variable **name** is exactly `VITE_TURNSTILE_SITE_KEY`—do not include an equals sign in the name. An empty value is valid.
 
 Preview values should point to the deployed `workers.dev` API and current Pages preview URL. Turnstile is an optional prepared variable and is not required by the MVP.
 
 ## Cloudflare Pages
 
-Create `vida-familia-web` and connect `albeen-sknight/vida-familia`:
+Pages project `vida-familia-web` is connected to `albeen-sknight/vida-familia` on branch `main`:
 
 ```text
-Framework preset: Vite
+Framework preset: React (Vite), Vite, or None
 Root directory: (leave blank)
 Build command: pnpm --filter @vida-familia/web build
 Build output directory: apps/web/dist
 ```
 
-The `_redirects` file provides the SPA fallback. `_headers` provides baseline browser security headers and immutable caching for versioned asset output. Attach `vidafamilia.es` and `www.vidafamilia.es` only after Cloudflare shows the purchased zone as active.
+Root `wrangler.toml` contains only the Pages project name, compatibility date, and output directory. The `_redirects` file provides the SPA fallback. `_headers` provides baseline browser security headers and immutable caching for versioned asset output. Attach `vidafamilia.es` and `www.vidafamilia.es` only after Cloudflare shows the purchased zone as active.
 
 ## Worker deployment
 
-After the D1 ID is in `wrangler.toml` and migrations are applied:
+After the D1 ID is in `wrangler.worker.toml` and migrations are applied:
 
 ```bash
 pnpm exec wrangler login
@@ -188,6 +195,7 @@ Prepared in code:
 
 - All production URLs, canonical metadata, social metadata, JSON-LD, sitemap, and robots rules
 - Worker route/CORS plan for the production site and WWW alias
+- Separate Pages-only and Worker/D1 Wrangler configs
 - Pages project/build settings
 - D1 migrations and seed data
 - Environment examples without secrets
@@ -195,11 +203,9 @@ Prepared in code:
 
 Requires owner action:
 
-- Wait for GoDaddy registration to finish if it still says “Registro del dominio en curso”
-- Add `vidafamilia.es` to Cloudflare, copy its two assigned nameservers, and replace the GoDaddy nameservers
-- Wait for Cloudflare to mark the zone active
+- Wait for Cloudflare to finish activation/propagation after the completed GoDaddy nameserver change
 - Create D1, paste its real ID, migrate, and deploy the Worker
-- Connect GitHub to Pages and set production variables
+- Set/confirm Pages production variables and wait for the newest Git deployment
 - Attach apex, WWW, and API custom domains
 - Submit a production test lead and verify its D1 row
 
@@ -213,7 +219,8 @@ The included legal pages are production-oriented launch drafts, not legal advice
 
 - **Missing images:** confirm the three PNG files exist in `apps/web/public/assets/` with exact lowercase names.
 - **Pages route returns 404:** confirm `apps/web/public/_redirects` reached `dist/_redirects`; it must contain `/* /index.html 200`.
-- **D1 database ID error:** create `vida-familia-db`, replace the placeholder in `wrangler.toml`, and retry remote commands.
+- **D1 database ID error:** create `vida-familia-db`, replace the placeholder in `wrangler.worker.toml`, and retry remote commands.
+- **Pages rejects Worker fields:** confirm root `wrangler.toml` is Pages-only; Worker fields belong only in `wrangler.worker.toml`.
 - **CORS error:** ensure the browser origin is in `ALLOWED_ORIGINS`; do not use a trailing slash in an origin.
 - **Lead submission fails locally:** run the Worker, apply local migrations, and confirm `VITE_API_BASE_URL=http://localhost:8787` in an untracked local env override if needed.
 - **Pages calls localhost:** set the production `VITE_API_BASE_URL` in Pages and trigger a new deployment; Vite values are compiled at build time.
