@@ -116,8 +116,8 @@ This audit should be updated after each final verification run.
 | `git diff --check` | **Pass** — no whitespace errors |
 | Local Worker smoke tests | **Pass** — health, contact, lead, quiz, newsletter, guide unlock, and admin no-token `401` |
 | Admin with token smoke test | **Skipped** — no local `ADMIN_API_TOKEN` configured and no fake token was created |
-| Commit | Pending |
-| Push | Pending |
+| Feature commit | **Pass** — `1a3d01c` (`Add Vida Familia lead automation and admin APIs`) |
+| Push | **Pass** — `main` pushed to GitHub |
 
 ## Launch decision
 
