@@ -3,6 +3,7 @@ import { ArrowDown, ArrowUpLeft, Compass } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getCopy } from "../data/i18n";
 import { routeFor } from "../lib/locale";
+import { ParallaxStage } from "./ParallaxStage";
 
 export function HeroBanner({ locale }: { locale: Locale }) {
   const c = getCopy(locale);
@@ -12,13 +13,13 @@ export function HeroBanner({ locale }: { locale: Locale }) {
 
   return (
     <section className="hero" id="top">
-      <div className="hero-stage">
+      <ParallaxStage className="hero-stage">
         <img className="hero-image" src="/assets/banner.png" alt="Vida Familia — Spain and Argentina" fetchPriority="high" onError={(event) => { event.currentTarget.style.display = "none"; }} />
         <div className="hero-overlay" />
         <div className="hero-frame" aria-hidden="true"><span>VIDA / 01</span><span>{sceneLabel}</span></div>
         <div className="hero-side hero-side-spain"><span>ES</span><p>MADRID</p></div>
         <div className="hero-side hero-side-argentina"><span>AR</span><p>BUENOS AIRES</p></div>
-      </div>
+      </ParallaxStage>
 
       <div className="hero-content">
         <div className="hero-heading scene-reveal">

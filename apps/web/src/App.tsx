@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { servicePages } from "./data/siteData";
+import { useScrollReveal } from "./hooks/useScrollReveal";
 import { trackEvent } from "./lib/analytics";
 import { localeFromPath, pathWithoutLocale, textDirection } from "./lib/locale";
 import { DashboardPage } from "./pages/DashboardPage";
@@ -12,6 +13,12 @@ import { ServiceDetailPage } from "./pages/ServiceDetailPage";
 
 function ScrollAndLocaleEffects({ locale }: { locale: "fa" | "en" | "es" }) {
   const { pathname, hash } = useLocation();
+  useScrollReveal(
+    ".scene-reveal, .reveal-on-scroll, .page-content .content-section, .page-content .lead-form-card",
+    "0px 0px -8% 0px",
+    [pathname, hash],
+  );
+
   useEffect(() => {
     document.documentElement.lang = locale;
     document.documentElement.dir = textDirection(locale);

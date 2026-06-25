@@ -14,7 +14,7 @@ The codebase is prepared for `vidafamilia.es`, `www.vidafamilia.es`, and `api.vi
 | Production URLs | Ready | Site, WWW, and API URLs are documented and used in env examples |
 | SEO/canonical | Ready | Canonical/Open Graph/Twitter/JSON-LD target `https://vidafamilia.es` |
 | Frontend app | Ready | Persian-first React/Vite site with EN/ES localized routes |
-| Visual system | Ready | Cinematic Vida Familia visual system preserved; feature UI added without redesign reset |
+| Visual system | Ready | Dark cinematic Vida Familia visual system tightened with compact chapters, glassy navy cards, scroll reveals, and reduced section heights |
 | Apply form | Ready | D1-backed submit, reference code result, polished next-step UI, optional WhatsApp deep link |
 | Contact form | Ready | D1-backed `/contact` form with consent, success/error, optional WhatsApp link |
 | Pathway quiz | Ready | Homepage quiz submits to Worker and returns suggested routes/readiness |
@@ -91,6 +91,21 @@ Production D1 deployment record:
 - D1 binding present: `env.DB → vida-familia-db`
 - API custom domain `api.vidafamilia.es` is still pending Cloudflare zone activation
 
+## Design polish / refinement pass
+
+Frontend-only refinement completed on 25 June 2026.
+
+- Dark cinematic redesign: homepage rhythm now leans heavily on near-black navy, deep navy gradients, Spain red/gold, and Argentina blue accents.
+- Compact cinematic layout refinement: hero now separates the image stage from a readable story panel and uses a compact chapter rail immediately after the opening.
+- Reduced section heights: homepage sections, cards, service grids, destination panels, package cards, service detail pages, and form pages have tighter padding and smaller default card heights.
+- Improved homepage story flow: early chapters now communicate real family experience, "not just visa advice", Spain + Argentina positioning, and smart platform tools before the visitor reaches the deeper sections.
+- Scroll reveal system: added `useScrollReveal()` and `Reveal` for fast IntersectionObserver-based reveals across homepage and main content pages.
+- Parallax/sticky scene effects: added `ParallaxStage` for subtle hero image movement using a CSS variable; motion is intentionally lightweight and dependency-free.
+- Scroll animation tuning: reveal distance is short, transitions are faster, and route changes re-scan new page content so sections do not remain hidden after navigation.
+- Mobile checks: Persian RTL homepage, apply, contact, and Spain student visa detail page were checked for horizontal overflow and visible above-fold content.
+- Reduced motion support: `prefers-reduced-motion: reduce` disables parallax/transforms/transitions for reveal and hero image effects.
+- Backend untouched: no Worker, D1, migration, Resend, admin API, or Cloudflare configuration files were changed in this pass.
+
 ## Domain status
 
 - Purchased: `vidafamilia.es`
@@ -138,6 +153,7 @@ This audit should be updated after each final verification run.
 | `pnpm -r --if-present build` | **Pass** — web production build and Worker dry-run bundle |
 | `pnpm db:migrate:local` | **Pass** — `0003_lead_automation_platform.sql` applied locally |
 | `git diff --check` | **Pass** — no whitespace errors |
+| Frontend visual QA | **Pass** — `/fa`, `/apply`, `/contact`, and `/fa/services/spain/student-visa` checked locally at desktop; homepage also checked at mobile width and 80% zoom hotkey sanity |
 | Local Worker smoke tests | **Pass** — health, contact, lead, quiz, newsletter, guide unlock, and admin no-token `401` |
 | Admin with token smoke test | **Skipped** — no local `ADMIN_API_TOKEN` configured and no fake token was created |
 | Feature commit | **Pass** — `1a3d01c` (`Add Vida Familia lead automation and admin APIs`) |

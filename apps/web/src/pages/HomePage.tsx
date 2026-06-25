@@ -10,6 +10,7 @@ import { PackageCard } from "../components/PackageCard";
 import { PathwayQuiz } from "../components/PathwayQuiz";
 import { PresenceSection } from "../components/PresenceSection";
 import { QualificationCTA } from "../components/QualificationCTA";
+import { Reveal } from "../components/Reveal";
 import { SEOHead } from "../components/SEOHead";
 import { SectionHeading } from "../components/SectionHeading";
 import { ServiceCard } from "../components/ServiceCard";
@@ -44,6 +45,12 @@ const homeCopy = {
     finalTitle: "اگر تصمیم شما جدی است، مسیر را درست شروع کنیم.",
     finalBody: "چند پاسخ روشن، به ما کمک می‌کند پیش از هر وعده یا هزینه‌ای ببینیم کدام مسیر با زندگی واقعی شما تناسب دارد.",
     finalContact: "هنوز سؤال دارید؟ با ما صحبت کنید",
+    quickChapters: [
+      ["01", "خانواده واقعی", "روایت ما از زندگی، تحصیل و کار در اسپانیا شروع می‌شود.", "#family"],
+      ["02", "نه فقط مشاور ویزا", "هزینه، اشتباه، خانه، دانشگاه و روزهای اول را واقعی می‌بینیم.", "#story"],
+      ["03", "اسپانیا + آرژانتین", "دو مقصد، چند مسیر، یک نگاه خانوادگی و ساختاریافته.", "#destinations"],
+      ["04", "ابزار هوشمند", "کوئیز مسیر، فرم ارزیابی، راهنما و پیگیری در یک جریان.", "#tools"],
+    ],
     trustDisclaimer: "Vida Familia خدمات آموزشی و هماهنگی ارائه می‌دهد؛ دفتر وکالت یا مرجع دولتی نیست. هیچ نتیجه ویزا، اقامت، پذیرش، کار یا تابعیتی تضمین نمی‌شود و امور حقوقی، مالیاتی یا مالی باید با متخصص دارای صلاحیت بررسی شوند.",
   },
   en: {
@@ -69,6 +76,12 @@ const homeCopy = {
     finalTitle: "If the decision is serious, start the journey properly.",
     finalBody: "A few clear answers help us identify what fits your real life before promises, services or cost.",
     finalContact: "Still have a question? Talk to us",
+    quickChapters: [
+      ["01", "Real family", "Our guidance starts from lived study, work and family relocation.", "#family"],
+      ["02", "Not just visa advice", "We read costs, mistakes, housing, university and first days together.", "#story"],
+      ["03", "Spain + Argentina", "Two destinations, several routes, one structured family lens.", "#destinations"],
+      ["04", "Smart tools", "Quiz, assessment, guides and follow-up in one platform flow.", "#tools"],
+    ],
     trustDisclaimer: "Vida Familia provides education and coordination; it is not a law firm or public authority. No visa, residency, admission, work or citizenship outcome is guaranteed. Legal, tax and financial matters require qualified review.",
   },
   es: {
@@ -94,6 +107,12 @@ const homeCopy = {
     finalTitle: "Si la decisión es seria, empecemos bien el camino.",
     finalBody: "Unas respuestas claras nos ayudan a identificar qué encaja con tu vida antes de promesas, servicios o costes.",
     finalContact: "¿Aún tienes preguntas? Hablemos",
+    quickChapters: [
+      ["01", "Familia real", "La orientación nace de vivir estudios, trabajo y traslado familiar.", "#family"],
+      ["02", "No solo visados", "Vemos costes, errores, vivienda, universidad y primeros días.", "#story"],
+      ["03", "España + Argentina", "Dos destinos, varias vías y una mirada familiar estructurada.", "#destinations"],
+      ["04", "Herramientas", "Quiz, evaluación, guías y seguimiento en un flujo.", "#tools"],
+    ],
     trustDisclaimer: "Vida Familia ofrece educación y coordinación; no es un despacho ni una autoridad. No se garantiza visado, residencia, admisión, empleo ni ciudadanía. Los asuntos jurídicos, fiscales y financieros requieren revisión profesional.",
   },
 } as const;
@@ -110,6 +129,20 @@ export function HomePage({ locale }: { locale: Locale }) {
 
       <div className="home-cinematic">
         <HeroBanner locale={locale} />
+
+        <section className="chapter-rail" aria-label="Vida Familia story chapters">
+          <div className="container chapter-rail-grid">
+            {page.quickChapters.map(([number, title, text, href], index) => (
+              <Reveal key={number} variant={index % 2 === 0 ? "up" : "scale"}>
+                <a href={href} className="chapter-card">
+                  <span>{number}</span>
+                  <strong>{title}</strong>
+                  <small>{text}</small>
+                </a>
+              </Reveal>
+            ))}
+          </div>
+        </section>
 
         <section id="story" className="story-section section-pad">
           <div className="container story-grid scene-reveal">
@@ -141,7 +174,9 @@ export function HomePage({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <PathwayQuiz locale={locale} />
+        <div id="tools" className="smart-tools-wrap">
+          <PathwayQuiz locale={locale} />
+        </div>
 
         <PresenceSection locale={locale} />
 
