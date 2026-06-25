@@ -965,6 +965,97 @@ body { background: #020812; }
   .lead-form-card form, .contact-form { padding: 1rem; }
 }
 
+/* Readability hotfix — keep the dark cinematic theme, raise contrast where opacity was too low */
+.home-cinematic .eyebrow,
+.page-content .eyebrow,
+.smart-tools-wrap .quiz-grid > div::before {
+  color: #f1bf00;
+}
+
+.home-cinematic .section-heading h2,
+.home-cinematic .section-heading,
+.page-content .section-heading h2,
+.page-content .section-heading,
+.page-content .editorial-story h2,
+.page-content .pathway-grid > a h3,
+.smart-tools-wrap .quiz-grid h2,
+.newsletter-form .eyebrow {
+  color: #f8fafc;
+}
+
+.home-cinematic .section-heading > p,
+.page-content .section-heading > p,
+.page-content .content-lead,
+.page-content .editorial-story > p,
+.page-content .pathway-grid > a p,
+.smart-tools-wrap .quiz-grid > div > p:not(.eyebrow),
+.service-card p,
+.newsletter-form label,
+.newsletter-form label span {
+  color: rgba(248,250,252,.78);
+}
+
+.service-card h3,
+.service-card .service-index,
+.pathway-grid > a > span {
+  color: #f7f1e6;
+}
+
+.pathway-grid > a,
+.page-content .pathway-grid > a {
+  border-color: rgba(255,255,255,.16);
+  background: linear-gradient(145deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+  color: #f8fafc;
+}
+
+.page-content .pathway-grid > a:hover p,
+.pathway-grid > a:hover p {
+  color: rgba(248,250,252,.86);
+}
+
+.tag-cloud span,
+.page-content .tag-cloud span {
+  border-color: rgba(241,191,0,.34);
+  background: rgba(247,241,230,.94);
+  color: #081e35;
+  font-weight: 750;
+}
+
+.smart-tools-wrap .consent-field,
+.quiz-card .consent-field,
+.site-footer .newsletter-form label {
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(2,8,18,.62);
+  color: rgba(248,250,252,.86);
+}
+
+.newsletter-form {
+  color: #f8fafc;
+}
+
+.newsletter-form input,
+.form-field input,
+.form-field select,
+.form-field textarea,
+.smart-tools-wrap .form-field input,
+.smart-tools-wrap .form-field select,
+.smart-tools-wrap .form-field textarea {
+  color: #081e35;
+}
+
+.newsletter-form input::placeholder,
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: rgba(8,30,53,.55);
+  opacity: 1;
+}
+
+.site-footer .newsletter-form .eyebrow,
+.site-footer .newsletter-form label,
+.site-footer .newsletter-form label span {
+  color: rgba(248,250,252,.82);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scene-reveal, .reveal-on-scroll, .scene-reveal.is-visible, .reveal-on-scroll.is-visible, .hero-image { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; animation: none !important; }
 }
