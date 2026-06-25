@@ -8,5 +8,5 @@ workers_dev = true
 [[d1_databases]]
 binding = "DB"
 database_name = "vida-familia-db"
-database_id = "REPLACE_WITH_REAL_D1_DATABASE_ID_AFTER_RUNNING_WRANGLER_D1_CREATE"
+database_id = "8efefb70-f96c-4fc6-b525-2b0300528b2a"
 migrations_dir = "migrations"
