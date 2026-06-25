@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import { servicePages } from "./data/siteData";
+import { trackEvent } from "./lib/analytics";
 import { localeFromPath, pathWithoutLocale, textDirection } from "./lib/locale";
+import { DashboardPage } from "./pages/DashboardPage";
 import { HomePage } from "./pages/HomePage";
 import { AboutPage, ApplyPage, ContactPage, DestinationPage, LegalPage, LifestylePage, ResourcesPage, ServicesPage } from "./pages/InfoPages";
 import { NotFoundPage } from "./pages/NotFoundPage";
@@ -26,6 +28,20 @@ function ScrollAndLocaleEffects({ locale }: { locale: "fa" | "en" | "es" }) {
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [hash, locale, pathname]);
+  useEffect(() => {
+    trackEvent("page_view", { hash }, locale);
+  }, [hash, locale, pathname]);
+  useEffect(() => {
+    const handler = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target.closest("a,button") : null;
+      if (!target) return;
+      const label = target.textContent?.trim().slice(0, 120) || target.getAttribute("aria-label") || "cta";
+      const href = target instanceof HTMLAnchorElement ? target.href : undefined;
+      if (target.classList.contains("button") || href?.includes("/apply")) trackEvent("cta_click", { label, href }, locale);
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [locale]);
   return null;
 }
 
@@ -44,6 +60,8 @@ export default function App() {
   else if (path === "/resources") page = <ResourcesPage locale={locale} />;
   else if (path === "/apply") page = <ApplyPage locale={locale} />;
   else if (path === "/contact") page = <ContactPage locale={locale} />;
+  else if (path === "/dashboard") page = <DashboardPage locale={locale} />;
+  else if (path === "/dashboard/leads") page = <DashboardPage locale={locale} view="leads" />;
   else if (path === "/privacy" || path === "/terms" || path === "/legal-disclaimer") page = <LegalPage locale={locale} type={path.slice(1) as "privacy" | "terms" | "legal-disclaimer"} />;
   else {
     const match = path.match(/^\/services\/(spain|argentina)\/([^/]+)$/);

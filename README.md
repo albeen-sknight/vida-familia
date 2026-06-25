@@ -2,7 +2,7 @@
 
 Vida Familia is a Persian-first, family-led relocation, education, lifestyle, and advisory platform for Spain and Argentina. This repository contains a multilingual React site, a Cloudflare Worker lead API, a D1 schema, and the deployment handoff for `vidafamilia.es`.
 
-The domain **has been purchased from GoDaddy** and its nameservers have been changed to Cloudflare (`hayes.ns.cloudflare.com` and `novalee.ns.cloudflare.com`). Cloudflare activation may still be propagating. The domain is not considered live until Cloudflare marks the zone active and the Pages/Worker custom domains are attached.
+The domain **has been purchased from GoDaddy**. GoDaddy showed “¡vidafamilia.es es tuyo!” and “Registro del dominio en curso,” so registration may still be processing. Cloudflare activation is still pending: the owner still needs to add `vidafamilia.es` to Cloudflare, copy the assigned Cloudflare nameservers, replace the GoDaddy nameservers, wait for Cloudflare to mark the zone Active, and then attach the Pages/Worker custom domains.
 
 ## Architecture
 
@@ -57,7 +57,7 @@ Then open:
 
 `pnpm dev` runs both processes. Run them separately with `pnpm dev:web` and `pnpm dev:worker` when debugging.
 
-For local Worker overrides, create an untracked `.dev.vars` from `.dev.vars.example`. Never commit the real file. The MVP needs no secrets for the public health/lead routes. `ADMIN_API_TOKEN` is required only for the temporary admin route.
+For local Worker overrides, create an untracked `.dev.vars` from `.dev.vars.example`. Never commit the real file. Public forms work locally without email/SMS secrets; Resend, Turnstile, SMS/WhatsApp, and admin access activate only when their variables are configured.
 
 ## Assets
 
@@ -102,7 +102,11 @@ to `apps/web/public/assets/`. Missing images fail gracefully to branded CSS back
 - `/en` and `/es` are LTR English and Spanish homepages.
 - Every main page also works with a locale prefix, for example `/en/about`.
 - Five detailed service routes include audience, meaning, scope, mistakes, timeline, documents, packages, FAQ, qualification, and legal disclaimers.
-- `/apply` validates qualification data in the browser and submits to `${VITE_API_BASE_URL}/api/leads`.
+- `/apply` validates qualification data in the browser and submits to `${VITE_API_BASE_URL}/api/leads`; the success state shows a reference code and next step.
+- `/contact` includes a real D1-backed contact form.
+- The homepage includes a pathway quiz backed by `/api/quiz/pathway`.
+- `/resources` includes guide unlock and newsletter capture forms.
+- `/dashboard` and `/dashboard/leads` are token-gated internal admin scaffolds. There is no fake login; the admin manually enters `ADMIN_API_TOKEN`.
 - SEO metadata, Open Graph, Twitter cards, canonical URLs, Organization/Service JSON-LD, `robots.txt`, and `sitemap.xml` use `https://vidafamilia.es`.
 
 Translations live in `apps/web/src/data/i18n.ts` and localized content in `apps/web/src/data/siteData.ts`. Add a key for `fa`, `en`, and `es` together. Add a service by extending `servicePages`, then seed the corresponding database record if it should be database-managed later.
@@ -115,17 +119,39 @@ The current resources UI is an editorial launch slate. Publishable resource reco
 
 Returns service health and an ISO timestamp. No D1 read is required.
 
-### `POST /api/leads`
+### Public submit endpoints
 
-Accepts the shared `LeadPayload`, validates and normalizes it, enforces a 32 KiB body limit, checks consent, uses a honeypot, blocks rapid duplicate-email submissions, enforces the origin allowlist, and inserts with a prepared D1 statement. Database details are never returned to clients.
+All public POST endpoints enforce the origin allowlist, a 32 KiB body limit, JSON content type, server-side validation, consent checks where relevant, and prepared D1 statements. If `TURNSTILE_SECRET_KEY` is configured, the Worker requires and verifies the submitted Turnstile token with Cloudflare Siteverify. If the secret is not configured, Turnstile is skipped so local development and MVP launch are not blocked.
 
-### `GET /api/admin/leads?limit=25&before=<ISO timestamp>`
+| Endpoint | Purpose |
+|---|---|
+| `POST /api/leads` | Apply form; creates `reference_code`, deterministic lead score, priority, recommended next step, D1 row, admin notification email, applicant confirmation email, optional disabled-by-default SMS/WhatsApp confirmation |
+| `POST /api/contact` | Contact page form; saves to `contact_messages`, emails admins, emails applicant |
+| `POST /api/consultation-request` | Consultation request; saves to `consultation_requests`, generates reference code, emails admins/applicant |
+| `POST /api/newsletter` | Upserts `newsletter_subscribers`; optional welcome email; does not notify admins by default |
+| `POST /api/quiz/pathway` | Mini pathway quiz; saves result and returns `suggested_paths`, `readiness_score`, and `next_step` |
+| `POST /api/guides/unlock` | Guide unlock lead magnet; saves request, emails guide link placeholder, notifies admins for high-intent guide unlocks |
+| `POST /api/analytics/event` | Privacy-friendly anonymous event tracking; stores no IP address |
 
-Optional temporary admin endpoint. It returns `404` while `ADMIN_API_TOKEN` is unset and requires `Authorization: Bearer <token>` when enabled. Set the production token with the Cloudflare dashboard or the interactive command `pnpm exec wrangler secret put ADMIN_API_TOKEN -c wrangler.worker.toml`. Replace this route with real identity/auth before exposing an operational admin UI.
+Email delivery uses Resend when `RESEND_API_KEY` and `FROM_EMAIL` are configured. If D1 saves successfully but email fails, the applicant still receives a successful API response and the Worker logs a safe provider failure.
+
+### Admin endpoints
+
+All admin routes require `Authorization: Bearer <ADMIN_API_TOKEN>`. If the token is missing or incorrect, the Worker returns `401`.
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/admin/stats` | Lead, contact, consultation, newsletter, and top analytics counts |
+| `GET /api/admin/leads?limit=&offset=&status=&priority=&target_country=&desired_path=` | Filtered lead list |
+| `GET /api/admin/leads/:id` | Full lead detail plus timeline |
+| `PATCH /api/admin/leads/:id/status` | Update status, optional priority, assignment, follow-up date, and note |
+| `POST /api/admin/leads/:id/notes` | Add timeline note |
+| `GET /api/admin/contact-messages` | Recent contact messages |
+| `GET /api/admin/consultation-requests` | Recent consultation requests |
 
 ## D1
 
-The migrations create `leads`, `services`, `packages`, and `resources`, all requested indexes, constraints, and a seed catalog.
+The migrations create `leads`, `services`, `packages`, `resources`, the seed catalog, lead automation fields, contact messages, consultation requests, newsletter subscribers, quiz results, guide unlocks, lead timeline notes, analytics events, and supporting indexes.
 
 Local:
 
@@ -140,10 +166,11 @@ pnpm exec wrangler d1 migrations list vida-familia-db --remote -c wrangler.worke
 pnpm db:migrate:prod
 ```
 
-Inspect local leads:
+Inspect local leads and automation rows:
 
 ```bash
-pnpm exec wrangler d1 execute vida-familia-db --local --command "SELECT id, created_at, email, status FROM leads ORDER BY created_at DESC LIMIT 10" -c wrangler.worker.toml
+pnpm exec wrangler d1 execute vida-familia-db --local --command "SELECT reference_code, created_at, email, priority, status FROM leads ORDER BY created_at DESC LIMIT 10" -c wrangler.worker.toml
+pnpm exec wrangler d1 execute vida-familia-db --local --command "SELECT created_at, email, topic FROM contact_messages ORDER BY created_at DESC LIMIT 10" -c wrangler.worker.toml
 ```
 
 ## Environment values
@@ -157,11 +184,44 @@ Cloudflare Pages production variables:
 | `PUBLIC_SITE_URL` | `https://vidafamilia.es` |
 | `VITE_API_BASE_URL` | `https://api.vidafamilia.es` |
 | `VITE_SITE_URL` | `https://vidafamilia.es` |
-| `VITE_TURNSTILE_SITE_KEY` | Leave empty for MVP |
+| `VITE_TURNSTILE_SITE_KEY` | Optional Turnstile site key |
+| `VITE_PUBLIC_WHATSAPP_NUMBER` | Optional public business WhatsApp number, digits only or `+` format |
 
 In the Cloudflare UI, the variable **name** is exactly `VITE_TURNSTILE_SITE_KEY`—do not include an equals sign in the name. An empty value is valid.
 
-Preview values should point to the deployed `workers.dev` API and current Pages preview URL. Turnstile is an optional prepared variable and is not required by the MVP.
+Worker secrets/vars:
+
+| Name | Purpose |
+|---|---|
+| `RESEND_API_KEY` | Resend API key for outbound admin/applicant emails |
+| `FROM_EMAIL` | Recommended: `no-reply@vidafamilia.es` after sender/domain verification |
+| `ADMIN_NOTIFICATION_EMAILS` | `albertosaeedi@gmail.com,saeediamirahmad8849@gmail.com,sharif.saeedi0709@gmail.com` |
+| `ADMIN_API_TOKEN` | Manual token for `/dashboard` and `/api/admin/*` |
+| `TURNSTILE_SECRET_KEY` | Optional; when present, public submits require Siteverify |
+| `SMS_CONFIRMATIONS_ENABLED` | `false` by default |
+| `SMS_PROVIDER` | `disabled`, `twilio`, or `whatsapp` |
+| `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_FROM_NUMBER` | Optional future Twilio SMS setup |
+| `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID` | Optional future WhatsApp Cloud API setup |
+
+Set secrets interactively; do not echo them into terminal history:
+
+```bash
+pnpm exec wrangler secret put RESEND_API_KEY -c wrangler.worker.toml
+pnpm exec wrangler secret put ADMIN_API_TOKEN -c wrangler.worker.toml
+pnpm exec wrangler secret put TURNSTILE_SECRET_KEY -c wrangler.worker.toml
+```
+
+Non-secret Worker vars can be entered in the Cloudflare dashboard. Preview values should point to the deployed `workers.dev` API and current Pages preview URL. Turnstile and SMS are optional and are not required by the MVP.
+
+Recommended future email aliases: `info@vidafamilia.es`, `apply@vidafamilia.es`, `spain@vidafamilia.es`, and `argentina@vidafamilia.es`. Cloudflare Email Routing can forward those aliases to Gmail inboxes, but the owner must configure that in the Cloudflare dashboard.
+
+Resend setup is required for real email delivery:
+
+1. Create or verify a Resend account.
+2. Verify the sending domain/sender for `vidafamilia.es`.
+3. Set `FROM_EMAIL=no-reply@vidafamilia.es` only after verification.
+4. Add `RESEND_API_KEY` as a Worker secret.
+5. Test one real `/apply` submission and confirm both admin and applicant emails.
 
 ## Cloudflare Pages
 
@@ -189,6 +249,19 @@ pnpm deploy:worker
 
 Test the returned `workers.dev` URL first, then attach `api.vidafamilia.es` under the Worker's Domains & Routes settings.
 
+Useful local API tests after `pnpm dev:worker` and `pnpm db:migrate:local`:
+
+```bash
+curl http://localhost:8787/api/health
+curl -X POST http://localhost:8787/api/leads -H "Content-Type: application/json" --data "{\"locale\":\"en\",\"full_name\":\"Test Lead\",\"email\":\"lead@example.com\",\"whatsapp\":\"+34600000000\",\"current_country\":\"Iran\",\"target_country\":\"Spain\",\"desired_path\":\"Student\",\"family_size\":\"2\",\"budget_range\":\"50000 EUR\",\"income_range\":\"remote income\",\"timeline\":\"6 months\",\"documents_ready\":\"partial\",\"main_concern\":\"I want to understand the student route and first steps for my family.\",\"message\":\"This is a local smoke test.\",\"consent\":true}"
+curl -X POST http://localhost:8787/api/contact -H "Content-Type: application/json" --data "{\"locale\":\"en\",\"full_name\":\"Test User\",\"email\":\"test@example.com\",\"topic\":\"General\",\"message\":\"I have a general question about Spain.\",\"consent\":true}"
+curl -X POST http://localhost:8787/api/quiz/pathway -H "Content-Type: application/json" --data "{\"locale\":\"en\",\"target_country_preference\":\"Spain\",\"goal\":\"study\",\"budget_range\":\"50000 EUR\",\"income_range\":\"remote income\",\"timeline\":\"6 months\",\"documents_ready\":\"partial\"}"
+curl -X POST http://localhost:8787/api/newsletter -H "Content-Type: application/json" --data "{\"locale\":\"en\",\"email\":\"test-news@example.com\",\"interest\":\"Spain\",\"source\":\"local\",\"consent\":true}"
+curl -X POST http://localhost:8787/api/guides/unlock -H "Content-Type: application/json" --data "{\"locale\":\"en\",\"guide_slug\":\"spain-student-checklist\",\"email\":\"guide@example.com\",\"interest\":\"student visa\",\"consent\":true}"
+curl http://localhost:8787/api/admin/stats
+curl http://localhost:8787/api/admin/stats -H "Authorization: Bearer YOUR_LOCAL_ADMIN_TOKEN"
+```
+
 ## Domain-ready status
 
 Prepared in code:
@@ -203,8 +276,13 @@ Prepared in code:
 
 Requires owner action:
 
-- Wait for Cloudflare to finish activation/propagation after the completed GoDaddy nameserver change
+- Wait for GoDaddy registration to complete if still processing
+- Add `vidafamilia.es` to Cloudflare
+- Copy Cloudflare-assigned nameservers
+- Replace GoDaddy nameservers with the Cloudflare nameservers
+- Wait for Cloudflare activation
 - Create D1, paste its real ID, migrate, and deploy the Worker
+- Configure Resend sender/domain and Worker email/admin secrets
 - Set/confirm Pages production variables and wait for the newest Git deployment
 - Attach apex, WWW, and API custom domains
 - Submit a production test lead and verify its D1 row

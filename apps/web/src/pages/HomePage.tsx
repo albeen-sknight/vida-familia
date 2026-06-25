@@ -7,6 +7,7 @@ import { FamilyMemberCard } from "../components/FamilyMemberCard";
 import { HeroBanner } from "../components/HeroBanner";
 import { JsonLd } from "../components/JsonLd";
 import { PackageCard } from "../components/PackageCard";
+import { PathwayQuiz } from "../components/PathwayQuiz";
 import { PresenceSection } from "../components/PresenceSection";
 import { QualificationCTA } from "../components/QualificationCTA";
 import { SEOHead } from "../components/SEOHead";
@@ -139,6 +140,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div className="services-grid">{serviceHighlights.map((service) => <ServiceCard key={service.index} index={service.index} title={localized(service.title)} text={localized(service.text)} href={routeFor(locale, "/services")} />)}</div>
           </div>
         </section>
+
+        <PathwayQuiz locale={locale} />
 
         <PresenceSection locale={locale} />
 

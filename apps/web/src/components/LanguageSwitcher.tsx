@@ -1,5 +1,6 @@
 import type { Locale } from "@vida-familia/shared";
 import { Link, useLocation } from "react-router-dom";
+import { trackEvent } from "../lib/analytics";
 import { localizedPath } from "../lib/locale";
 
 const labels: Record<Locale, string> = { fa: "FA", en: "EN", es: "ES" };
@@ -14,7 +15,7 @@ export function LanguageSwitcher({ locale, compact = false }: { locale: Locale; 
           key={item}
           className={item === locale ? "active" : ""}
           to={localizedPath(item, pathname)}
-          onClick={() => window.localStorage.setItem("vida-familia-locale", item)}
+          onClick={() => { window.localStorage.setItem("vida-familia-locale", item); trackEvent("language_switch", { from: locale, to: item }, item); }}
           lang={item}
           hrefLang={item}
         >

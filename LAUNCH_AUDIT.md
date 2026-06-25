@@ -1,116 +1,124 @@
 # Launch audit
 
-Audit date: 24 June 2026
-Target: first domain-ready production MVP
+Audit date: 25 June 2026
+Target: production/domain-ready Vida Familia platform MVP
 
 ## Executive status
 
-The codebase is prepared for `vidafamilia.es`. The domain has been purchased and GoDaddy now uses Cloudflare nameservers. Cloudflare zone activation/propagation, resource creation, deployment, and custom-domain attachment remain owner actions.
+The codebase is prepared for `vidafamilia.es`, `www.vidafamilia.es`, and `api.vidafamilia.es`. The domain `vidafamilia.es` has been purchased from GoDaddy, but GoDaddy registration may still be processing. Cloudflare activation is still pending and the owner still needs to add the domain to Cloudflare, replace GoDaddy nameservers with Cloudflare nameservers, create D1, set secrets, deploy, and attach custom domains.
 
 ## Prepared in code
 
 | Area | Status | Evidence |
 |---|---|---|
-| Persian RTL homepage | Ready | `/`, `/fa`; story, family, destinations, services, packages, qualification, content, trust |
-| English/Spanish | Ready | `/en`, `/es`, locale switcher, localized core/service content |
-| Routes | Ready | Required pages plus locale-prefixed equivalents and 404 |
-| Five service pages | Ready | Full required information architecture and disclaimers |
-| Apply form | Ready | Client validation, consent, responsive UI, loading/success/error, honeypot |
-| Worker API | Ready in code | Health, lead insert, optional bearer-protected admin list |
-| API security | Ready in code | Bounded body, validation, prepared SQL, safe CORS, duplicate throttle, conservative errors |
-| D1 | Ready in code | Schema, checks, indexes, seed catalog |
-| SEO/domain | Ready in code | Canonical, OG, Twitter, Organization/Service JSON-LD, sitemap, robots |
-| Static delivery | Ready in code | Pages SPA redirect, security headers, asset caching |
-| Wrangler config split | Ready in code | Root `wrangler.toml` is Pages-only; `wrangler.worker.toml` owns Worker/D1 |
-| Owner docs | Ready | README, config handoff, phased deployment checklist |
-| Secrets hygiene | Ready | Only example env files; real env/vars ignored |
+| Production URLs | Ready | Site, WWW, and API URLs are documented and used in env examples |
+| SEO/canonical | Ready | Canonical/Open Graph/Twitter/JSON-LD target `https://vidafamilia.es` |
+| Frontend app | Ready | Persian-first React/Vite site with EN/ES localized routes |
+| Visual system | Ready | Cinematic Vida Familia visual system preserved; feature UI added without redesign reset |
+| Apply form | Ready | D1-backed submit, reference code result, polished next-step UI, optional WhatsApp deep link |
+| Contact form | Ready | D1-backed `/contact` form with consent, success/error, optional WhatsApp link |
+| Pathway quiz | Ready | Homepage quiz submits to Worker and returns suggested routes/readiness |
+| Resources | Ready | Guide unlock and newsletter capture forms |
+| Turnstile frontend | Ready | Optional `VITE_TURNSTILE_SITE_KEY`; no local-dev blocking |
+| Worker API | Ready | Public submit endpoints, admin endpoints, analytics endpoint |
+| D1 migrations | Ready | `0001`, `0002`, and `0003_lead_automation_platform.sql` |
+| Email behavior | Ready in code | Resend admin/applicant emails after D1 save; safe skip/failure logging without applicant-facing provider errors |
+| SMS/WhatsApp | Prepared/off | Provider abstraction exists; disabled unless explicitly configured |
+| Admin/stats | Ready in code | Bearer-token admin APIs plus lightweight `/dashboard` scaffold |
+| Wrangler split | Ready | `wrangler.toml` Pages-only; `wrangler.worker.toml` Worker/D1-only |
+| Env examples | Ready | Only `.env.example` and `.dev.vars.example`; no real secrets |
+
+## Public submit endpoints
+
+- `GET /api/health`
+- `POST /api/leads`
+- `POST /api/contact`
+- `POST /api/consultation-request`
+- `POST /api/newsletter`
+- `POST /api/quiz/pathway`
+- `POST /api/guides/unlock`
+- `POST /api/analytics/event`
+
+All public POST endpoints use bounded JSON reads, validation, D1 prepared statements, origin checks, and optional Turnstile verification when `TURNSTILE_SECRET_KEY` is configured.
+
+## Admin endpoints
+
+All admin endpoints require:
+
+```text
+Authorization: Bearer ADMIN_API_TOKEN
+```
+
+Available endpoints:
+
+- `GET /api/admin/stats`
+- `GET /api/admin/leads`
+- `GET /api/admin/leads/:id`
+- `PATCH /api/admin/leads/:id/status`
+- `POST /api/admin/leads/:id/notes`
+- `GET /api/admin/contact-messages`
+- `GET /api/admin/consultation-requests`
+
+## Database migration audit
+
+`migrations/0003_lead_automation_platform.sql` adds:
+
+- Lead automation columns: `reference_code`, `lead_score`, `priority`, `recommended_next_step`, `source`, `campaign`, `assigned_to`, `last_contacted_at`, `next_follow_up_at`, `updated_at`
+- Tables: `contact_messages`, `consultation_requests`, `newsletter_subscribers`, `quiz_results`, `guide_unlocks`, `lead_timeline`, `analytics_events`
+- Indexes for lead lookup, admin filtering, contact/consultation/newsletter, guide unlock, quiz, and analytics reads
 
 ## Domain status
 
-- **Purchased:** `vidafamilia.es` at GoDaddy.
-- **Nameservers delegated:** `hayes.ns.cloudflare.com`, `novalee.ns.cloudflare.com`.
-- **Not yet assumed active:** Cloudflare may still be propagating/activating the zone.
-- **Not yet attached:** apex/WWW Pages domains and API Worker domain.
+- Purchased: `vidafamilia.es`
+- Registrar: GoDaddy
+- Purchase message observed: “¡vidafamilia.es es tuyo!”
+- Registration message observed: “Registro del dominio en curso.”
+- Cloudflare activation: pending
+- Custom domains attached: not yet
 
-## Owner-gated launch items
+## Still blocked on owner action
 
-1. Wait for Cloudflare to mark the delegated zone **Active**.
-2. Create D1 and replace the placeholder in `wrangler.worker.toml` with the real ID.
-3. Apply remote migrations and deploy the Worker using the Worker-specific scripts.
-4. Confirm Pages build-time variables and wait for the newest `main` deployment.
-5. Attach `api.vidafamilia.es`, `vidafamilia.es`, and `www.vidafamilia.es`.
-6. Submit and verify a production test lead.
+1. Wait for GoDaddy registration to finish if it is still processing.
+2. Add `vidafamilia.es` to Cloudflare.
+3. Copy Cloudflare-assigned nameservers.
+4. Replace GoDaddy nameservers with the Cloudflare nameservers.
+5. Wait for Cloudflare to mark the zone Active.
+6. Create D1 database `vida-familia-db`.
+7. Paste real D1 `database_id` into `wrangler.worker.toml`.
+8. Set Pages production variables.
+9. Configure Resend and Worker secrets.
+10. Apply production migrations.
+11. Deploy Worker.
+12. Attach `api.vidafamilia.es`.
+13. Create/connect Pages project `vida-familia-web`.
+14. Attach `vidafamilia.es` and `www.vidafamilia.es`.
+15. Test real submissions into D1.
 
-## Known MVP limitations / deliberate placeholders
+## Known MVP limitations / intentional choices
 
-- Final public business email, legal entity identity, address, and data-retention period are owner/legal-review inputs. No private Cloudflare email was committed.
-- Social icons are visual placeholders until official profile URLs are supplied.
-- Resource cards are an editorial slate; no CMS or public resources API is included in MVP.
-- Turnstile variables are prepared, but Turnstile is not required or wired until real keys/widget ownership exist. Honeypot and duplicate throttling cover the initial form.
-- Email notifications are not active. Leads are stored in D1; `LEADS_NOTIFICATION_EMAIL` is reserved for a later approved email workflow.
-- The admin endpoint uses a temporary bearer token and should be replaced by identity-based auth before a staff-facing admin product.
-- Legal pages are strong launch drafts, not a substitute for review by a qualified professional for the final operating entity.
-- The source banner includes embedded text and iconography. The responsive CSS uses it cinematically, but future art direction may benefit from a text-free background master.
+- No legal or visa outcome is promised by the product or emails.
+- Resend is required for real email delivery, but local development skips email safely if secrets are missing.
+- SMS/WhatsApp confirmations are disabled by default and should remain disabled until provider credentials and consent policy are ready.
+- `/dashboard` is an internal token-gated scaffold, not a full identity/auth product.
+- Final public business email aliases and legal entity/contact details still require owner/legal confirmation.
+- Cloudflare Email Routing is documented as an owner dashboard setup, not configured from code.
 
 ## Verification record
 
-This section is updated after the local verification run.
+This audit should be updated after each final verification run.
 
-| Check | Result |
+| Check | Latest result |
 |---|---|
-| `pnpm install` | **Pass** — workspace installed with pnpm 10.12.4 via Corepack |
-| `pnpm typecheck` | **Pass** — shared, web, generated Worker bindings, and Worker TypeScript |
-| `pnpm build` | **Pass** — Vite production output and Wrangler dry-run bundle |
-| `pnpm db:migrate:local` | **Pass** — both migrations applied successfully |
-| Worker `/api/health` | **Pass** — correct service payload and ISO timestamp |
-| Worker `POST /api/leads` into local D1 | **Pass** — browser form success plus verified D1 row |
-| CORS / throttling / admin-off checks | **Pass** — allowed preflight 204, disallowed origin 403, duplicate 429, unset admin token 404 |
-| Worker startup profile | **Pass** — Wrangler startup analysis completed; temporary profile removed |
-| Desktop visual check | **Pass** — Persian hero, navigation, banner, and hierarchy reviewed at 1280 × 720 |
-| Mobile visual/navigation check | **Pass** — 390 × 844 layout, menu, language switch, RTL/LTR direction |
-| Browser console | **Pass** — no warnings or errors after final navigation checks |
-| Pages/Worker config separation | **Pass** — recursive typecheck/build and local D1 migration use the correct explicit configs |
-
-## Design revamp
-
-Completed on 24 June 2026 as a frontend-only pass. The Pages/Worker Wrangler split, Worker API, D1 migrations, form submission logic, routes, SEO, robots, and sitemap were deliberately left intact.
-
-### What changed
-
-- Rebuilt the homepage as one cinematic scroll narrative: opening scene, brand difference, documentary family cast, Spain/Argentina destinations, pathways, presence, packages, qualification, real-life media, trust boundaries, and final CTA.
-- Reworked the hero around the existing `banner.png` so its embedded typography remains legible, with the narrative and four CTA routes placed in a separate dark panel.
-- Replaced the page-like header with a floating, sticky platform header and one-page story anchors; the mobile menu keeps its language switcher and assessment CTA visible.
-- Expanded the lived family story to cover business/financial/family settlement decisions, Dentistry at the Complutense University of Madrid, and the ASIR/IT/cybersecurity/Deloitte path.
-- Added a clearly framed presence network on the homepage and contact page for **Kanghan / کنگان**, **Shiraz / شیراز**, and **Madrid / مادرید** without presenting invented corporate branches.
-- Changed package groups into progressive-disclosure panels so the full service range remains available without turning the homepage into a wall of cards.
-- Added CSS-only cinematic motion with a reduced-motion fallback, stronger Spain/Argentina color worlds, documentary cards, view-linked reveals, and a theatrical final assessment scene.
-- Added Vazirmatn and Manrope font loading while retaining safe system fallbacks.
-
-### Inspiration translated
-
-- `shottadoj.org`: institutional dark polish, disciplined CTA treatment, and compact navigation.
-- `rockstargames.com/VI`: scene changes, cinematic contrast, and restrained theatrical scale only; no layout, artwork, or branding was copied.
-- `stinwo.es`: relocation-service clarity, readable pathways, and prominent consultation flow.
-- Persian market references in the brief informed RTL hierarchy, trust cues, and visible qualification/contact actions; no source design was copied.
-
-### Visual checks completed
-
-- Desktop Persian homepage at 1440 × 1000, including hero, documentary cast, destinations, presence map, and packages.
-- Mobile Persian homepage at 390 × 844 with RTL, compact header, clean hamburger menu, CTA visibility, and zero horizontal overflow.
-- Mobile FA → EN language switch, including RTL-to-LTR document direction and closed-menu state.
-- Persian `/fa/apply` form and its existing fields/submission UI.
-- Persian `/fa/services/spain/student-visa` service page.
-- Persian contact presence section with Kanghan, Shiraz, and Madrid.
-- Homepage anchor landing offsets below the floating header and browser console warnings/errors.
-
-### Later improvements
-
-- Replace abstract documentary monograms with an owner-approved family photo/video library when consented, optimized source assets are available.
-- Consider self-hosting the webfonts if the owner wants to remove the external Google Fonts request.
-- Add real editorial articles/video episodes as the content calendar is produced; current media cards remain the launch slate.
-- Run production Core Web Vitals and accessibility audits after the first Cloudflare Pages deployment and real-domain caching are active.
+| `pnpm install` | **Pass** — lockfile already current, pnpm 10.12.4 |
+| `pnpm -r --if-present typecheck` | **Pass** — shared, web, Worker bindings/typecheck |
+| `pnpm -r --if-present build` | **Pass** — web production build and Worker dry-run bundle |
+| `pnpm db:migrate:local` | **Pass** — `0003_lead_automation_platform.sql` applied locally |
+| `git diff --check` | **Pass** — no whitespace errors |
+| Local Worker smoke tests | **Pass** — health, contact, lead, quiz, newsletter, guide unlock, and admin no-token `401` |
+| Admin with token smoke test | **Skipped** — no local `ADMIN_API_TOKEN` configured and no fake token was created |
+| Commit | Pending |
+| Push | Pending |
 
 ## Launch decision
 
-**Code status:** verified and domain-ready.
-**Public launch status:** blocked only on owner-side domain/Cloudflare actions and final legal/contact values listed above.
+Code status is production/domain-ready once the verification record passes. Public launch is still gated on the owner-side Cloudflare, D1, Resend, deployment, and domain attachment steps above.

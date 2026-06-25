@@ -1,8 +1,20 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import type { LeadPayload, Locale } from "@vida-familia/shared";
-import { CheckCircle2, LoaderCircle, Send } from "lucide-react";
+import { CheckCircle2, LoaderCircle, MessageCircle, Send } from "lucide-react";
+import { apiPost, publicWhatsAppLink } from "../lib/api";
+import { trackEvent } from "../lib/analytics";
+import { TurnstileWidget } from "./TurnstileWidget";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
+type LeadResult = {
+  ok: true;
+  lead_id: string;
+  reference_code: string;
+  priority: string;
+  user_status?: string;
+  recommended_next_step: string;
+  message: string;
+};
 
 const labels = {
   fa: {
@@ -44,7 +56,11 @@ export function LeadForm({ locale }: { locale: Locale }) {
   const l = labels[locale];
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const [result, setResult] = useState<LeadResult | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
+  const handleTurnstileToken = useCallback((token: string) => setTurnstileToken(token), []);
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -52,34 +68,33 @@ export function LeadForm({ locale }: { locale: Locale }) {
     if (!form.reportValidity()) return;
 
     const formData = new FormData(form);
-    const payload: LeadPayload = {
+    const payload: LeadPayload & { source: string; turnstileToken?: string } = {
       locale,
       full_name: value(formData, "full_name"), email: value(formData, "email"), whatsapp: value(formData, "whatsapp"), current_country: value(formData, "current_country"),
       target_country: value(formData, "target_country") as LeadPayload["target_country"], desired_path: value(formData, "desired_path") as LeadPayload["desired_path"], family_size: value(formData, "family_size"),
       budget_range: value(formData, "budget_range"), income_range: value(formData, "income_range"), education_background: value(formData, "education_background"), professional_background: value(formData, "professional_background"),
       timeline: value(formData, "timeline"), documents_ready: value(formData, "documents_ready"), main_concern: value(formData, "main_concern"), message: value(formData, "message"), consent: formData.get("consent") === "on", website: value(formData, "website"),
+      source: "apply_form",
+      turnstileToken,
     };
 
     if (!payload.consent) { setStatus("error"); setErrorMessage(l.consent); return; }
     setStatus("submitting"); setErrorMessage("");
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 15_000);
+    setResult(null);
+    trackEvent("apply_start", { target_country: payload.target_country, desired_path: payload.desired_path }, locale);
     try {
-      const baseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8787").replace(/\/$/, "");
-      const response = await fetch(`${baseUrl}/api/leads`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), signal: controller.signal });
-      const data: unknown = await response.json().catch(() => null);
-      if (!response.ok) {
-        const message = data && typeof data === "object" && "error" in data && typeof data.error === "string" ? data.error : l.error;
-        throw new Error(message);
-      }
+      const data = await apiPost<LeadResult>("/api/leads", payload);
+      setResult(data);
       setStatus("success");
+      trackEvent("apply_submit", { reference_code: data.reference_code, priority: data.priority }, locale);
       formRef.current?.reset();
     } catch (error) {
       setStatus("error");
       const safeMessage = error instanceof Error && error.name !== "AbortError" && !(error instanceof TypeError) ? error.message : l.error;
       setErrorMessage(safeMessage);
     } finally {
-      window.clearTimeout(timeoutId);
+      setTurnstileToken("");
+      setTurnstileResetSignal((value) => value + 1);
     }
   }
 
@@ -104,8 +119,9 @@ export function LeadForm({ locale }: { locale: Locale }) {
           <label className="form-field"><span>{l.fields.message}</span><textarea name="message" rows={4} maxLength={3000} /></label>
         </div></fieldset>
         <label className="consent-field"><input type="checkbox" name="consent" required /><span>{l.consent}</span></label>
+        <TurnstileWidget onToken={handleTurnstileToken} resetSignal={turnstileResetSignal} />
         <p className="form-privacy">{l.privacy}</p>
-        {status === "success" ? <div className="form-message success" role="status"><CheckCircle2 />{l.success}</div> : null}
+        {status === "success" ? <div className="form-message success form-result" role="status"><CheckCircle2 /><div><p>{result?.message || l.success}</p>{result ? <dl><div><dt>{locale === "fa" ? "کد پیگیری" : locale === "es" ? "Referencia" : "Reference"}</dt><dd>{result.reference_code}</dd></div><div><dt>{locale === "fa" ? "وضعیت اولیه" : locale === "es" ? "Estado inicial" : "Initial status"}</dt><dd>{result.user_status || (locale === "fa" ? "قابل بررسی" : locale === "es" ? "Listo para revisión" : "Ready for review")}</dd></div><div><dt>{locale === "fa" ? "مرحله بعد" : locale === "es" ? "Siguiente paso" : "Next step"}</dt><dd>{result.recommended_next_step}</dd></div></dl> : null}{result && publicWhatsAppLink(`Vida Familia ${result.reference_code}`) ? <a className="text-link" href={publicWhatsAppLink(`Vida Familia ${result.reference_code}`) ?? undefined} target="_blank" rel="noreferrer"><MessageCircle size={17} />{locale === "fa" ? "ارسال کد در واتس‌اپ" : locale === "es" ? "Enviar referencia por WhatsApp" : "Send reference by WhatsApp"}</a> : null}</div></div> : null}
         {status === "error" ? <div className="form-message error" role="alert">{errorMessage || l.error}</div> : null}
         <button className="button button-gold form-submit" type="submit" disabled={status === "submitting"}>{status === "submitting" ? <LoaderCircle className="spin" /> : <Send size={18} />}{l.submit}</button>
       </form>
