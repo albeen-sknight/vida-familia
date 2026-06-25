@@ -7,15 +7,17 @@ Last updated: 25 June 2026
 | Item | Status |
 |---|---|
 | `vidafamilia.es` purchase | **Purchased at GoDaddy** |
-| GoDaddy registration | **May still be processing** — GoDaddy showed “¡vidafamilia.es es tuyo!” and “Registro del dominio en curso.” |
-| Cloudflare zone | **Pending owner action** — add `vidafamilia.es` to Cloudflare if it is not already present |
-| GoDaddy nameservers | **Pending owner action** — replace GoDaddy nameservers with the nameservers Cloudflare assigns for this zone |
-| Cloudflare activation | **Pending** until nameservers propagate and Cloudflare marks the zone Active |
-| Pages/Worker custom domains | **Pending** until deployment and Cloudflare activation |
-| GitHub repository | `https://github.com/albeen-sknight/vida-familia` |
-| D1 database | **Pending owner action** — create `vida-familia-db`, then paste its real `database_id` into `wrangler.worker.toml` |
+| GoDaddy nameservers | **Set to Cloudflare** — `hayes.ns.cloudflare.com`, `novalee.ns.cloudflare.com` |
+| Cloudflare activation | **May still be propagating** — do not assume live until Cloudflare shows **Active** |
+| GitHub repository | **Pushed to origin/main** — latest D1 config commit `551cea4 Configure production D1 database` |
+| D1 database | **Created and migrated** — `vida-familia-db`, region `WEUR`, ID `8efefb70-f96c-4fc6-b525-2b0300528b2a` |
+| Worker deployment | **Deployed** — `vida-familia-api`, version `bdd5c15e-00c9-4abf-ab7d-c84a217f26c1` |
+| Worker temporary URL | `https://vida-familia-api.natsu-dragneel13576.workers.dev` |
+| Pages deployment | **Needs check** — project `vida-familia-web`, temporary URL `https://vida-familia-web.pages.dev` |
+| Pages/Worker custom domains | **Pending** until Cloudflare activation |
+| Resend/email secrets | **Pending owner action** |
 
-Do not treat “domain purchased” as “site live.” The site becomes live only after Cloudflare activation, Worker/Pages deployment, and custom-domain attachment.
+Do not treat “domain purchased” or “Worker deployed” as “site live.” The public site becomes live only after Cloudflare activation, latest Pages deployment, and custom-domain attachment.
 
 ## Fixed project values
 
@@ -26,7 +28,12 @@ Do not treat “domain purchased” as “site live.” The site becomes live on
 - Cloudflare Pages project: `vida-familia-web`
 - Cloudflare Worker: `vida-familia-api`
 - Cloudflare D1 database: `vida-familia-db`
+- D1 database ID: `8efefb70-f96c-4fc6-b525-2b0300528b2a`
+- D1 database region: `WEUR`
 - D1 binding: `DB`
+- Worker temporary URL: `https://vida-familia-api.natsu-dragneel13576.workers.dev`
+- Worker version ID: `bdd5c15e-00c9-4abf-ab7d-c84a217f26c1`
+- Pages temporary URL: `https://vida-familia-web.pages.dev`
 - GitHub repository: `https://github.com/albeen-sknight/vida-familia`
 - Local frontend: `http://localhost:5173`
 - Local Worker API: `http://localhost:8787`
@@ -44,6 +51,9 @@ Config ownership is intentionally split:
 - Worker API route and CORS allowlist prepared for `api.vidafamilia.es`.
 - Cloudflare Pages project settings documented.
 - D1 migrations prepared, including lead automation, contact messages, consultation requests, newsletter, quiz, guide unlock, timeline, and analytics tables.
+- Production D1 database created and configured in `wrangler.worker.toml`.
+- Production D1 migrations applied successfully: `0001_initial_schema.sql`, `0002_seed_catalog.sql`, and `0003_lead_automation_platform.sql`.
+- Worker `vida-familia-api` deployed successfully with D1 binding `env.DB → vida-familia-db`.
 - Environment examples prepared without secrets: `.env.example` and `.dev.vars.example`.
 - Resend email integration prepared, but inactive until real secrets are set.
 - Optional Turnstile integration prepared, but inactive until real site/secret keys are set.
@@ -52,21 +62,16 @@ Config ownership is intentionally split:
 
 ## Still requires owner action
 
-1. Wait for GoDaddy registration to complete if the domain is still processing.
-2. Add `vidafamilia.es` to Cloudflare under account `ca7869ce6645cfb64973a55c625e1419`.
-3. Copy the exact Cloudflare nameservers assigned to `vidafamilia.es`.
-4. Replace the GoDaddy nameservers with those Cloudflare nameservers.
-5. Wait for Cloudflare to mark the zone **Active**.
-6. Create D1 database `vida-familia-db`.
-7. Paste the real D1 `database_id` into `wrangler.worker.toml`; do not invent one.
-8. Set Cloudflare Pages production environment variables.
-9. Set Worker secrets/vars for Resend/admin notifications.
-10. Apply production D1 migrations.
-11. Deploy Worker `vida-familia-api`.
-12. Attach `api.vidafamilia.es` to the Worker.
-13. Create/connect Cloudflare Pages project `vida-familia-web` if not already connected.
-14. Attach `vidafamilia.es` and `www.vidafamilia.es` to Pages.
-15. Submit a real production test lead and verify the row in D1.
+1. Wait for Cloudflare to mark `vidafamilia.es` **Active** if activation is still propagating.
+2. Check Cloudflare Pages project `vida-familia-web` and make sure the latest `origin/main` deployment succeeds.
+3. Set Cloudflare Pages production environment variables.
+4. Attach `api.vidafamilia.es` to Worker `vida-familia-api` after the zone is Active.
+5. Attach `vidafamilia.es` and `www.vidafamilia.es` to Pages after the zone is Active.
+6. Configure Resend and Worker email/admin secrets.
+7. Test Worker health at `https://vida-familia-api.natsu-dragneel13576.workers.dev/api/health`.
+8. Submit a real production test lead after Pages/API are connected.
+9. Verify the lead row exists in production D1.
+10. Verify admin/applicant confirmation emails after Resend secrets are configured.
 
 ## Cloudflare Pages production variables
 
@@ -131,22 +136,14 @@ Turnstile is optional. When `VITE_TURNSTILE_SITE_KEY` and `TURNSTILE_SECRET_KEY`
 
 SMS/WhatsApp provider logic is prepared but disabled by default. Do not enable it until real Twilio or WhatsApp Cloud API credentials exist and the owner has decided the operational message policy.
 
-## Owner launch command sequence
+## Owner launch sequence from current state
 
-After Cloudflare is active and the real D1 ID is in `wrangler.worker.toml`:
-
-```bash
-pnpm install
-pnpm typecheck
-pnpm build
-pnpm db:migrate:prod
-pnpm deploy:worker
-```
-
-Then attach:
+D1 creation, production migrations, and Worker deployment are already complete. From here:
 
 - `api.vidafamilia.es` to Worker `vida-familia-api`.
 - `vidafamilia.es` to Pages project `vida-familia-web`.
 - `www.vidafamilia.es` to Pages project `vida-familia-web`.
 
-Finally, submit a production test lead and verify D1.
+Before custom-domain attachment, use `https://vida-familia-api.natsu-dragneel13576.workers.dev` for API testing and `https://vida-familia-web.pages.dev` for Pages testing.
+
+Finally, submit a production test lead, verify D1, and verify emails after Resend is configured.

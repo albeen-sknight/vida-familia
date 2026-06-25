@@ -2,7 +2,7 @@
 
 Vida Familia is a Persian-first, family-led relocation, education, lifestyle, and advisory platform for Spain and Argentina. This repository contains a multilingual React site, a Cloudflare Worker lead API, a D1 schema, and the deployment handoff for `vidafamilia.es`.
 
-The domain **has been purchased from GoDaddy**. GoDaddy showed “¡vidafamilia.es es tuyo!” and “Registro del dominio en curso,” so registration may still be processing. Cloudflare activation is still pending: the owner still needs to add `vidafamilia.es` to Cloudflare, copy the assigned Cloudflare nameservers, replace the GoDaddy nameservers, wait for Cloudflare to mark the zone Active, and then attach the Pages/Worker custom domains.
+The domain **has been purchased from GoDaddy** and GoDaddy nameservers are set to Cloudflare: `hayes.ns.cloudflare.com` and `novalee.ns.cloudflare.com`. Public DNS/Cloudflare activation may still be propagating, so do not assume `vidafamilia.es` is active until Cloudflare shows the zone as **Active**. Pages/Worker custom domains should be attached only after that.
 
 ## Architecture
 
@@ -27,6 +27,20 @@ Production plan:
 - Pages project: `vida-familia-web`
 - Worker: `vida-familia-api`
 - D1 database/binding: `vida-familia-db` / `DB`
+- Production D1 database ID: `8efefb70-f96c-4fc6-b525-2b0300528b2a`
+- Production D1 region: `WEUR`
+- Worker temporary URL: `https://vida-familia-api.natsu-dragneel13576.workers.dev`
+- Current deployed Worker version ID: `bdd5c15e-00c9-4abf-ab7d-c84a217f26c1`
+
+## Current deployment status
+
+- GitHub `origin/main` includes `551cea4 Configure production D1 database`.
+- Production D1 database `vida-familia-db` has been created in region `WEUR`.
+- `wrangler.worker.toml` contains the real database ID `8efefb70-f96c-4fc6-b525-2b0300528b2a`.
+- Production D1 migrations have been applied successfully: `0001_initial_schema.sql`, `0002_seed_catalog.sql`, and `0003_lead_automation_platform.sql`.
+- Worker `vida-familia-api` has been deployed successfully and has D1 binding `env.DB → vida-familia-db`.
+- Until `api.vidafamilia.es` is attached, use `https://vida-familia-api.natsu-dragneel13576.workers.dev`.
+- Resend, Turnstile, and SMS/WhatsApp providers are not configured yet.
 
 ## Requirements
 
@@ -159,7 +173,22 @@ Local:
 pnpm db:migrate:local
 ```
 
-Remote (after the owner creates D1 and replaces the placeholder ID in `wrangler.worker.toml`):
+Production remote D1 is already created and configured in `wrangler.worker.toml`:
+
+```text
+database_name = vida-familia-db
+database_id = 8efefb70-f96c-4fc6-b525-2b0300528b2a
+binding = DB
+region = WEUR
+```
+
+Remote migrations have already been applied successfully:
+
+- `0001_initial_schema.sql`
+- `0002_seed_catalog.sql`
+- `0003_lead_automation_platform.sql`
+
+Use these commands only when checking or applying future migrations:
 
 ```bash
 pnpm exec wrangler d1 migrations list vida-familia-db --remote -c wrangler.worker.toml
@@ -238,7 +267,21 @@ Root `wrangler.toml` contains only the Pages project name, compatibility date, a
 
 ## Worker deployment
 
-After the D1 ID is in `wrangler.worker.toml` and migrations are applied:
+Worker `vida-familia-api` has already been deployed with D1 binding `env.DB → vida-familia-db`.
+
+Current temporary Worker URL:
+
+```text
+https://vida-familia-api.natsu-dragneel13576.workers.dev
+```
+
+Current deployed Worker version ID:
+
+```text
+bdd5c15e-00c9-4abf-ab7d-c84a217f26c1
+```
+
+For future Worker deployments:
 
 ```bash
 pnpm exec wrangler login
@@ -247,7 +290,7 @@ pnpm deploy:worker:dry
 pnpm deploy:worker
 ```
 
-Test the returned `workers.dev` URL first, then attach `api.vidafamilia.es` under the Worker's Domains & Routes settings.
+Test the temporary Worker URL first, then attach `api.vidafamilia.es` under the Worker's Domains & Routes settings after the Cloudflare zone is Active.
 
 Useful local API tests after `pnpm dev:worker` and `pnpm db:migrate:local`:
 
@@ -276,15 +319,12 @@ Prepared in code:
 
 Requires owner action:
 
-- Wait for GoDaddy registration to complete if still processing
-- Add `vidafamilia.es` to Cloudflare
-- Copy Cloudflare-assigned nameservers
-- Replace GoDaddy nameservers with the Cloudflare nameservers
 - Wait for Cloudflare activation
-- Create D1, paste its real ID, migrate, and deploy the Worker
+- Check Cloudflare Pages deployment for latest `origin/main`
+- Attach `api.vidafamilia.es` to Worker `vida-familia-api`
+- Attach `vidafamilia.es` and `www.vidafamilia.es` to Pages project `vida-familia-web`
 - Configure Resend sender/domain and Worker email/admin secrets
 - Set/confirm Pages production variables and wait for the newest Git deployment
-- Attach apex, WWW, and API custom domains
 - Submit a production test lead and verify its D1 row
 
 See [PROJECT_CONFIG_FOR_OWNER.md](./PROJECT_CONFIG_FOR_OWNER.md) and [CLOUDFLARE_DEPLOYMENT_CHECKLIST.md](./CLOUDFLARE_DEPLOYMENT_CHECKLIST.md) for exact owner steps.
@@ -297,7 +337,7 @@ The included legal pages are production-oriented launch drafts, not legal advice
 
 - **Missing images:** confirm the three PNG files exist in `apps/web/public/assets/` with exact lowercase names.
 - **Pages route returns 404:** confirm `apps/web/public/_redirects` reached `dist/_redirects`; it must contain `/* /index.html 200`.
-- **D1 database ID error:** create `vida-familia-db`, replace the placeholder in `wrangler.worker.toml`, and retry remote commands.
+- **D1 database ID error:** confirm `wrangler.worker.toml` contains production database ID `8efefb70-f96c-4fc6-b525-2b0300528b2a` and account `ca7869ce6645cfb64973a55c625e1419`.
 - **Pages rejects Worker fields:** confirm root `wrangler.toml` is Pages-only; Worker fields belong only in `wrangler.worker.toml`.
 - **CORS error:** ensure the browser origin is in `ALLOWED_ORIGINS`; do not use a trailing slash in an origin.
 - **Lead submission fails locally:** run the Worker, apply local migrations, and confirm `VITE_API_BASE_URL=http://localhost:8787` in an untracked local env override if needed.

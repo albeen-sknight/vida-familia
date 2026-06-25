@@ -18,7 +18,7 @@ Target URLs:
 - [x] D1 migration files prepared, including lead automation and admin/business-intelligence tables
 - [x] Environment examples prepared without real secrets
 - [x] Resend, Turnstile, and disabled-by-default SMS/WhatsApp behavior documented
-- [ ] Confirm this latest commit is pushed to `main`
+- [x] Latest D1 configuration commit pushed to `origin/main`: `551cea4 Configure production D1 database`
 
 Local preflight:
 
@@ -33,60 +33,35 @@ git diff --check
 ## Phase 2 — GoDaddy domain registration
 
 - [x] `vidafamilia.es` has been purchased from GoDaddy
-- [ ] Wait for GoDaddy registration to complete if it still shows “Registro del dominio en curso.”
+- [x] GoDaddy nameservers are set to Cloudflare: `hayes.ns.cloudflare.com`, `novalee.ns.cloudflare.com`
+- [ ] Wait for public DNS/Cloudflare activation to finish if still propagating
 - [ ] Do not attach production domains until Cloudflare activation is complete
 
-## Phase 3 — Add domain to Cloudflare
+## Phase 3 — Cloudflare activation
 
-Owner action:
+Current state:
 
-1. Open Cloudflare dashboard for account `ca7869ce6645cfb64973a55c625e1419`.
-2. Add site/zone `vidafamilia.es`.
-3. Let Cloudflare scan DNS.
-4. Copy the exact two Cloudflare nameservers assigned to the zone.
-5. Keep those nameservers visible for the GoDaddy step.
+- [x] Cloudflare nameservers are known and set at GoDaddy
+- [ ] Return to Cloudflare and wait until `vidafamilia.es` is **Active**
+- [ ] Do not attach `vidafamilia.es`, `www.vidafamilia.es`, or `api.vidafamilia.es` before the zone is Active
 
-## Phase 4 — Replace nameservers at GoDaddy
+## Phase 4 — D1 production database
 
-Owner action:
+Completed:
 
-1. Open GoDaddy domain management for `vidafamilia.es`.
-2. Replace GoDaddy/default nameservers with the exact two Cloudflare nameservers.
-3. Save the change.
-4. Wait for propagation.
-5. Return to Cloudflare and wait until `vidafamilia.es` is **Active**.
+- [x] D1 database created: `vida-familia-db`
+- [x] D1 region: `WEUR`
+- [x] Real database ID configured in `wrangler.worker.toml`: `8efefb70-f96c-4fc6-b525-2b0300528b2a`
+- [x] Binding remains `DB`
+- [x] Worker binding confirmed as `env.DB (vida-familia-db)`
 
-## Phase 5 — Create D1
+Production migrations were run successfully:
 
-Owner action after Wrangler login:
+- [x] `0001_initial_schema.sql`
+- [x] `0002_seed_catalog.sql`
+- [x] `0003_lead_automation_platform.sql`
 
-```bash
-pnpm exec wrangler login
-pnpm exec wrangler whoami
-pnpm exec wrangler d1 create vida-familia-db -c wrangler.worker.toml
-```
-
-- [ ] Confirm Wrangler is using account `ca7869ce6645cfb64973a55c625e1419`
-- [ ] Copy the returned real `database_id`
-- [ ] Replace `REPLACE_WITH_REAL_D1_DATABASE_ID_AFTER_RUNNING_WRANGLER_D1_CREATE` in `wrangler.worker.toml`
-- [ ] Keep binding name `DB`
-- [ ] Keep database name `vida-familia-db`
-
-Apply migrations:
-
-```bash
-pnpm db:migrate:local
-pnpm exec wrangler d1 migrations list vida-familia-db --remote -c wrangler.worker.toml
-pnpm db:migrate:prod
-```
-
-Expected migrations include:
-
-- `0001_initial_schema.sql`
-- `0002_seed_catalog.sql`
-- `0003_lead_automation_platform.sql`
-
-## Phase 6 — Configure Worker secrets/vars
+## Phase 5 — Configure Worker secrets/vars
 
 Required for email/admin production behavior:
 
@@ -117,28 +92,34 @@ pnpm exec wrangler secret put WHATSAPP_TOKEN -c wrangler.worker.toml
 
 Do not pass secret values directly on the command line.
 
-## Phase 7 — Deploy Worker and attach API domain
+Resend is not configured yet. Email notifications will not send until `RESEND_API_KEY`, `FROM_EMAIL`, `ADMIN_NOTIFICATION_EMAILS`, and `ADMIN_API_TOKEN` are configured. Missing email config should not prevent D1 saves where the Worker is designed to return success after persistence.
 
-```bash
-pnpm deploy:worker:dry
-pnpm deploy:worker
-```
+## Phase 6 — Worker deployment and API domain
 
-Then:
+Completed:
 
-- [ ] Test `https://vida-familia-api.<your-workers-subdomain>.workers.dev/api/health`
-- [ ] Open Worker `vida-familia-api`
+- [x] `pnpm deploy:worker` ran successfully
+- [x] Worker deployed: `vida-familia-api`
+- [x] Worker temporary URL: `https://vida-familia-api.natsu-dragneel13576.workers.dev`
+- [x] Current Worker version ID: `bdd5c15e-00c9-4abf-ab7d-c84a217f26c1`
+- [x] Worker upload succeeded
+- [x] Worker has D1 binding `env.DB → vida-familia-db`
+
+Still to do after Cloudflare zone is Active:
+
+- [ ] Test `https://vida-familia-api.natsu-dragneel13576.workers.dev/api/health`
 - [ ] Add custom domain `api.vidafamilia.es`
 - [ ] Wait for certificate/route activation
 - [ ] Test `https://api.vidafamilia.es/api/health`
 
-## Phase 8 — Configure Cloudflare Pages
+## Phase 7 — Configure Cloudflare Pages
 
-Create or confirm Pages project:
+Check or confirm Pages project:
 
 ```text
 Project name: vida-familia-web
 Repository: albeen-sknight/vida-familia
+Temporary URL: https://vida-familia-web.pages.dev
 Production branch: main
 Framework preset: React (Vite), Vite, or None
 Root directory: leave blank
@@ -160,11 +141,11 @@ Then:
 
 - [ ] Trigger/wait for a fresh production deployment from latest `main`
 - [ ] Test the `pages.dev` URL
-- [ ] Attach `vidafamilia.es`
-- [ ] Attach `www.vidafamilia.es`
+- [ ] Attach `vidafamilia.es` after Cloudflare zone is Active
+- [ ] Attach `www.vidafamilia.es` after Cloudflare zone is Active
 - [ ] Optionally redirect WWW to apex with a Cloudflare Redirect Rule
 
-## Phase 9 — Production tests
+## Phase 8 — Production tests
 
 - [ ] `https://vidafamilia.es`
 - [ ] `https://www.vidafamilia.es`
@@ -176,6 +157,7 @@ Then:
 - [ ] `https://vidafamilia.es/resources`
 - [ ] `https://vidafamilia.es/dashboard` shows token gate only
 - [ ] `https://api.vidafamilia.es/api/health`
+- [ ] `https://vida-familia-api.natsu-dragneel13576.workers.dev/api/health` until API custom domain is attached
 
 Submit test data:
 
@@ -185,6 +167,7 @@ Submit test data:
 - [ ] One guide unlock
 - [ ] One pathway quiz
 - [ ] Confirm admin/applicant emails arrive after Resend is configured
+- [ ] Confirm applicant confirmation email arrives after Resend is configured
 - [ ] Confirm SMS/WhatsApp is skipped while disabled
 
 Verify D1:

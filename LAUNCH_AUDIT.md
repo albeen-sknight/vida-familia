@@ -5,7 +5,7 @@ Target: production/domain-ready Vida Familia platform MVP
 
 ## Executive status
 
-The codebase is prepared for `vidafamilia.es`, `www.vidafamilia.es`, and `api.vidafamilia.es`. The domain `vidafamilia.es` has been purchased from GoDaddy, but GoDaddy registration may still be processing. Cloudflare activation is still pending and the owner still needs to add the domain to Cloudflare, replace GoDaddy nameservers with Cloudflare nameservers, create D1, set secrets, deploy, and attach custom domains.
+The codebase is prepared for `vidafamilia.es`, `www.vidafamilia.es`, and `api.vidafamilia.es`. The production D1 database has been created, configured, and migrated. The Worker has been deployed successfully and is available at `https://vida-familia-api.natsu-dragneel13576.workers.dev`. The domain `vidafamilia.es` has been purchased from GoDaddy and its nameservers are set to Cloudflare, but public DNS/Cloudflare activation may still be propagating. The remaining launch gates are Pages deployment verification, custom-domain attachment, Resend/admin secrets, and final production submission/email tests.
 
 ## Prepared in code
 
@@ -21,7 +21,8 @@ The codebase is prepared for `vidafamilia.es`, `www.vidafamilia.es`, and `api.vi
 | Resources | Ready | Guide unlock and newsletter capture forms |
 | Turnstile frontend | Ready | Optional `VITE_TURNSTILE_SITE_KEY`; no local-dev blocking |
 | Worker API | Ready | Public submit endpoints, admin endpoints, analytics endpoint |
-| D1 migrations | Ready | `0001`, `0002`, and `0003_lead_automation_platform.sql` |
+| D1 production | Deployed | `vida-familia-db`, WEUR, ID `8efefb70-f96c-4fc6-b525-2b0300528b2a`, migrations `0001`–`0003` applied |
+| Worker deployment | Deployed | `vida-familia-api`, version `bdd5c15e-00c9-4abf-ab7d-c84a217f26c1`, D1 binding `env.DB → vida-familia-db` |
 | Email behavior | Ready in code | Resend admin/applicant emails after D1 save; safe skip/failure logging without applicant-facing provider errors |
 | SMS/WhatsApp | Prepared/off | Provider abstraction exists; disabled unless explicitly configured |
 | Admin/stats | Ready in code | Bearer-token admin APIs plus lightweight `/dashboard` scaffold |
@@ -67,32 +68,55 @@ Available endpoints:
 - Tables: `contact_messages`, `consultation_requests`, `newsletter_subscribers`, `quiz_results`, `guide_unlocks`, `lead_timeline`, `analytics_events`
 - Indexes for lead lookup, admin filtering, contact/consultation/newsletter, guide unlock, quiz, and analytics reads
 
+Production D1 deployment record:
+
+- Database name: `vida-familia-db`
+- Database region: `WEUR`
+- Database ID: `8efefb70-f96c-4fc6-b525-2b0300528b2a`
+- Binding: `DB`
+- Worker binding: `env.DB (vida-familia-db)`
+- Latest D1 configuration commit pushed: `551cea4 Configure production D1 database`
+- Remote migrations applied successfully:
+  - `0001_initial_schema.sql`
+  - `0002_seed_catalog.sql`
+  - `0003_lead_automation_platform.sql`
+
+## Worker deployment audit
+
+- Worker name: `vida-familia-api`
+- Worker temporary URL: `https://vida-familia-api.natsu-dragneel13576.workers.dev`
+- Current Worker version ID: `bdd5c15e-00c9-4abf-ab7d-c84a217f26c1`
+- Deployment command completed: `pnpm deploy:worker`
+- Upload succeeded
+- D1 binding present: `env.DB → vida-familia-db`
+- API custom domain `api.vidafamilia.es` is still pending Cloudflare zone activation
+
 ## Domain status
 
 - Purchased: `vidafamilia.es`
 - Registrar: GoDaddy
 - Purchase message observed: “¡vidafamilia.es es tuyo!”
 - Registration message observed: “Registro del dominio en curso.”
-- Cloudflare activation: pending
+- GoDaddy nameservers: `hayes.ns.cloudflare.com`, `novalee.ns.cloudflare.com`
+- Cloudflare activation: may still be propagating; do not assume Active until shown in Cloudflare
 - Custom domains attached: not yet
 
 ## Still blocked on owner action
 
-1. Wait for GoDaddy registration to finish if it is still processing.
-2. Add `vidafamilia.es` to Cloudflare.
-3. Copy Cloudflare-assigned nameservers.
-4. Replace GoDaddy nameservers with the Cloudflare nameservers.
-5. Wait for Cloudflare to mark the zone Active.
-6. Create D1 database `vida-familia-db`.
-7. Paste real D1 `database_id` into `wrangler.worker.toml`.
-8. Set Pages production variables.
-9. Configure Resend and Worker secrets.
-10. Apply production migrations.
-11. Deploy Worker.
-12. Attach `api.vidafamilia.es`.
-13. Create/connect Pages project `vida-familia-web`.
-14. Attach `vidafamilia.es` and `www.vidafamilia.es`.
-15. Test real submissions into D1.
+1. Wait for Cloudflare to mark `vidafamilia.es` Active if DNS/activation is still propagating.
+2. Check Cloudflare Pages deployment for latest `origin/main`.
+3. Confirm Pages project `vida-familia-web` at `https://vida-familia-web.pages.dev`.
+4. Set/confirm Pages production environment variables.
+5. Attach `api.vidafamilia.es` to Worker `vida-familia-api` after zone activation.
+6. Attach `vidafamilia.es` and `www.vidafamilia.es` to Pages after zone activation.
+7. Configure Resend account/domain/sender.
+8. Add Worker secrets/vars: `RESEND_API_KEY`, `FROM_EMAIL=no-reply@vidafamilia.es`, `ADMIN_NOTIFICATION_EMAILS`, and `ADMIN_API_TOKEN`.
+9. Optionally configure Turnstile.
+10. Optionally configure SMS/WhatsApp providers; disabled by default for MVP.
+11. Test Worker health at `https://vida-familia-api.natsu-dragneel13576.workers.dev/api/health`.
+12. Submit a real test lead after Pages/API are connected.
+13. Verify the lead row exists in production D1.
+14. Verify admin and applicant confirmation emails after Resend secrets are configured.
 
 ## Known MVP limitations / intentional choices
 
@@ -117,8 +141,11 @@ This audit should be updated after each final verification run.
 | Local Worker smoke tests | **Pass** — health, contact, lead, quiz, newsletter, guide unlock, and admin no-token `401` |
 | Admin with token smoke test | **Skipped** — no local `ADMIN_API_TOKEN` configured and no fake token was created |
 | Feature commit | **Pass** — `1a3d01c` (`Add Vida Familia lead automation and admin APIs`) |
+| D1 config commit | **Pass** — `551cea4` (`Configure production D1 database`) pushed to `origin/main` |
+| Production D1 migrations | **Pass** — `0001`, `0002`, and `0003` applied remotely |
+| Worker deploy | **Pass** — `vida-familia-api` deployed at `https://vida-familia-api.natsu-dragneel13576.workers.dev` |
 | Push | **Pass** — `main` pushed to GitHub |
 
 ## Launch decision
 
-Code status is production/domain-ready once the verification record passes. Public launch is still gated on the owner-side Cloudflare, D1, Resend, deployment, and domain attachment steps above.
+Code, D1, and Worker status are production-ready. Public launch is still gated on Cloudflare zone activation, Pages deployment verification, custom-domain attachment, Resend/admin secret configuration, and final production form/email tests.
