@@ -30,7 +30,14 @@ type JsonRecord = Record<string, unknown>;
 const MAX_BODY_BYTES = 32 * 1024;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_PATTERN = /^\+?[0-9\s().-]{7,30}$/;
-const DEFAULT_ALLOWED_ORIGINS = "http://localhost:5173,https://vidafamilia.es,https://www.vidafamilia.es";
+const DEFAULT_ALLOWED_ORIGINS = [
+  "https://vida-familia-web.pages.dev",
+  "https://*.vida-familia-web.pages.dev",
+  "https://vidafamilia.es",
+  "https://www.vidafamilia.es",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
 const DEFAULT_SITE_URL = "https://vidafamilia.es";
 const DEFAULT_ADMIN_NOTIFICATION_EMAILS = [
   "albertosaeedi@gmail.com",
@@ -67,17 +74,39 @@ function normalizeLocale(input: unknown): Locale {
   return isLocale(value) ? value : "fa";
 }
 
-function allowedOrigins(env: Bindings): Set<string> {
-  return new Set((env.ALLOWED_ORIGINS ?? DEFAULT_ALLOWED_ORIGINS).split(",").map((origin) => origin.trim()).filter(Boolean));
+function allowedOriginPatterns(env: Bindings): string[] {
+  const configured = (env.ALLOWED_ORIGINS ?? "").split(",").map((origin) => origin.trim()).filter(Boolean);
+  return [...new Set([...DEFAULT_ALLOWED_ORIGINS, ...configured])];
+}
+
+function matchesOriginPattern(origin: string, pattern: string): boolean {
+  if (origin === pattern) return true;
+  if (!pattern.includes("*.")) return false;
+
+  try {
+    const originUrl = new URL(origin);
+    const patternUrl = new URL(pattern.replace("*.", ""));
+    const suffix = `.${patternUrl.hostname}`;
+    return originUrl.protocol === patternUrl.protocol
+      && originUrl.port === patternUrl.port
+      && originUrl.hostname.endsWith(suffix)
+      && originUrl.hostname !== patternUrl.hostname;
+  } catch {
+    return false;
+  }
+}
+
+function isOriginAllowed(origin: string, env: Bindings): boolean {
+  return allowedOriginPatterns(env).some((pattern) => matchesOriginPattern(origin, pattern));
 }
 
 function corsHeaders(request: Request, env: Bindings): Headers {
   const origin = request.headers.get("Origin");
   const headers = new Headers({ Vary: "Origin" });
-  if (origin && allowedOrigins(env).has(origin)) {
+  if (origin && isOriginAllowed(origin, env)) {
     headers.set("Access-Control-Allow-Origin", origin);
-    headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
-    headers.set("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    headers.set("Access-Control-Allow-Methods", "GET,POST,PATCH,OPTIONS");
+    headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
     headers.set("Access-Control-Max-Age", "86400");
   }
   return headers;
@@ -91,7 +120,7 @@ function withCors(response: Response, request: Request, env: Bindings): Response
 
 function assertOriginAllowed(request: Request, env: Bindings): void {
   const origin = request.headers.get("Origin");
-  if (origin && !allowedOrigins(env).has(origin)) throw new ApiError(403, "Origin not allowed");
+  if (origin && !isOriginAllowed(origin, env)) throw new ApiError(403, "Origin not allowed");
 }
 
 function assertJsonRequest(request: Request): void {
