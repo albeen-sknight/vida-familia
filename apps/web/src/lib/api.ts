@@ -1,4 +1,22 @@
-export const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8787").replace(/\/$/, "");
+const PRODUCTION_API_BASE_URL = "https://vida-familia-api.natsu-dragneel13576.workers.dev";
+const DEV_API_BASE_URL = "http://localhost:8787";
+
+function cleanBaseUrl(url: string): string {
+  return url.trim().replace(/\/$/, "");
+}
+
+export function resolveApiBaseUrl(): string {
+  const configured = import.meta.env.VITE_API_BASE_URL?.trim();
+  if (configured) return cleanBaseUrl(configured);
+  if (import.meta.env.DEV) return DEV_API_BASE_URL;
+  return PRODUCTION_API_BASE_URL;
+}
+
+export const apiBaseUrl = resolveApiBaseUrl();
+
+if (import.meta.env.DEV) {
+  console.info("[Vida Familia] API base URL:", apiBaseUrl);
+}
 
 export async function apiPost<T>(path: string, payload: unknown, timeoutMs = 15_000): Promise<T> {
   const controller = new AbortController();
