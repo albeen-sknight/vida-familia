@@ -1059,3 +1059,104 @@ body { background: #020812; }
 @media (prefers-reduced-motion: reduce) {
   .scene-reveal, .reveal-on-scroll, .scene-reveal.is-visible, .reveal-on-scroll.is-visible, .hero-image { opacity: 1 !important; transform: none !important; filter: none !important; transition: none !important; animation: none !important; }
 }
+
+/* Cinematic destination artwork layers */
+.destination-card {
+  isolation: isolate;
+  background-color: #020812;
+}
+
+.destination-card::before,
+.destination-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.destination-card::before {
+  z-index: 0;
+  background-image: var(--destination-art);
+  background-position: var(--destination-art-position, center);
+  background-size: cover;
+  background-repeat: no-repeat;
+  filter: saturate(1.04) contrast(1.06) brightness(.96);
+  transform: scale(1.015);
+}
+
+.destination-card::after {
+  z-index: 1;
+  background:
+    radial-gradient(circle at var(--destination-glow-x, 54%) 20%, var(--destination-glow, rgba(241,191,0,.22)), transparent 28%),
+    linear-gradient(90deg, rgba(2,8,18,.72) 0%, rgba(2,8,18,.36) 42%, rgba(2,8,18,.14) 72%, rgba(2,8,18,.42) 100%),
+    linear-gradient(180deg, rgba(2,8,18,.08) 0%, rgba(2,8,18,.28) 46%, rgba(2,8,18,.92) 100%);
+  box-shadow: inset 0 0 100px rgba(0,0,0,.7);
+}
+
+.destination-spain {
+  --destination-art: url("/assets/destination-spain-cinematic.png");
+  --destination-art-position: 45% center;
+  --destination-glow: rgba(241,191,0,.2);
+  --destination-glow-x: 50%;
+}
+
+.destination-argentina {
+  --destination-art: url("/assets/destination-argentina-cinematic.png");
+  --destination-art-position: 44% center;
+  --destination-glow: rgba(117,170,219,.24);
+  --destination-glow-x: 52%;
+}
+
+.destination-map {
+  z-index: 2;
+  opacity: .42;
+  background: rgba(2,8,18,.12);
+  backdrop-filter: blur(1px);
+}
+
+.destination-content {
+  z-index: 3;
+  background:
+    linear-gradient(90deg, rgba(2,8,18,.42), rgba(2,8,18,.14) 56%, transparent),
+    linear-gradient(180deg, transparent 12%, rgba(4,13,24,.16) 45%, rgba(4,13,24,.92) 100%);
+  text-shadow: 0 2px 18px rgba(0,0,0,.45);
+}
+
+[dir="rtl"] .destination-card::after {
+  background:
+    radial-gradient(circle at var(--destination-glow-x, 54%) 20%, var(--destination-glow, rgba(241,191,0,.22)), transparent 28%),
+    linear-gradient(270deg, rgba(2,8,18,.74) 0%, rgba(2,8,18,.38) 42%, rgba(2,8,18,.16) 72%, rgba(2,8,18,.42) 100%),
+    linear-gradient(180deg, rgba(2,8,18,.08) 0%, rgba(2,8,18,.28) 46%, rgba(2,8,18,.92) 100%);
+}
+
+[dir="rtl"] .destination-content {
+  background:
+    linear-gradient(270deg, rgba(2,8,18,.46), rgba(2,8,18,.16) 56%, transparent),
+    linear-gradient(180deg, transparent 12%, rgba(4,13,24,.16) 45%, rgba(4,13,24,.92) 100%);
+}
+
+.destination-content > p:not(.eyebrow),
+.destination-content li {
+  color: rgba(248,250,252,.82);
+}
+
+@media (max-width: 720px) {
+  .destination-card::before {
+    background-position: var(--destination-art-mobile-position, var(--destination-art-position, center));
+  }
+
+  .destination-spain {
+    --destination-art-mobile-position: 42% center;
+  }
+
+  .destination-argentina {
+    --destination-art-mobile-position: 38% center;
+  }
+
+  .destination-card::after {
+    background:
+      radial-gradient(circle at var(--destination-glow-x, 50%) 18%, var(--destination-glow, rgba(241,191,0,.18)), transparent 24%),
+      linear-gradient(90deg, rgba(2,8,18,.76), rgba(2,8,18,.32) 58%, rgba(2,8,18,.54)),
+      linear-gradient(180deg, rgba(2,8,18,.18) 0%, rgba(2,8,18,.42) 42%, rgba(2,8,18,.94) 100%);
+  }
+}
