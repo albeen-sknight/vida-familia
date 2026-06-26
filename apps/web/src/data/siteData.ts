@@ -32,7 +32,7 @@ export const familyMembers = [
     initials: "OD",
     image: "/assets/team/amir-saeedi.jpg",
     imageAlt: "Amir Saeedi",
-    imagePosition: "50% 34%",
+    imagePosition: "50% 15%",
     role: l("پسر اول", "Older son", "Hijo mayor"),
     title: l("دندانپزشکی در دانشگاه کمپلوتنس", "Dentistry at Complutense", "Odontología en la Complutense"),
     note: l("تجربه ورود به دانشگاه، زبان، درس و زندگی دانشجویی در مادرید.", "University entry, language, study and student life in Madrid.", "Acceso universitario, idioma, estudios y vida estudiantil en Madrid."),
