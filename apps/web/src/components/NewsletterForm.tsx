@@ -47,7 +47,7 @@ export function NewsletterForm({ locale, compact = false }: { locale: Locale; co
   return (
     <form className={`newsletter-form ${compact ? "newsletter-compact" : ""}`} onSubmit={(event) => void submit(event)}>
       <p className="eyebrow">{l.title}</p>
-      <div><input name="email" type="email" required placeholder={l.email} dir="ltr" /><input name="interest" placeholder={l.interest} /></div>
+      <div><input name="email" type="email" required placeholder={l.email} dir="auto" /><input name="interest" placeholder={l.interest} dir="auto" /></div>
       <label><input name="consent" type="checkbox" required /> <span>{l.consent}</span></label>
       <TurnstileWidget onToken={handleTurnstileToken} resetSignal={turnstileResetSignal} />
       <button className="button button-gold button-small" disabled={busy} type="submit">{l.submit}</button>

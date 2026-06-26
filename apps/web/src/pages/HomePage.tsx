@@ -25,7 +25,7 @@ const homeCopy = {
   fa: {
     storyEyebrow: "THE DIFFERENCE",
     storyTitle: "ما فقط مشاور مهاجرت نیستیم",
-    storyBody: "سایت‌های معمولی قانون را توضیح می‌دهند. ما از هزینه‌های واقعی، اشتباه‌ها، انتخاب خانه و دانشگاه، فشار روزهای اول و درس‌هایی می‌گوییم که خودمان زندگی کرده‌ایم — و بعد به افراد آماده کمک می‌کنیم مسیرشان را درست بسازند.",
+    storyBody: "سایت‌های معمولی قانون را توضیح می‌دهند. ما از هزینه‌های واقعی، اشتباه‌ها، انتخاب خانه و دانشگاه، فشار روزهای اول و درس‌هایی می‌گوییم که خودمان زندگی کرده‌ایم، سپس به افراد آماده کمک می‌کنیم مسیرشان را درست بسازند.",
     quote: "قانون مهم است؛ اما دانستن اینکه یک خانواده واقعاً چگونه زندگی را از نو می‌سازد، چیز دیگری است.",
     familyIntro: "سه زاویه از یک روایت واقعی؛ کسب‌وکار، دانشگاه و مسیر فنی در اسپانیا.",
     familyNarratives: [
@@ -56,12 +56,12 @@ const homeCopy = {
   en: {
     storyEyebrow: "THE DIFFERENCE",
     storyTitle: "We are more than immigration consultants",
-    storyBody: "Generic sites explain rules. We talk about real costs, wrong turns, housing and university decisions, the pressure of the first days and lessons we have lived — then help prepared people build a proper route.",
+    storyBody: "Generic sites explain rules. We talk about real costs, wrong turns, housing and university decisions, the pressure of the first days and lessons we have lived, then help prepared people build a proper route.",
     quote: "Law matters. Understanding how a family actually rebuilds a life is something else.",
     familyIntro: "Three perspectives from one lived story: business, university and a technical career in Spain.",
     familyNarratives: [
       "Business and financial planning, residency and family relocation, plus real property and rental decisions.",
-      "Dentistry at the Complutense University of Madrid — from university entry to the rhythm of student life.",
+      "Dentistry at the Complutense University of Madrid, from university entry to the rhythm of student life.",
       "ASIR, IT and cybersecurity; work and technical travel in Spain with a long-term Deloitte ambition.",
     ],
     familyFocuses: [["Business", "Financial plan", "Family settlement"], ["Dentistry", "UCM Madrid", "Student life"], ["ASIR", "Cybersecurity", "Deloitte path"]],
@@ -87,7 +87,7 @@ const homeCopy = {
   es: {
     storyEyebrow: "LA DIFERENCIA",
     storyTitle: "Somos más que consultores migratorios",
-    storyBody: "Las páginas genéricas explican normas. Nosotros hablamos de costes reales, errores, decisiones de vivienda y universidad, la presión de los primeros días y lecciones vividas — y ayudamos a personas preparadas a construir bien su ruta.",
+    storyBody: "Las páginas genéricas explican normas. Nosotros hablamos de costes reales, errores, decisiones de vivienda y universidad, la presión de los primeros días y lecciones vividas, y ayudamos a personas preparadas a construir bien su ruta.",
     quote: "La ley importa; entender cómo una familia reconstruye de verdad su vida es otra cosa.",
     familyIntro: "Tres miradas de una historia vivida: empresa, universidad y carrera técnica en España.",
     familyNarratives: [
@@ -121,6 +121,32 @@ export function HomePage({ locale }: { locale: Locale }) {
   const c = getCopy(locale);
   const page = homeCopy[locale];
   const localized = <T extends Record<Locale, string>>(item: T) => item[locale];
+  const home = routeFor(locale, "/");
+  const journeyLabels = locale === "fa"
+    ? { next: "مرحله بعد", previous: "مرحله قبل", continue: "ادامه مسیر", back: "بازگشت به مراحل" }
+    : locale === "es"
+      ? { next: "Siguiente paso", previous: "Paso anterior", continue: "Continuar la ruta", back: "Volver a los pasos" }
+      : { next: "Next step", previous: "Previous step", continue: "Continue the path", back: "Back to steps" };
+  const journeyDetails = locale === "fa"
+    ? [
+      "ابتدا مقصد، هدف، بودجه، زمان‌بندی و محدودیت‌های واقعی خانواده کنار هم دیده می‌شوند.",
+      "مدارک اصلی، ترجمه‌ها، زمان تأیید و ترتیب اقدام‌ها قبل از عجله برای ارسال پرونده منظم می‌شوند.",
+      "خانه، بانک، بیمه، ثبت‌های محلی و ریتم روزهای اول از قبل در برنامه قرار می‌گیرند.",
+      "تصمیم یک نفر روی مدرسه، کار، زبان و آرامش همه اثر دارد، پس مسیر خانواده یکپارچه دیده می‌شود.",
+    ]
+    : locale === "es"
+      ? [
+        "Primero conectamos destino, objetivo, presupuesto, calendario y límites reales de la familia.",
+        "Ordenamos documentos, traducciones, tiempos de validación y secuencia antes de presentar.",
+        "Vivienda, banco, seguro, registros locales y primeros días entran en el plan desde el inicio.",
+        "La decisión de una persona afecta colegio, trabajo, idioma y calma familiar, por eso miramos el conjunto.",
+      ]
+      : [
+        "First we connect destination, goal, budget, timing and the family’s real constraints.",
+        "We organize documents, translations, validation timing and sequence before rushing the file.",
+        "Housing, banking, insurance, local registrations and first days are planned early.",
+        "One person’s decision affects school, work, language and family stability, so the plan stays connected.",
+      ];
 
   return (
     <>
@@ -155,7 +181,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         <section id="family" className="family-section section-pad">
           <div className="container">
             <SectionHeading eyebrow={c.familyKicker} title={c.familyTitle} description={page.familyIntro} />
-            <div className="family-grid">{familyMembers.map((member, index) => <FamilyMemberCard key={member.initials} initials={member.initials} image={member.image} imageAlt={member.imageAlt} imagePosition={member.imagePosition} role={localized(member.role)} title={localized(member.title)} note={page.familyNarratives[index] ?? localized(member.note)} focuses={[...(page.familyFocuses[index] ?? [])]} index={index} />)}</div>
+            <div className="family-grid">{familyMembers.map((member, index) => <FamilyMemberCard key={member.initials} name={localized(member.name)} image={member.image} imageAlt={member.imageAlt} imagePosition={member.imagePosition} role={localized(member.role)} title={localized(member.title)} note={page.familyNarratives[index] ?? localized(member.note)} focuses={[...(page.familyFocuses[index] ?? [])]} index={index} />)}</div>
           </div>
         </section>
 
@@ -170,7 +196,21 @@ export function HomePage({ locale }: { locale: Locale }) {
         <section id="services" className="services-section section-pad">
           <div className="container">
             <div className="section-split"><SectionHeading eyebrow={c.servicesKicker} title={c.servicesTitle} /><p>{page.servicesIntro}</p></div>
-            <div className="services-grid">{serviceHighlights.map((service) => <ServiceCard key={service.index} index={service.index} title={localized(service.title)} text={localized(service.text)} href={routeFor(locale, "/services")} />)}</div>
+            <div className="services-grid">{serviceHighlights.map((service) => <ServiceCard key={service.index} index={service.index} title={localized(service.title)} text={localized(service.text)} href={`${home}#service-step-${service.index}`} />)}</div>
+            <div className="service-flow-panels" aria-label={c.servicesTitle}>
+              {serviceHighlights.map((service, index) => (
+                <article className="service-flow-panel" id={`service-step-${service.index}`} key={`detail-${service.index}`}>
+                  <p className="eyebrow">{journeyLabels.continue} / {service.index}</p>
+                  <h3>{localized(service.title)}</h3>
+                  <p>{journeyDetails[index]}</p>
+                  <div>
+                    {index > 0 ? <a className="text-link" href={`${home}#service-step-${serviceHighlights[index - 1]?.index ?? service.index}`}>{journeyLabels.previous}</a> : null}
+                    {index < serviceHighlights.length - 1 ? <a className="button button-small button-outline" href={`${home}#service-step-${serviceHighlights[index + 1]?.index ?? service.index}`}>{journeyLabels.next}</a> : <Link className="button button-small button-outline" to={routeFor(locale, "/apply")}>{c.applyCta}</Link>}
+                    <a className="text-link" href={`${home}#services`}>{journeyLabels.back}</a>
+                  </div>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -199,7 +239,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div className="container"><SectionHeading eyebrow={c.mediaKicker} title={c.mediaTitle} align="center" inverse /><div className="content-pillars">{contentPillars.map((item, index) => <Link key={item.code} to={routeFor(locale, "/resources")} className={`content-pillar pillar-${index + 1} scene-reveal`}><span>{item.code}</span><h3>{item[locale]}</h3><small>0{index + 1}</small></Link>)}</div></div>
         </section>
 
-        <section className="trust-section section-pad"><div className="container"><SectionHeading eyebrow="TRUST & REALITY" title={c.trustTitle} inverse align="center" /><div className="trust-grid"><TrustBadge icon={BookOpenCheck} title={locale === "fa" ? "تجربه زیسته" : locale === "es" ? "Experiencia vivida" : "Lived experience"} text={locale === "fa" ? "آنچه می‌گوییم از زندگی واقعی می‌آید." : locale === "es" ? "Compartimos lo que hemos vivido." : "We share what we have actually lived."} /><TrustBadge icon={Scale} title={locale === "fa" ? "مرز روشن تخصص" : locale === "es" ? "Límites claros" : "Clear boundaries"} text={locale === "fa" ? "برای امور حقوقی با متخصص مجاز هماهنگ می‌شویم." : locale === "es" ? "Coordinamos profesionales habilitados cuando procede." : "We coordinate licensed professionals when needed."} /><TrustBadge icon={ShieldCheck} title={locale === "fa" ? "بدون تضمین ساختگی" : locale === "es" ? "Sin falsas garantías" : "No false guarantees"} text={locale === "fa" ? "هیچ نتیجه مهاجرتی را تضمین نمی‌کنیم." : locale === "es" ? "No garantizamos resultados migratorios." : "We do not guarantee immigration outcomes."} /><TrustBadge icon={Handshake} title={locale === "fa" ? "پرونده‌محور" : locale === "es" ? "Cada caso cuenta" : "Case-specific"} text={locale === "fa" ? "راه درست به شرایط واقعی شما بستگی دارد." : locale === "es" ? "La vía depende de tus circunstancias." : "The right path depends on your circumstances."} /></div><DisclaimerBox>{page.trustDisclaimer}</DisclaimerBox></div></section>
+        <section className="trust-section section-pad"><div className="container"><SectionHeading eyebrow={locale === "fa" ? "اعتماد و واقعیت" : locale === "es" ? "Confianza y realidad" : "Trust and reality"} title={c.trustTitle} inverse align="center" /><div className="trust-grid"><TrustBadge icon={BookOpenCheck} title={locale === "fa" ? "تجربه زیسته" : locale === "es" ? "Experiencia vivida" : "Lived experience"} text={locale === "fa" ? "آنچه می‌گوییم از زندگی واقعی می‌آید." : locale === "es" ? "Compartimos lo que hemos vivido." : "We share what we have actually lived."} /><TrustBadge icon={Scale} title={locale === "fa" ? "مرز روشن تخصص" : locale === "es" ? "Límites claros" : "Clear boundaries"} text={locale === "fa" ? "برای امور حقوقی با متخصص مجاز هماهنگ می‌شویم." : locale === "es" ? "Coordinamos profesionales habilitados cuando procede." : "We coordinate licensed professionals when needed."} /><TrustBadge icon={ShieldCheck} title={locale === "fa" ? "بدون تضمین ساختگی" : locale === "es" ? "Sin falsas garantías" : "No false guarantees"} text={locale === "fa" ? "هیچ نتیجه مهاجرتی را تضمین نمی‌کنیم." : locale === "es" ? "No garantizamos resultados migratorios." : "We do not guarantee immigration outcomes."} /><TrustBadge icon={Handshake} title={locale === "fa" ? "پرونده‌محور" : locale === "es" ? "Cada caso cuenta" : "Case-specific"} text={locale === "fa" ? "راه درست به شرایط واقعی شما بستگی دارد." : locale === "es" ? "La vía depende de tus circunstancias." : "The right path depends on your circumstances."} /></div><DisclaimerBox>{page.trustDisclaimer}</DisclaimerBox></div></section>
 
         <section id="final-cta" className="final-cta section-pad">
           <div className="final-cta-glow" aria-hidden="true" />

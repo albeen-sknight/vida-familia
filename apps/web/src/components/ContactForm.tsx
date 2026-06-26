@@ -106,7 +106,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
     }
   }
 
-  const whatsApp = publicWhatsAppLink(`Vida Familia contact — ${message || c.success}`);
+  const whatsApp = publicWhatsAppLink(`Vida Familia contact, ${message || c.success}`);
 
   return (
     <section className="contact-form-section content-section">
@@ -114,12 +114,12 @@ export function ContactForm({ locale }: { locale: Locale }) {
       <form ref={formRef} className="contact-form" onSubmit={(event) => void submit(event)}>
         <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
         <div className="form-grid">
-          <label className="form-field"><span>{c.fullName}<b>*</b></span><input name="full_name" required maxLength={100} /></label>
-          <label className="form-field"><span>{c.email}<b>*</b></span><input name="email" type="email" required dir="ltr" maxLength={254} /></label>
-          <label className="form-field"><span>{c.whatsapp}</span><input name="whatsapp" type="tel" dir="ltr" maxLength={40} /></label>
-          <label className="form-field"><span>{c.topic}<b>*</b></span><input name="topic" required maxLength={120} /></label>
+          <label className="form-field"><span>{c.fullName}<b>*</b></span><input name="full_name" required maxLength={100} dir="auto" /></label>
+          <label className="form-field"><span>{c.email}<b>*</b></span><input name="email" type="email" required dir="auto" maxLength={254} /></label>
+          <label className="form-field"><span>{c.whatsapp}</span><input name="whatsapp" type="tel" dir="auto" maxLength={40} /></label>
+          <label className="form-field"><span>{c.topic}<b>*</b></span><input name="topic" required maxLength={120} dir="auto" /></label>
         </div>
-        <label className="form-field"><span>{c.message}<b>*</b></span><textarea name="message" required rows={5} maxLength={3000} /></label>
+        <label className="form-field"><span>{c.message}<b>*</b></span><textarea name="message" required rows={5} maxLength={3000} dir="auto" /></label>
         <label className="consent-field"><input type="checkbox" name="consent" required /><span>{c.consent}</span></label>
         <TurnstileWidget onToken={handleTurnstileToken} resetSignal={turnstileResetSignal} />
         {status === "success" ? <div className="form-message success"><CheckCircle2 /> <span>{message || c.success}{whatsApp ? <> · <a href={whatsApp} target="_blank" rel="noreferrer">{c.whatsappLink}</a></> : null}</span></div> : null}

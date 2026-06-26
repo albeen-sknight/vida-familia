@@ -52,7 +52,7 @@ export const copy = {
     heroSubtitle: "Real family. Real journey.",
     heroNote: "We have lived the study, work and family transition ourselves. Now we help serious applicants see the path clearly.",
     storyTitle: "We are not just immigration consultants",
-    storyBody: "Generic sites repeat laws. We share real life, real costs, real mistakes and hard-earned lessons—then offer structured support to qualified clients.",
+    storyBody: "Generic sites repeat laws. We share real life, real costs, real mistakes and hard-earned lessons, then offer structured support to qualified clients.",
     familyTitle: "Meet the family",
     familyKicker: "Three perspectives, one journey",
     destinationTitle: "Choose your destination",

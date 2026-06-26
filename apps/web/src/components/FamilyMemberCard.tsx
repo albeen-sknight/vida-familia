@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 type PortraitStyle = CSSProperties & { "--portrait-position"?: string };
 
 interface FamilyMemberCardProps {
-  initials: string;
+  name: string;
   image?: string;
   imageAlt?: string;
   imagePosition?: string;
@@ -15,6 +15,7 @@ interface FamilyMemberCardProps {
 }
 
 export function FamilyMemberCard({
+  name,
   image,
   imageAlt,
   imagePosition,
@@ -51,7 +52,10 @@ export function FamilyMemberCard({
       </div>
 
       <div className="family-card-copy">
-        <p className="eyebrow">{role}</p>
+        <div className="family-card-kicker">
+          <span className="family-member-name">{name}</span>
+          <span className="family-member-role">{role}</span>
+        </div>
         <h3>{title}</h3>
         <p>{note}</p>
         <ul>

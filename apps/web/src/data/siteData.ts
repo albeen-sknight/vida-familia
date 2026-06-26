@@ -21,6 +21,7 @@ const l = (fa: string, en: string, es: string): LocalizedText => ({ fa, en, es }
 export const familyMembers = [
   {
     initials: "VF",
+    name: l("شریف سعیدی", "Sharif Saeedi", "Sharif Saeedi"),
     image: "/assets/team/sharif-saeedi.jpg",
     imageAlt: "Sharif Saeedi",
     imagePosition: "50% 35%",
@@ -30,19 +31,21 @@ export const familyMembers = [
   },
   {
     initials: "OD",
+    name: l("امیر سعیدی", "Amir Saeedi", "Amir Saeedi"),
     image: "/assets/team/amir-saeedi.jpg",
     imageAlt: "Amir Saeedi",
     imagePosition: "50% 15%",
-    role: l("پسر اول", "Older son", "Hijo mayor"),
+    role: l("برادر بزرگ‌تر", "Older brother", "Hermano mayor"),
     title: l("دندانپزشکی در دانشگاه کمپلوتنس", "Dentistry at Complutense", "Odontología en la Complutense"),
     note: l("تجربه ورود به دانشگاه، زبان، درس و زندگی دانشجویی در مادرید.", "University entry, language, study and student life in Madrid.", "Acceso universitario, idioma, estudios y vida estudiantil en Madrid."),
   },
   {
     initials: "IT",
+    name: l("آلبرتو سعیدی", "Alberto Saeedi", "Alberto Saeedi"),
     image: "/assets/team/alberto-saeedi.jpg",
     imageAlt: "Alberto Saeedi",
     imagePosition: "50% 30%",
-    role: l("پسر دوم", "Younger son", "Hijo menor"),
+    role: l("ASIR، امنیت سایبری و IT", "ASIR, cybersecurity & IT", "ASIR, ciberseguridad e IT"),
     title: l(
       "ASIR؛ مدیریت سیستم‌های کامپیوتری و شبکه",
       "ASIR, cybersecurity & IT work",

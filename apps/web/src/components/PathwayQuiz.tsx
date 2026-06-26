@@ -9,7 +9,7 @@ import { TurnstileWidget } from "./TurnstileWidget";
 
 const copy = {
   fa: {
-    eyebrow: "PATHWAY QUIZ",
+    eyebrow: "آزمون مسیر",
     title: "کدام مسیر به شما نزدیک‌تر است؟",
     intro: "چند پاسخ کوتاه بدهید تا یک پیشنهاد اولیه و غیرقطعی دریافت کنید.",
     country: "ترجیح کشور",
@@ -22,7 +22,10 @@ const copy = {
     consent: "می‌خواهم نتیجه برایم ایمیل شود.",
     submit: "دریافت پیشنهاد اولیه",
     result: "پیشنهاد اولیه",
-    next: "ادامه با فرم ارزیابی",
+    next: "ادامه با فرم ارزیابی کامل",
+    background: "پیشینه کاری",
+    countries: { Spain: "اسپانیا", Argentina: "آرژانتین", "Not sure": "هنوز مطمئن نیستم" },
+    goalPlaceholder: "تحصیل / کار / خانواده",
   },
   en: {
     eyebrow: "PATHWAY QUIZ",
@@ -38,7 +41,10 @@ const copy = {
     consent: "Email me the result.",
     submit: "Get initial direction",
     result: "Initial direction",
-    next: "Continue to assessment",
+    next: "Continue to the full assessment form",
+    background: "Background",
+    countries: { Spain: "Spain", Argentina: "Argentina", "Not sure": "Not sure" },
+    goalPlaceholder: "study / work / family",
   },
   es: {
     eyebrow: "PATHWAY QUIZ",
@@ -54,7 +60,10 @@ const copy = {
     consent: "Quiero recibir el resultado por email.",
     submit: "Recibir orientación",
     result: "Orientación inicial",
-    next: "Continuar a evaluación",
+    next: "Continuar con la evaluación completa",
+    background: "Perfil",
+    countries: { Spain: "España", Argentina: "Argentina", "Not sure": "No estoy seguro" },
+    goalPlaceholder: "estudios / trabajo / familia",
   },
 } as const;
 
@@ -115,14 +124,14 @@ export function PathwayQuiz({ locale }: { locale: Locale }) {
         <div><p className="eyebrow">{c.eyebrow}</p><h2>{c.title}</h2><p>{c.intro}</p></div>
         <form className="quiz-card" onSubmit={(event) => void submit(event)}>
           <div className="form-grid">
-            <label className="form-field"><span>{c.country}</span><select name="target_country_preference" defaultValue="Spain"><option>Spain</option><option>Argentina</option><option>Not sure</option></select></label>
-            <label className="form-field"><span>{c.goal}</span><input name="goal" required placeholder="study / work / family" /></label>
-            <label className="form-field"><span>{c.budget}</span><input name="budget_range" required /></label>
-            <label className="form-field"><span>{c.income}</span><input name="income_range" /></label>
-            <label className="form-field"><span>{c.timeline}</span><input name="timeline" /></label>
-            <label className="form-field"><span>{c.documents}</span><input name="documents_ready" /></label>
-            <label className="form-field"><span>{c.email}</span><input name="contact_email" type="email" dir="ltr" /></label>
-            <label className="form-field"><span>Background</span><input name="work_background" /></label>
+            <label className="form-field"><span>{c.country}</span><select name="target_country_preference" defaultValue="Spain"><option value="Spain">{c.countries.Spain}</option><option value="Argentina">{c.countries.Argentina}</option><option value="Not sure">{c.countries["Not sure"]}</option></select></label>
+            <label className="form-field"><span>{c.goal}</span><input name="goal" required placeholder={c.goalPlaceholder} dir="auto" /></label>
+            <label className="form-field"><span>{c.budget}</span><input name="budget_range" required dir="auto" /></label>
+            <label className="form-field"><span>{c.income}</span><input name="income_range" dir="auto" /></label>
+            <label className="form-field"><span>{c.timeline}</span><input name="timeline" dir="auto" /></label>
+            <label className="form-field"><span>{c.documents}</span><input name="documents_ready" dir="auto" /></label>
+            <label className="form-field"><span>{c.email}</span><input name="contact_email" type="email" dir="auto" /></label>
+            <label className="form-field"><span>{c.background}</span><input name="work_background" dir="auto" /></label>
           </div>
           <input name="family_size" type="hidden" value="not specified" />
           <input name="education_level" type="hidden" value="not specified" />
@@ -130,7 +139,7 @@ export function PathwayQuiz({ locale }: { locale: Locale }) {
           <TurnstileWidget onToken={handleTurnstileToken} resetSignal={turnstileResetSignal} />
           <button className="button button-gold form-submit" type="submit" disabled={busy}>{c.submit}</button>
           {error ? <div className="form-message error">{error}</div> : null}
-          {result ? <div className="quiz-result"><CheckCircle2 /><div><strong>{c.result}: {result.readiness_score}/100</strong><ul>{result.suggested_paths.map((path) => <li key={path}>{path}</li>)}</ul><p>{result.next_step}</p><Link className="text-link" to={routeFor(locale, "/apply")}>{c.next}<ArrowUpLeft size={17} /></Link></div></div> : null}
+          {result ? <div className="quiz-result"><CheckCircle2 /><div><strong>{c.result}: {result.readiness_score}/100</strong><ul>{result.suggested_paths.map((path) => <li key={path}><bdi>{path}</bdi></li>)}</ul><p dir="auto">{result.next_step}</p><Link className="text-link" to={routeFor(locale, "/apply")}>{c.next}<ArrowUpLeft size={17} /></Link></div></div> : null}
         </form>
       </div>
     </section>

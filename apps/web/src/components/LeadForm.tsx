@@ -98,8 +98,8 @@ export function LeadForm({ locale }: { locale: Locale }) {
     }
   }
 
-  const input = (name: keyof typeof l.fields, options?: { type?: string; required?: boolean; dir?: "ltr" | "rtl"; placeholder?: string }) => (
-    <label className="form-field"><span>{l.fields[name]}{options?.required === false ? null : <b aria-hidden="true">*</b>}</span><input name={name} type={options?.type ?? "text"} required={options?.required !== false} dir={options?.dir} placeholder={options?.placeholder} maxLength={name === "email" ? 254 : 160} /></label>
+  const input = (name: keyof typeof l.fields, options?: { type?: string; required?: boolean; dir?: "ltr" | "rtl" | "auto"; placeholder?: string }) => (
+    <label className="form-field"><span>{l.fields[name]}{options?.required === false ? null : <b aria-hidden="true">*</b>}</span><input name={name} type={options?.type ?? "text"} required={options?.required !== false} dir={options?.dir ?? "auto"} placeholder={options?.placeholder} maxLength={name === "email" ? 254 : 160} /></label>
   );
 
   return (
@@ -107,7 +107,7 @@ export function LeadForm({ locale }: { locale: Locale }) {
       <div className="form-intro"><p className="eyebrow">QUALIFICATION</p><h2>{l.title}</h2><p>{l.intro}</p><div className="form-progress"><span>01</span><i /><span>04</span></div></div>
       <form ref={formRef} onSubmit={(event) => void submit(event)} noValidate={false}>
         <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
-        <fieldset><legend>01 · {locale === "fa" ? "اطلاعات تماس" : locale === "es" ? "Contacto" : "Contact"}</legend><div className="form-grid">{input("full_name")}{input("email", { type: "email", dir: "ltr" })}{input("whatsapp", { type: "tel", dir: "ltr", placeholder: "+34 …" })}{input("current_country")}</div></fieldset>
+        <fieldset><legend>01 · {locale === "fa" ? "اطلاعات تماس" : locale === "es" ? "Contacto" : "Contact"}</legend><div className="form-grid">{input("full_name")}{input("email", { type: "email" })}{input("whatsapp", { type: "tel", placeholder: "+34 …" })}{input("current_country")}</div></fieldset>
         <fieldset><legend>02 · {locale === "fa" ? "مقصد و مسیر" : locale === "es" ? "Destino y vía" : "Destination & path"}</legend><div className="form-grid">
           <label className="form-field"><span>{l.fields.target_country}<b>*</b></span><select name="target_country" required defaultValue=""><option value="" disabled>{l.choose}</option>{targetCountries.map((item) => <option key={item} value={item}>{l.destinations[item]}</option>)}</select></label>
           <label className="form-field"><span>{l.fields.desired_path}<b>*</b></span><select name="desired_path" required defaultValue=""><option value="" disabled>{l.choose}</option>{paths.map((item) => <option key={item} value={item}>{l.paths[item]}</option>)}</select></label>
@@ -115,13 +115,13 @@ export function LeadForm({ locale }: { locale: Locale }) {
         </div></fieldset>
         <fieldset><legend>03 · {locale === "fa" ? "آمادگی مالی و حرفه‌ای" : locale === "es" ? "Preparación económica y profesional" : "Financial & professional readiness"}</legend><div className="form-grid">{input("budget_range")}{input("income_range")}{input("education_background", { required: false })}{input("professional_background", { required: false })}{input("documents_ready")}</div></fieldset>
         <fieldset><legend>04 · {locale === "fa" ? "اولویت شما" : locale === "es" ? "Tu prioridad" : "Your priority"}</legend><div className="form-grid form-grid-full">
-          <label className="form-field"><span>{l.fields.main_concern}<b>*</b></span><textarea name="main_concern" required rows={4} maxLength={1200} /></label>
-          <label className="form-field"><span>{l.fields.message}</span><textarea name="message" rows={4} maxLength={3000} /></label>
+          <label className="form-field"><span>{l.fields.main_concern}<b>*</b></span><textarea name="main_concern" required rows={4} maxLength={1200} dir="auto" /></label>
+          <label className="form-field"><span>{l.fields.message}</span><textarea name="message" rows={4} maxLength={3000} dir="auto" /></label>
         </div></fieldset>
         <label className="consent-field"><input type="checkbox" name="consent" required /><span>{l.consent}</span></label>
         <TurnstileWidget onToken={handleTurnstileToken} resetSignal={turnstileResetSignal} />
         <p className="form-privacy">{l.privacy}</p>
-        {status === "success" ? <div className="form-message success form-result" role="status"><CheckCircle2 /><div><p>{result?.message || l.success}</p>{result ? <dl><div><dt>{locale === "fa" ? "کد پیگیری" : locale === "es" ? "Referencia" : "Reference"}</dt><dd>{result.reference_code}</dd></div><div><dt>{locale === "fa" ? "وضعیت اولیه" : locale === "es" ? "Estado inicial" : "Initial status"}</dt><dd>{result.user_status || (locale === "fa" ? "قابل بررسی" : locale === "es" ? "Listo para revisión" : "Ready for review")}</dd></div><div><dt>{locale === "fa" ? "مرحله بعد" : locale === "es" ? "Siguiente paso" : "Next step"}</dt><dd>{result.recommended_next_step}</dd></div></dl> : null}{result && publicWhatsAppLink(`Vida Familia ${result.reference_code}`) ? <a className="text-link" href={publicWhatsAppLink(`Vida Familia ${result.reference_code}`) ?? undefined} target="_blank" rel="noreferrer"><MessageCircle size={17} />{locale === "fa" ? "ارسال کد در واتس‌اپ" : locale === "es" ? "Enviar referencia por WhatsApp" : "Send reference by WhatsApp"}</a> : null}</div></div> : null}
+        {status === "success" ? <div className="form-message success form-result" role="status"><CheckCircle2 /><div><p>{result?.message || l.success}</p>{result ? <dl><div><dt>{locale === "fa" ? "کد پیگیری" : locale === "es" ? "Referencia" : "Reference"}</dt><dd><bdi>{result.reference_code}</bdi></dd></div><div><dt>{locale === "fa" ? "وضعیت اولیه" : locale === "es" ? "Estado inicial" : "Initial status"}</dt><dd dir="auto">{result.user_status || (locale === "fa" ? "قابل بررسی" : locale === "es" ? "Listo para revisión" : "Ready for review")}</dd></div><div><dt>{locale === "fa" ? "مرحله بعد" : locale === "es" ? "Siguiente paso" : "Next step"}</dt><dd dir="auto">{result.recommended_next_step}</dd></div></dl> : null}{result && publicWhatsAppLink(`Vida Familia ${result.reference_code}`) ? <a className="text-link" href={publicWhatsAppLink(`Vida Familia ${result.reference_code}`) ?? undefined} target="_blank" rel="noreferrer"><MessageCircle size={17} />{locale === "fa" ? "ارسال کد در واتس‌اپ" : locale === "es" ? "Enviar referencia por WhatsApp" : "Send reference by WhatsApp"}</a> : null}</div></div> : null}
         {status === "error" ? <div className="form-message error" role="alert">{errorMessage || l.error}</div> : null}
         <button className="button button-gold form-submit" type="submit" disabled={status === "submitting"}>{status === "submitting" ? <LoaderCircle className="spin" /> : <Send size={18} />}{l.submit}</button>
       </form>

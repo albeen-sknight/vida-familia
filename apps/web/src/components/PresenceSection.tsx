@@ -5,7 +5,7 @@ import { routeFor } from "../lib/locale";
 
 const presenceCopy = {
   fa: {
-    eyebrow: "OUR PRESENCE",
+    eyebrow: "حضور ما",
     title: "دفاتر و حضور ما",
     intro: "از جنوب ایران تا مادرید؛ تجربه‌ای واقعی، ارتباطی نزدیک‌تر",
     note: "این شهرها شبکه حضور، تجربه و ارتباط ما را نشان می‌دهند؛ جلسه حضوری فقط با هماهنگی قبلی انجام می‌شود.",
@@ -17,9 +17,9 @@ const presenceCopy = {
     action: "ارتباط با ما",
   },
   en: {
-    eyebrow: "OUR PRESENCE",
+    eyebrow: "Our presence",
     title: "Our presence",
-    intro: "From southern Iran to Madrid — lived experience, closer connection.",
+    intro: "From southern Iran to Madrid, lived experience and closer connection.",
     note: "These cities represent our network of presence, experience and connection. In-person meetings are by prior arrangement.",
     locations: [
       ["Kanghan", "Local roots and connection in southern Iran"],
