@@ -43,8 +43,16 @@ export const familyMembers = [
     imageAlt: "Alberto Saeedi",
     imagePosition: "50% 30%",
     role: l("پسر دوم", "Younger son", "Hijo menor"),
-    title: l("ASIR، امنیت سایبری و کار IT", "ASIR, cybersecurity & IT work", "ASIR, ciberseguridad y trabajo IT"),
-    note: l("مسیر فنی، مهارت‌محور و واقعیت ورود به بازار کار فناوری.", "The skills-first technical path into Spain's technology market.", "La vía técnica y práctica hacia el mercado tecnológico español."),
+    title: l(
+      "ASIR؛ مدیریت سیستم‌های کامپیوتری و شبکه",
+      "ASIR, cybersecurity & IT work",
+      "ASIR, ciberseguridad y trabajo IT"
+    ),
+    note: l(
+      "مسیر دوره عالی مدیریت سیستم‌های کامپیوتری و شبکه، امنیت سایبری و ورود به بازار کار IT در اسپانیا.",
+      "The skills-first technical path into Spain's technology market.",
+      "La vía técnica y práctica hacia el mercado tecnológico español."
+    ),
   },
 ];
 
@@ -54,14 +62,26 @@ export const destinations = [
     title: l("اسپانیا", "Spain", "España"),
     city: l("مادرید و فراتر از آن", "Madrid and beyond", "Madrid y más allá"),
     description: l("برای تحصیل، کار از راه دور، زندگی خانوادگی و ساخت کسب‌وکار در اروپا.", "For study, remote work, family life and building a business in Europe.", "Para estudiar, teletrabajar, vivir en familia y emprender en Europa."),
-    services: [l("ویزای تحصیلی", "Student visa", "Visado de estudiante"), l("نومد دیجیتال", "Digital nomad", "Nómada digital"), l("تمکن مالی خانواده", "Family financial means", "Residencia no lucrativa"), l("ثبت کسب‌وکار", "Business setup", "Creación de empresa"), l("استقرار در مادرید", "Madrid relocation", "Instalación en Madrid")],
+    services: [
+      l("ویزای تحصیلی", "Student visa", "Visado de estudiante"),
+      l("نومد دیجیتال", "Digital nomad", "Nómada digital"),
+      l("تمکن مالی خانواده", "Family financial means", "Residencia no lucrativa"),
+      l("ثبت کسب‌وکار", "Business setup", "Creación de empresa"),
+      l("استقرار در مادرید", "Madrid relocation", "Instalación en Madrid"),
+    ],
   },
   {
     country: "argentina" as const,
     title: l("آرژانتین", "Argentina", "Argentina"),
     city: l("بوئنوس آیرس و زندگی تازه", "Buenos Aires and a new chapter", "Buenos Aires y una nueva etapa"),
     description: l("برای تحصیل، اقامت خانوادگی و شناخت یک مسیر متفاوت در آمریکای جنوبی.", "For study, family residency and a different path in South America.", "Para estudiar, residir en familia y descubrir otra vía en Sudamérica."),
-    services: [l("اقامت تحصیلی", "Student residency", "Residencia estudiantil"), l("رنتیستا و تمکن مالی", "Rentista / financial means", "Rentista / medios económicos"), l("جابه‌جایی خانواده", "Family relocation", "Traslado familiar"), l("استقرار در بوئنوس آیرس", "Buenos Aires settlement", "Instalación en Buenos Aires"), l("آموزش مسیر تابعیت*", "Citizenship path education*", "Información sobre ciudadanía*")],
+    services: [
+      l("اقامت تحصیلی", "Student residency", "Residencia estudiantil"),
+      l("رنتیستا و تمکن مالی", "Rentista / financial means", "Rentista / medios económicos"),
+      l("جابه‌جایی خانواده", "Family relocation", "Traslado familiar"),
+      l("استقرار در بوئنوس آیرس", "Buenos Aires settlement", "Instalación en Buenos Aires"),
+      l("آموزش مسیر تابعیت*", "Citizenship path education*", "Información sobre ciudadanía*"),
+    ],
   },
 ];
 
