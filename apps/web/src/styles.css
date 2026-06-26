@@ -1326,3 +1326,66 @@ body { background: #020812; }
     min-height: 220px;
   }
 }
+
+.page-hero-art {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(90deg, rgba(5, 18, 32, 0.96) 0%, rgba(5, 18, 32, 0.86) 38%, rgba(5, 18, 32, 0.5) 68%, rgba(5, 18, 32, 0.76) 100%),
+    var(--page-hero-image),
+    linear-gradient(135deg, #061321, #10263c);
+  background-size: cover;
+  background-position: center;
+}
+
+[dir="rtl"] .page-hero-art {
+  background:
+    linear-gradient(270deg, rgba(5, 18, 32, 0.96) 0%, rgba(5, 18, 32, 0.86) 38%, rgba(5, 18, 32, 0.5) 68%, rgba(5, 18, 32, 0.76) 100%),
+    var(--page-hero-image),
+    linear-gradient(135deg, #061321, #10263c);
+  background-size: cover;
+  background-position: center;
+}
+
+.page-hero-art .page-hero-grid {
+  opacity: 0.22;
+  mix-blend-mode: screen;
+}
+
+.page-hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(219, 177, 100, 0.18), transparent 32%),
+    radial-gradient(circle at 82% 70%, rgba(117, 33, 35, 0.22), transparent 38%),
+    linear-gradient(180deg, rgba(5, 18, 32, 0.1), rgba(5, 18, 32, 0.72));
+  pointer-events: none;
+}
+
+.page-hero-copy {
+  position: relative;
+  z-index: 2;
+  max-width: 760px;
+}
+
+.page-hero-art .page-hero-mark {
+  opacity: 0.08;
+}
+
+@media (max-width: 760px) {
+  .page-hero-art,
+  [dir="rtl"] .page-hero-art {
+    background:
+      linear-gradient(180deg, rgba(5, 18, 32, 0.94) 0%, rgba(5, 18, 32, 0.82) 55%, rgba(5, 18, 32, 0.94) 100%),
+      var(--page-hero-image),
+      linear-gradient(135deg, #061321, #10263c);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .page-hero-art .page-hero-mark {
+    opacity: 0.05;
+  }
+}
