@@ -1465,3 +1465,77 @@ section[id="apply"] {
 .story-card:nth-child(5) {
   background-image: url("/assets/cards/pillar-argentina-guide-card.png") !important;
 }
+
+/* Exact homepage artwork targets */
+.final-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(5, 18, 32, 0.94), rgba(5, 18, 32, 0.58), rgba(5, 18, 32, 0.92)),
+    url("/assets/heroes/home-clarity-hero-bg.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.final-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 22% 35%, rgba(219, 177, 100, 0.16), transparent 32%),
+    linear-gradient(180deg, rgba(5, 18, 32, 0.04), rgba(5, 18, 32, 0.58));
+  z-index: 0;
+  pointer-events: none;
+}
+
+.final-cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+.content-pillar {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+.content-pillar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(5, 18, 32, 0.18), rgba(5, 18, 32, 0.76)),
+    radial-gradient(circle at 82% 18%, rgba(219, 177, 100, 0.16), transparent 35%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content-pillar > * {
+  position: relative;
+  z-index: 1;
+}
+
+.content-pillar.pillar-1 {
+  background-image: url("/assets/cards/pillar-study-card.png") !important;
+}
+
+.content-pillar.pillar-2 {
+  background-image: url("/assets/cards/pillar-build-card.png") !important;
+}
+
+.content-pillar.pillar-3 {
+  background-image: url("/assets/cards/pillar-family-card.png") !important;
+}
+
+.content-pillar.pillar-4 {
+  background-image: url("/assets/cards/pillar-spain-guide-card.png") !important;
+}
+
+.content-pillar.pillar-5 {
+  background-image: url("/assets/cards/pillar-argentina-guide-card.png") !important;
+}
