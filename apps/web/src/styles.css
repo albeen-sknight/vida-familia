@@ -1389,3 +1389,79 @@ body { background: #020812; }
     opacity: 0.05;
   }
 }
+
+/* Home clarity hero artwork */
+.clarity-section,
+.start-clarity,
+.assessment-hero,
+.home-clarity,
+section[id="assessment"],
+section[id="apply"] {
+  background-image:
+    linear-gradient(90deg, rgba(5, 18, 32, 0.94), rgba(5, 18, 32, 0.6), rgba(5, 18, 32, 0.9)),
+    url("/assets/heroes/home-clarity-hero-bg.png") !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Real-life / content pillar artwork */
+.content-pillar-card,
+.pillar-card,
+.story-card {
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.content-pillar-card::before,
+.pillar-card::before,
+.story-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(5, 18, 32, 0.22), rgba(5, 18, 32, 0.76)),
+    radial-gradient(circle at 80% 20%, rgba(219, 177, 100, 0.16), transparent 34%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content-pillar-card > *,
+.pillar-card > *,
+.story-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.content-pillar-card:nth-child(1),
+.pillar-card:nth-child(1),
+.story-card:nth-child(1) {
+  background-image: url("/assets/cards/pillar-study-card.png") !important;
+}
+
+.content-pillar-card:nth-child(2),
+.pillar-card:nth-child(2),
+.story-card:nth-child(2) {
+  background-image: url("/assets/cards/pillar-build-card.png") !important;
+}
+
+.content-pillar-card:nth-child(3),
+.pillar-card:nth-child(3),
+.story-card:nth-child(3) {
+  background-image: url("/assets/cards/pillar-family-card.png") !important;
+}
+
+.content-pillar-card:nth-child(4),
+.pillar-card:nth-child(4),
+.story-card:nth-child(4) {
+  background-image: url("/assets/cards/pillar-spain-guide-card.png") !important;
+}
+
+.content-pillar-card:nth-child(5),
+.pillar-card:nth-child(5),
+.story-card:nth-child(5) {
+  background-image: url("/assets/cards/pillar-argentina-guide-card.png") !important;
+}
