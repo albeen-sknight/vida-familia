@@ -30,8 +30,8 @@ export const familyMembers = [
   },
   {
     initials: "OD",
-    image: "/assets/team/alberto-saeedi.jpg",
-    imageAlt: "Alberto Saeedi",
+    image: "/assets/team/amir-saeedi.jpg",
+    imageAlt: "Amir Saeedi",
     imagePosition: "50% 34%",
     role: l("پسر اول", "Older son", "Hijo mayor"),
     title: l("دندانپزشکی در دانشگاه کمپلوتنس", "Dentistry at Complutense", "Odontología en la Complutense"),
@@ -39,9 +39,9 @@ export const familyMembers = [
   },
   {
     initials: "IT",
-    image: "/assets/team/amir-saeedi.jpg",
-    imageAlt: "Amir Saeedi",
-    imagePosition: "54% 28%",
+    image: "/assets/team/alberto-saeedi.jpg",
+    imageAlt: "Alberto Saeedi",
+    imagePosition: "50% 30%",
     role: l("پسر دوم", "Younger son", "Hijo menor"),
     title: l("ASIR، امنیت سایبری و کار IT", "ASIR, cybersecurity & IT work", "ASIR, ciberseguridad y trabajo IT"),
     note: l("مسیر فنی، مهارت‌محور و واقعیت ورود به بازار کار فناوری.", "The skills-first technical path into Spain's technology market.", "La vía técnica y práctica hacia el mercado tecnológico español."),
