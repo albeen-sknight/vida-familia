@@ -155,7 +155,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         <section id="family" className="family-section section-pad">
           <div className="container">
             <SectionHeading eyebrow={c.familyKicker} title={c.familyTitle} description={page.familyIntro} />
-            <div className="family-grid">{familyMembers.map((member, index) => <FamilyMemberCard key={member.initials} initials={member.initials} role={localized(member.role)} title={localized(member.title)} note={page.familyNarratives[index] ?? localized(member.note)} focuses={[...(page.familyFocuses[index] ?? [])]} index={index} />)}</div>
+            <div className="family-grid">{familyMembers.map((member, index) => <FamilyMemberCard key={member.initials} initials={member.initials} image={member.image} imageAlt={member.imageAlt} imagePosition={member.imagePosition} role={localized(member.role)} title={localized(member.title)} note={page.familyNarratives[index] ?? localized(member.note)} focuses={[...(page.familyFocuses[index] ?? [])]} index={index} />)}</div>
           </div>
         </section>
 

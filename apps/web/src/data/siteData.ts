@@ -21,18 +21,27 @@ const l = (fa: string, en: string, es: string): LocalizedText => ({ fa, en, es }
 export const familyMembers = [
   {
     initials: "VF",
+    image: "/assets/team/sharif-saeedi.jpg",
+    imageAlt: "Sharif Saeedi",
+    imagePosition: "50% 35%",
     role: l("پدر خانواده", "Father", "Padre"),
     title: l("کسب‌وکار، اقامت و جابه‌جایی خانواده", "Business, residency & family relocation", "Empresa, residencia y traslado familiar"),
     note: l("نگاه اجرایی به تصمیم‌های مالی، اداری و زندگی روزمره.", "A practical view of financial, administrative and everyday decisions.", "Una mirada práctica a las decisiones financieras, administrativas y cotidianas."),
   },
   {
     initials: "OD",
+    image: "/assets/team/alberto-saeedi.jpg",
+    imageAlt: "Alberto Saeedi",
+    imagePosition: "50% 34%",
     role: l("پسر اول", "Older son", "Hijo mayor"),
     title: l("دندانپزشکی در دانشگاه کمپلوتنس", "Dentistry at Complutense", "Odontología en la Complutense"),
     note: l("تجربه ورود به دانشگاه، زبان، درس و زندگی دانشجویی در مادرید.", "University entry, language, study and student life in Madrid.", "Acceso universitario, idioma, estudios y vida estudiantil en Madrid."),
   },
   {
     initials: "IT",
+    image: "/assets/team/amir-saeedi.jpg",
+    imageAlt: "Amir Saeedi",
+    imagePosition: "54% 28%",
     role: l("پسر دوم", "Younger son", "Hijo menor"),
     title: l("ASIR، امنیت سایبری و کار IT", "ASIR, cybersecurity & IT work", "ASIR, ciberseguridad y trabajo IT"),
     note: l("مسیر فنی، مهارت‌محور و واقعیت ورود به بازار کار فناوری.", "The skills-first technical path into Spain's technology market.", "La vía técnica y práctica hacia el mercado tecnológico español."),
