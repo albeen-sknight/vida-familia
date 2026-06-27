@@ -1,4 +1,4 @@
-﻿import { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import type { Locale } from "@vida-familia/shared";
 import { Download, LoaderCircle } from "lucide-react";
 import { apiPost } from "../lib/api";
@@ -13,9 +13,9 @@ const guides = [
 ];
 
 const copy = {
-  fa: { eyebrow: "Ø¯Ø±ÛŒØ§ÙØª Ø±Ø§Ù‡Ù†Ù…Ø§", title: "Ø¯Ø±ÛŒØ§ÙØª Ø±Ø§Ù‡Ù†Ù…Ø§ÛŒ Ø±Ø§ÛŒÚ¯Ø§Ù†", intro: "Ø±Ø§Ù‡Ù†Ù…Ø§ÛŒ Ù…ÙˆØ±Ø¯Ù†Ø¸Ø± Ø±Ø§ Ø§Ù†ØªØ®Ø§Ø¨ Ú©Ù†ÛŒØ¯ ØªØ§ Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ø´Ù…Ø§ Ø«Ø¨Øª Ø´ÙˆØ¯.", name: "Ù†Ø§Ù…", email: "Ø§ÛŒÙ…ÛŒÙ„", whatsapp: "ÙˆØ§ØªØ³â€ŒØ§Ù¾", interest: "Ø¹Ù„Ø§Ù‚Ù‡â€ŒÙ…Ù†Ø¯ÛŒ", consent: "Ø¨Ø§ Ø¯Ø±ÛŒØ§ÙØª Ø§ÛŒÙ† Ø±Ø§Ù‡Ù†Ù…Ø§ Ù…ÙˆØ§ÙÙ‚Ù….", submit: "Ø§Ø±Ø³Ø§Ù„ Ø±Ø§Ù‡Ù†Ù…Ø§", success: "Ø¯Ø±Ø®ÙˆØ§Ø³Øª Ø±Ø§Ù‡Ù†Ù…Ø§ÛŒ Ø´Ù…Ø§ Ø«Ø¨Øª Ø´Ø¯. Ù¾Ø³ Ø§Ø² ÙØ¹Ø§Ù„â€ŒØ´Ø¯Ù† Ø§Ø±Ø³Ø§Ù„ Ø§ÛŒÙ…ÛŒÙ„ØŒ Ù„ÛŒÙ†Ú© Ø±Ø§Ù‡Ù†Ù…Ø§ Ø¨Ø±Ø§ÛŒ Ø´Ù…Ø§ Ø§Ø±Ø³Ø§Ù„ Ù…ÛŒâ€ŒØ´ÙˆØ¯." },
+  fa: { eyebrow: "دریافت راهنما", title: "دریافت راهنمای رایگان", intro: "راهنمای موردنظر را انتخاب کنید تا درخواست شما ثبت شود.", name: "نام", email: "ایمیل", whatsapp: "واتس‌اپ", interest: "علاقه‌مندی", consent: "با دریافت این راهنما موافقم.", submit: "ارسال راهنما", success: "درخواست راهنمای شما ثبت شد. پس از فعال‌شدن ارسال ایمیل، لینک راهنما برای شما ارسال می‌شود." },
   en: { eyebrow: "Guide unlock", title: "Unlock a free guide", intro: "Choose a guide and we will register the request.", name: "Name", email: "Email", whatsapp: "WhatsApp", interest: "Interest", consent: "I agree to receive this guide.", submit: "Send guide", success: "Your guide request has been registered. Once email delivery is active, the guide link will be sent to you." },
-  es: { eyebrow: "Recibir guÃ­a", title: "Recibe una guÃ­a gratuita", intro: "Elige una guÃ­a y registraremos la solicitud.", name: "Nombre", email: "Email", whatsapp: "WhatsApp", interest: "InterÃ©s", consent: "Acepto recibir esta guÃ­a.", submit: "Enviar guÃ­a", success: "Tu solicitud de guÃ­a se ha registrado. Cuando el envÃ­o de correo estÃ© activo, te enviaremos el enlace de la guÃ­a." },
+  es: { eyebrow: "Recibir guía", title: "Recibe una guía gratuita", intro: "Elige una guía y registraremos la solicitud.", name: "Nombre", email: "Email", whatsapp: "WhatsApp", interest: "Interés", consent: "Acepto recibir esta guía.", submit: "Enviar guía", success: "Tu solicitud de guía se ha registrado. Cuando el envío de correo esté activo, te enviaremos el enlace de la guía." },
 } as const;
 
 export function GuideUnlockSection({ locale }: { locale: Locale }) {
