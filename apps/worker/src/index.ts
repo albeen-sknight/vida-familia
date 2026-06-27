@@ -714,31 +714,90 @@ async function createQuizResult(request: Request, env: Bindings, ctx: ExecutionC
   return json({ ok: true, id, suggested_paths: result.suggested, readiness_score: result.score, next_step: result.nextStep }, 201);
 }
 
+const GUIDE_DOWNLOADS: Record<string, { titleFa: string; titleEn: string; titleEs: string; pdfUrl: string; htmlUrl: string }> = {
+  "origin-documents-checklist": {
+    titleFa: "مدارک مبدا را از کجا شروع کنیم؟",
+    titleEn: "Where should origin documents start?",
+    titleEs: "¿Por dónde empezar con los documentos de origen?",
+    pdfUrl: "https://vidafamilia.es/guides/origin-documents-checklist-fa.pdf",
+    htmlUrl: "https://vidafamilia.es/guides/origin-documents-checklist-fa.html",
+  },
+  "spain-student-checklist": {
+    titleFa: "پرسش‌هایی که پیش از انتخاب دوره باید بپرسید",
+    titleEn: "Questions to ask before choosing a study program",
+    titleEs: "Preguntas antes de elegir un programa de estudios",
+    pdfUrl: "https://vidafamilia.es/guides/spain-student-checklist-fa.pdf",
+    htmlUrl: "https://vidafamilia.es/guides/spain-student-checklist-fa.html",
+  },
+  "argentina-rentista-checklist": {
+    titleFa: "درآمد آنلاین با پرونده قابل دفاع چه تفاوتی دارد؟",
+    titleEn: "Online income vs. a defensible file",
+    titleEs: "Ingresos online frente a un expediente defendible",
+    pdfUrl: "https://vidafamilia.es/guides/argentina-rentista-checklist-fa.pdf",
+    htmlUrl: "https://vidafamilia.es/guides/argentina-rentista-checklist-fa.html",
+  },
+  "family-relocation-budget": {
+    titleFa: "بودجه ماه اول زندگی خانوادگی",
+    titleEn: "First-month family relocation budget",
+    titleEs: "Presupuesto familiar del primer mes",
+    pdfUrl: "https://vidafamilia.es/guides/family-relocation-budget-fa.pdf",
+    htmlUrl: "https://vidafamilia.es/guides/family-relocation-budget-fa.html",
+  },
+};
+
 function guideApplicantEmail(locale: Locale, guideSlug: string): { subject: string; title: string; html: string; text: string } {
+  const guide = GUIDE_DOWNLOADS[guideSlug];
+
   if (locale === "fa") {
     const title = "درخواست راهنمای شما ثبت شد";
+    const guideTitle = guide?.titleFa ?? guideSlug;
+    const guideLinksHtml = guide
+      ? `<p><strong>دانلود PDF:</strong> <a href="${escapeHtml(guide.pdfUrl)}">${escapeHtml(guide.pdfUrl)}</a></p><p><strong>نسخه آنلاین:</strong> <a href="${escapeHtml(guide.htmlUrl)}">${escapeHtml(guide.htmlUrl)}</a></p>`
+      : `<p>در حال حاضر فایل دانلود عمومی برای این راهنما در سایت قرار نگرفته است. پس از آماده‌شدن فایل یا لینک واقعی، آن را برای شما ارسال می‌کنیم.</p>`;
+    const guideLinksText = guide
+      ? `Guide: ${guideTitle}\nPDF: ${guide.pdfUrl}\nOnline version: ${guide.htmlUrl}`
+      : `Guide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.`;
+
     return {
       subject: "درخواست راهنمای Vida Familia ثبت شد",
       title,
-      html: `<p>درخواست شما برای راهنمای <strong>${escapeHtml(guideSlug)}</strong> ثبت شد.</p><p>در حال حاضر فایل دانلود عمومی برای این راهنما در سایت قرار نگرفته است. پس از آماده‌شدن فایل یا لینک واقعی، آن را برای شما ارسال می‌کنیم.</p>`,
-      text: `${title}\nGuide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.\n${EMAIL_DISCLAIMER}`,
+      html: `<p>درخواست شما برای راهنمای <strong>${escapeHtml(guideTitle)}</strong> ثبت شد.</p>${guideLinksHtml}`,
+      text: `${title}\n${guideLinksText}\n${EMAIL_DISCLAIMER}`,
     };
   }
+
   if (locale === "es") {
     const title = "Tu solicitud de guía se ha registrado";
+    const guideTitle = guide?.titleEs ?? guideSlug;
+    const guideLinksHtml = guide
+      ? `<p><strong>PDF:</strong> <a href="${escapeHtml(guide.pdfUrl)}">${escapeHtml(guide.pdfUrl)}</a></p><p><strong>Versión online:</strong> <a href="${escapeHtml(guide.htmlUrl)}">${escapeHtml(guide.htmlUrl)}</a></p>`
+      : `<p>Actualmente no hay un archivo o enlace público de descarga para esta guía. Cuando el enlace real esté disponible, te lo enviaremos.</p>`;
+    const guideLinksText = guide
+      ? `Guide: ${guideTitle}\nPDF: ${guide.pdfUrl}\nOnline version: ${guide.htmlUrl}`
+      : `Guide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.`;
+
     return {
       subject: "Solicitud de guía Vida Familia registrada",
       title,
-      html: `<p>Tu solicitud para la guía <strong>${escapeHtml(guideSlug)}</strong> se ha registrado.</p><p>Actualmente no hay un archivo o enlace público de descarga para esta guía. Cuando el enlace real esté disponible, te lo enviaremos.</p>`,
-      text: `${title}\nGuide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.\n${EMAIL_DISCLAIMER}`,
+      html: `<p>Tu solicitud para la guía <strong>${escapeHtml(guideTitle)}</strong> se ha registrado.</p>${guideLinksHtml}`,
+      text: `${title}\n${guideLinksText}\n${EMAIL_DISCLAIMER}`,
     };
   }
+
   const title = "Your guide request has been registered";
+  const guideTitle = guide?.titleEn ?? guideSlug;
+  const guideLinksHtml = guide
+    ? `<p><strong>PDF:</strong> <a href="${escapeHtml(guide.pdfUrl)}">${escapeHtml(guide.pdfUrl)}</a></p><p><strong>Online version:</strong> <a href="${escapeHtml(guide.htmlUrl)}">${escapeHtml(guide.htmlUrl)}</a></p>`
+    : `<p>There is not yet a published public download file or guide link for this resource. When the real link is available, we will send it to you.</p>`;
+  const guideLinksText = guide
+    ? `Guide: ${guideTitle}\nPDF: ${guide.pdfUrl}\nOnline version: ${guide.htmlUrl}`
+    : `Guide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.`;
+
   return {
     subject: "Vida Familia guide request registered",
     title,
-    html: `<p>Your request for <strong>${escapeHtml(guideSlug)}</strong> has been registered.</p><p>There is not yet a published public download file or guide link for this resource. When the real link is available, we will send it to you.</p>`,
-    text: `${title}\nGuide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.\n${EMAIL_DISCLAIMER}`,
+    html: `<p>Your request for <strong>${escapeHtml(guideTitle)}</strong> has been registered.</p>${guideLinksHtml}`,
+    text: `${title}\n${guideLinksText}\n${EMAIL_DISCLAIMER}`,
   };
 }
 
