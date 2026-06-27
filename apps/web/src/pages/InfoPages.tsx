@@ -378,7 +378,88 @@ export function ApplyPage({ locale }: { locale: Locale }) { const c = pageCopy[l
 
 export function ContactPage({ locale }: { locale: Locale }) {
   const c = pageCopy[locale];
-  return <PageShell locale={locale} eyebrow="CONTACT" title={c.contactTitle} intro={c.contactIntro} path="/contact"><section className="content-section contact-grid"><article><Mail /><p className="eyebrow">{locale === "fa" ? "عمومی" : locale === "es" ? "General" : "General"}</p><h2>{locale === "fa" ? "پیام عمومی" : locale === "es" ? "Consulta general" : "General enquiry"}</h2><p>{locale === "fa" ? "نشانی ایمیل رسمی پیش از راه‌اندازی نهایی توسط مالک اضافه می‌شود." : locale === "es" ? "El correo oficial se añadirá antes del lanzamiento." : "The official email address will be added by the owner before launch."}</p></article><article><PhoneCall /><p className="eyebrow">{locale === "fa" ? "ارزیابی پرونده" : locale === "es" ? "Evaluación de caso" : "Case assessment"}</p><h2>{locale === "fa" ? "بررسی پرونده" : locale === "es" ? "Evaluación de caso" : "Case assessment"}</h2><p>{locale === "fa" ? "برای حفظ نظم و حریم خصوصی، ارزیابی از فرم اختصاصی آغاز می‌شود." : locale === "es" ? "Para mantener orden y privacidad, la evaluación comienza con el formulario." : "For privacy and structure, assessment begins with the dedicated form."}</p><Link className="text-link" to={routeFor(locale, "/apply")}>{locale === "fa" ? "رفتن به فرم" : locale === "es" ? "Ir al formulario" : "Open the form"}<ArrowUpLeft /></Link></article><article><MapPin /><p className="eyebrow">{locale === "fa" ? "ایران · اسپانیا" : locale === "es" ? "Irán · España" : "Iran · Spain"}</p><h2>{locale === "fa" ? "کنگان · شیراز · مادرید" : "Kanghan · Shiraz · Madrid"}</h2><p>{locale === "fa" ? "جلسه حضوری فقط با هماهنگی قبلی و پس از ارزیابی اولیه انجام می‌شود." : locale === "es" ? "Las reuniones presenciales son solo con cita y evaluación previa." : "In-person meetings are by prior arrangement after initial assessment."}</p></article></section><ContactForm locale={locale} /></PageShell>;
+  const general = locale === "fa"
+    ? {
+      label: "عمومی",
+      title: "پیام عمومی",
+      body: "برای سؤال عمومی، هماهنگی اولیه یا همکاری، به این نشانی پیام بدهید:",
+    }
+    : locale === "es"
+      ? {
+        label: "General",
+        title: "Mensaje general",
+        body: "Para preguntas generales, primera coordinación o colaboración, escríbenos a:",
+      }
+      : {
+        label: "General",
+        title: "General message",
+        body: "For general questions, first coordination, or collaboration, write to:",
+      };
+  const assessment = locale === "fa"
+    ? {
+      label: "ارزیابی پرونده",
+      title: "بررسی پرونده",
+      body: "برای حفظ نظم و حریم خصوصی، ارزیابی پرونده از فرم اختصاصی شروع می‌شود.",
+      cta: "رفتن به فرم",
+    }
+    : locale === "es"
+      ? {
+        label: "Evaluación del caso",
+        title: "Revisión del expediente",
+        body: "Para mantener la información ordenada y privada, la evaluación personal empieza con el formulario dedicado.",
+        cta: "Ir al formulario",
+      }
+      : {
+        label: "Case assessment",
+        title: "File review",
+        body: "To keep information organized and private, personal case review starts through the dedicated form.",
+        cta: "Go to form",
+      };
+  const location = locale === "fa"
+    ? {
+      label: "ایران · اسپانیا",
+      title: "کنگان · شیراز · مادرید",
+      body: "جلسه حضوری فقط با هماهنگی قبلی و پس از ارزیابی اولیه انجام می‌شود.",
+    }
+    : locale === "es"
+      ? {
+        label: "Irán · España",
+        title: "Kangan · Shiraz · Madrid",
+        body: "Las reuniones presenciales se realizan únicamente con coordinación previa y después de una evaluación inicial.",
+      }
+      : {
+        label: "Iran · Spain",
+        title: "Kangan · Shiraz · Madrid",
+        body: "In-person meetings are only arranged with prior coordination and after an initial assessment.",
+      };
+
+  return (
+    <PageShell locale={locale} eyebrow="CONTACT" title={c.contactTitle} intro={c.contactIntro} path="/contact">
+      <section className="content-section contact-grid">
+        <article>
+          <Mail />
+          <p className="eyebrow">{general.label}</p>
+          <h2>{general.title}</h2>
+          <p>{general.body}</p>
+          <a className="contact-card-email" href="mailto:info@vidafamilia.es" dir="ltr">info@vidafamilia.es</a>
+        </article>
+        <article>
+          <PhoneCall />
+          <p className="eyebrow">{assessment.label}</p>
+          <h2>{assessment.title}</h2>
+          <p>{assessment.body}</p>
+          <Link className="text-link" to={routeFor(locale, "/apply")}>{assessment.cta}<ArrowUpLeft /></Link>
+        </article>
+        <article>
+          <MapPin />
+          <p className="eyebrow">{location.label}</p>
+          <h2>{location.title}</h2>
+          <p>{location.body}</p>
+        </article>
+      </section>
+      <ContactForm locale={locale} />
+    </PageShell>
+  );
 }
 
 export function LegalPage({ locale, type }: { locale: Locale; type: "privacy" | "terms" | "legal-disclaimer" }) {

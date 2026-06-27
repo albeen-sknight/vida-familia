@@ -2369,6 +2369,50 @@ body { background: #020812; }
   color: #081e35 !important;
 }
 
+.contact-grid article {
+  border-color: rgba(248,250,252,.12) !important;
+  background: linear-gradient(145deg, rgba(248,250,252,.065), rgba(8,30,53,.24)) !important;
+  color: #f8fafc !important;
+  box-shadow: inset 0 1px 0 rgba(248,250,252,.045);
+}
+
+.contact-grid article h2 {
+  color: #f8fafc !important;
+}
+
+.contact-grid article p:not(.eyebrow) {
+  color: rgba(248,250,252,.78) !important;
+}
+
+.contact-grid article .eyebrow {
+  color: var(--gold) !important;
+}
+
+.contact-card-email {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  margin-top: .65rem;
+  padding: .45rem .7rem;
+  border: 1px solid rgba(255,199,0,.32);
+  border-radius: 999px;
+  background: rgba(255,199,0,.08);
+  color: #f8fafc;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.contact-card-email:hover {
+  border-color: rgba(255,199,0,.58);
+  background: rgba(255,199,0,.13);
+  color: #fff7d6;
+}
+
+.contact-grid .text-link {
+  color: #9ed0ff;
+}
+
 .pathway-grid > a,
 .pathway-grid > a *,
 .service-flow-panel,

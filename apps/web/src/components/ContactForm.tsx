@@ -9,6 +9,7 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 const copy = {
   fa: {
+    eyebrow: "فرم تماس",
     title: "پیام خود را بفرستید",
     intro: "برای سؤال عمومی، همکاری یا هماهنگی اولیه پیام بگذارید. ارزیابی پرونده شخصی همچنان از فرم ارزیابی شروع می‌شود.",
     fullName: "نام و نام خانوادگی",
@@ -23,6 +24,7 @@ const copy = {
     whatsappLink: "ادامه در واتس‌اپ",
   },
   en: {
+    eyebrow: "Contact form",
     title: "Send us a message",
     intro: "Use this for general questions, partnerships or initial coordination. Personal case assessment still begins with the assessment form.",
     fullName: "Full name",
@@ -37,6 +39,7 @@ const copy = {
     whatsappLink: "Continue on WhatsApp",
   },
   es: {
+    eyebrow: "Formulario de contacto",
     title: "Envíanos un mensaje",
     intro: "Para preguntas generales, colaboraciones o coordinación inicial. La evaluación personal empieza con el formulario.",
     fullName: "Nombre completo",
@@ -110,7 +113,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
   return (
     <section className="contact-form-section content-section">
-      <div className="form-intro"><p className="eyebrow">CONTACT FORM</p><h2>{c.title}</h2><p>{c.intro}</p></div>
+      <div className="form-intro"><p className="eyebrow">{c.eyebrow}</p><h2>{c.title}</h2><p>{c.intro}</p></div>
       <form ref={formRef} className="contact-form" onSubmit={(event) => void submit(event)}>
         <div className="honeypot" aria-hidden="true"><label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
         <div className="form-grid">
