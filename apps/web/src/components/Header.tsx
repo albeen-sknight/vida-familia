@@ -20,6 +20,7 @@ export function Header({ locale }: { locale: Locale }) {
     [c.nav.argentina, routeFor(locale, "/argentina")],
     [c.nav.services, routeFor(locale, "/services")],
     [c.nav.resources, routeFor(locale, "/resources")],
+    [c.nav.contact, routeFor(locale, "/contact")],
   ] as const;
 
   useEffect(() => setMenuOpen(false), [hash, pathname]);
