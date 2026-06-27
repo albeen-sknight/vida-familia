@@ -99,6 +99,155 @@ const journeyCopy = {
 } as const;
 
 export const pathwayStepSlugs = ["pathway-strategy", "document-readiness", "housing-settlement", "family-coordination"] as const;
+type PathwayStepSlug = (typeof pathwayStepSlugs)[number];
+
+const pathwayStepDetails: Record<PathwayStepSlug, Record<Locale, {
+  lead: string;
+  sections: Array<{ title: string; body: string }>;
+  outcome: string;
+  connects: string;
+}>> = {
+  "pathway-strategy": {
+    fa: {
+      lead: "این مرحله قبل از هر فرم و هزینه جدی، مسیر زندگی را روشن می‌کند: اسپانیا یا آرژانتین، تحصیل یا کار، بودجه، زمان و نیازهای خانواده.",
+      sections: [
+        { title: "چه مسئله‌ای را حل می‌کند", body: "تصمیم‌های پراکنده درباره کشور، نوع اقامت، دانشگاه، کار، خانواده و پول را به یک مسیر قابل تصمیم تبدیل می‌کند." },
+        { title: "ویدا فامیلیا چه چیزی را بررسی می‌کند", body: "تناسب اسپانیا و آرژانتین، بودجه واقعی، زمان‌بندی، هدف تحصیلی یا کاری، ریسک‌های خانواده و معیارهای تصمیم را کنار هم می‌گذاریم." },
+        { title: "خانواده چه چیزی آماده می‌کند", body: "هدف اصلی، وضعیت مالی، سن و نیازهای اعضای خانواده، سطح زبان، سابقه تحصیل یا کار و محدودیت‌های زمانی." },
+        { title: "اشتباه‌های رایج", body: "شروع با کشور محبوب، نه کشور مناسب؛ نادیده گرفتن هزینه ماه‌های اول؛ یا انتخاب مسیر بدون دیدن مدرسه، کار و مسکن." },
+      ],
+      outcome: "خروجی عملی این مرحله یک نقشه راه اولیه است: مقصد پیشنهادی، مسیر محتمل، زمان تقریبی، ریسک‌ها و قدم بعدی برای مدارک.",
+      connects: "وقتی مسیر انتخاب شد، مرحله بعد این است که مدارک با همان مسیر هماهنگ شوند، نه اینکه یک چک‌لیست عمومی دنبال شود.",
+    },
+    en: {
+      lead: "This step clarifies the life route before serious forms or costs: Spain or Argentina, study or work, budget, timing and family needs.",
+      sections: [
+        { title: "What this step solves", body: "It turns scattered choices about country, residence path, university, work, family and money into a route you can actually decide on." },
+        { title: "What Vida Familia checks", body: "We compare Spain and Argentina fit, realistic budget, timing, study or work goals, family risks and the criteria behind the decision." },
+        { title: "What the family provides", body: "Main goal, finances, ages and needs of family members, language level, study or work background and timing constraints." },
+        { title: "Common mistakes", body: "Starting with the country that feels attractive instead of the country that fits; ignoring first-month costs; choosing a route before checking school, work and housing reality." },
+      ],
+      outcome: "The practical outcome is an initial roadmap: recommended destination, likely pathway, rough timing, risks and the next document step.",
+      connects: "Once the route is chosen, documents need to match that route rather than follow a generic checklist.",
+    },
+    es: {
+      lead: "Esta etapa aclara la ruta de vida antes de formularios o costes serios: España o Argentina, estudios o trabajo, presupuesto, tiempos y necesidades familiares.",
+      sections: [
+        { title: "Qué resuelve esta etapa", body: "Convierte decisiones dispersas sobre país, residencia, universidad, trabajo, familia y dinero en una ruta que se puede decidir." },
+        { title: "Qué revisa Vida Familia", body: "Comparamos encaje entre España y Argentina, presupuesto realista, calendario, objetivo académico o laboral, riesgos familiares y criterios de decisión." },
+        { title: "Qué aporta la familia", body: "Objetivo principal, situación económica, edades y necesidades familiares, nivel de idioma, perfil académico o laboral y límites de tiempo." },
+        { title: "Errores frecuentes", body: "Empezar por el país que atrae y no por el que encaja; ignorar costes iniciales; elegir ruta sin mirar colegio, trabajo y vivienda." },
+      ],
+      outcome: "El resultado práctico es una hoja de ruta inicial: destino recomendado, vía probable, tiempos aproximados, riesgos y siguiente paso documental.",
+      connects: "Una vez elegida la ruta, los documentos deben responder a esa ruta y no a una lista genérica.",
+    },
+  },
+  "document-readiness": {
+    fa: {
+      lead: "در این مرحله پرونده از حالت ایده به مدارک قابل پیگیری تبدیل می‌شود؛ مدارک هویتی، مالی، تحصیلی، ترجمه‌ها و زمان تأییدها کنار هم می‌آیند.",
+      sections: [
+        { title: "چه مسئله‌ای را حل می‌کند", body: "ریسک توقف پرونده به‌خاطر مدرک ناقص، ترجمه دیرهنگام، تاریخ منقضی یا ترتیب اشتباه اقدام‌ها را کم می‌کند." },
+        { title: "ویدا فامیلیا چه چیزی را آماده می‌کند", body: "چک‌لیست مسیرمحور، اولویت مدارک کند، ترجمه و آپوستیل یا لگالیزیشن، بسته درخواست و زمان‌بندی ارسال." },
+        { title: "خانواده چه چیزی آماده می‌کند", body: "پاسپورت‌ها، مدارک تولد و ازدواج در صورت نیاز، سوابق تحصیلی، مدارک مالی، گواهی‌های لازم و نسخه‌های قابل ترجمه." },
+        { title: "اشتباه‌های رایج", body: "ترجمه قبل از نهایی‌شدن مسیر، جا انداختن مدرک کشور مبدأ، بی‌توجهی به اعتبار زمانی، یا ارسال فایل‌های پراکنده بدون ساختار." },
+      ],
+      outcome: "خروجی عملی، یک پرونده منظم با اولویت، وضعیت هر مدرک و قدم‌های بعدی برای ترجمه، تأیید یا تکمیل است.",
+      connects: "وقتی مدارک روشن شد، برنامه ورود و استقرار می‌تواند واقعی‌تر شود: خانه، بانک، بیمه، ثبت‌های محلی و روزهای اول.",
+    },
+    en: {
+      lead: "This step turns the idea into a trackable file: identity, financial, academic documents, translations and validation timing are organized together.",
+      sections: [
+        { title: "What this step solves", body: "It reduces the risk of a file stopping because of missing paperwork, late translation, expired records or the wrong order of actions." },
+        { title: "What Vida Familia prepares", body: "A pathway-specific checklist, slow-document priorities, translation and apostille/legalization timing, application packet structure and submission sequence." },
+        { title: "What the family provides", body: "Passports, birth or marriage records when relevant, education records, financial evidence, required certificates and clean copies for translation." },
+        { title: "Common mistakes", body: "Translating before the route is final, forgetting origin-country documents, ignoring document validity windows or sending scattered files without structure." },
+      ],
+      outcome: "The practical outcome is an organized file with priorities, status for each document and next actions for translation, validation or completion.",
+      connects: "When the paperwork is clear, arrival planning becomes more realistic: housing, banking, insurance, local registrations and first days.",
+    },
+    es: {
+      lead: "Esta etapa convierte la idea en un expediente controlable: identidad, finanzas, estudios, traducciones y validaciones se ordenan juntos.",
+      sections: [
+        { title: "Qué resuelve esta etapa", body: "Reduce el riesgo de que el expediente se pare por documentos incompletos, traducciones tardías, certificados caducados o secuencia incorrecta." },
+        { title: "Qué prepara Vida Familia", body: "Lista específica por vía, prioridad de documentos lentos, traducción y apostilla/legalización, estructura del paquete y calendario de presentación." },
+        { title: "Qué aporta la familia", body: "Pasaportes, partidas o certificados familiares si aplican, estudios, pruebas económicas, certificados necesarios y copias limpias para traducir." },
+        { title: "Errores frecuentes", body: "Traducir antes de cerrar la ruta, olvidar documentos del país de origen, ignorar plazos de validez o enviar archivos sin estructura." },
+      ],
+      outcome: "El resultado práctico es un expediente ordenado con prioridades, estado de cada documento y próximos pasos de traducción, validación o cierre.",
+      connects: "Con los documentos claros, la llegada puede planificarse mejor: vivienda, banco, seguro, registros locales y primeros días.",
+    },
+  },
+  "housing-settlement": {
+    fa: {
+      lead: "این مرحله زندگی روزهای اول را از قبل جدی می‌گیرد: خانه، محله، مدرسه، بانک، بیمه، ثبت محلی و نیازهای هفته اول.",
+      sections: [
+        { title: "چه مسئله‌ای را حل می‌کند", body: "کمک می‌کند ورود خانواده به کشور جدید فقط یک تاریخ پرواز نباشد، بلکه برنامه‌ای برای خواب، پول، رفت‌وآمد، مدرسه و آرامش اولیه داشته باشد." },
+        { title: "ویدا فامیلیا چه چیزی را بررسی می‌کند", body: "تناسب محله با بودجه و مدرسه، مدارک اجاره، نیازهای بانکی و بیمه‌ای، ثبت‌های محلی و اولویت کارهای هفته اول." },
+        { title: "خانواده چه چیزی آماده می‌کند", body: "بودجه مسکن، تعداد اعضا، نیاز مدرسه یا دانشگاه، شهر ترجیحی، زمان ورود، مدارک درآمد و سطح انعطاف در محله یا نوع خانه." },
+        { title: "اشتباه‌های رایج", body: "رزرو عجولانه خانه، ندیدن هزینه ضمانت و کمیسیون، عقب انداختن بانک یا بیمه، یا انتخاب محله فقط براساس عکس." },
+      ],
+      outcome: "خروجی عملی، برنامه ورود و استقرار است: اولویت‌های مسکن، کارهای اداری، نیازهای مالی و چک‌لیست روزهای اول.",
+      connects: "بعد از آماده‌شدن ورود، باید مطمئن شد وظایف و زمان‌بندی بین اعضای خانواده هماهنگ است.",
+    },
+    en: {
+      lead: "This step treats the first days as a real life plan: housing, neighborhood, school, banking, insurance, local registration and first-week needs.",
+      sections: [
+        { title: "What this step solves", body: "It makes arrival more than a flight date by planning where the family sleeps, how money works, transport, school needs and early stability." },
+        { title: "What Vida Familia checks", body: "Neighborhood fit for budget and school, rental evidence, banking and insurance needs, local registrations and first-week priorities." },
+        { title: "What the family provides", body: "Housing budget, family size, school or university needs, preferred city, arrival date, income evidence and flexibility on neighborhood or housing type." },
+        { title: "Common mistakes", body: "Rushing into housing, missing deposit and agency costs, delaying bank or insurance steps, or choosing a neighborhood from photos alone." },
+      ],
+      outcome: "The practical outcome is an arrival and settlement plan: housing priorities, administrative steps, financial needs and first-days checklist.",
+      connects: "Once arrival is planned, the family needs clear task ownership and timing so everyone stays aligned.",
+    },
+    es: {
+      lead: "Esta etapa toma en serio los primeros días: vivienda, barrio, colegio, banco, seguro, registros locales y necesidades de la primera semana.",
+      sections: [
+        { title: "Qué resuelve esta etapa", body: "Hace que la llegada sea más que un vuelo: planifica dónde dormir, cómo gestionar dinero, transporte, colegio y estabilidad inicial." },
+        { title: "Qué revisa Vida Familia", body: "Encaje de barrio con presupuesto y colegio, documentos de alquiler, necesidades bancarias y de seguro, registros locales y prioridades de la primera semana." },
+        { title: "Qué aporta la familia", body: "Presupuesto de vivienda, tamaño familiar, necesidades escolares o universitarias, ciudad preferida, fecha de llegada, prueba de ingresos y flexibilidad." },
+        { title: "Errores frecuentes", body: "Reservar vivienda con prisa, no calcular fianza y comisión, retrasar banco o seguro, o elegir barrio solo por fotos." },
+      ],
+      outcome: "El resultado práctico es un plan de llegada e instalación: prioridades de vivienda, trámites, necesidades financieras y lista de primeros días.",
+      connects: "Con la llegada planificada, la familia necesita tareas claras y calendario compartido para mantenerse alineada.",
+    },
+  },
+  "family-coordination": {
+    fa: {
+      lead: "مرحله آخر مسیر را انسانی نگه می‌دارد: زمان‌بندی خانواده، مدرسه بچه‌ها، نقش همسر یا شریک، تقسیم وظایف و ارتباط شفاف.",
+      sections: [
+        { title: "چه مسئله‌ای را حل می‌کند", body: "جابه‌جایی فقط پرونده یک نفر نیست. این مرحله فشار تصمیم، وظایف و انتظارها را بین اعضای خانواده قابل مدیریت می‌کند." },
+        { title: "ویدا فامیلیا چه چیزی را هماهنگ می‌کند", body: "تقویم مشترک، مالک هر کار، نیازهای مدرسه و زبان، اولویت‌های همسر یا شریک، نقاط تصمیم و زمان تماس‌های پیگیری." },
+        { title: "خانواده چه چیزی آماده می‌کند", body: "مسئول هر بخش، محدودیت‌های کاری و تحصیلی، نیاز کودکان، ترجیح‌های زندگی روزمره و تصمیم‌هایی که باید قبل از حرکت گرفته شود." },
+        { title: "اشتباه‌های رایج", body: "تمرکز کامل روی متقاضی اصلی، نادیده گرفتن مدرسه و زبان، تقسیم‌نکردن وظایف، یا نگه‌داشتن تصمیم‌های سخت تا روزهای آخر." },
+      ],
+      outcome: "خروجی عملی، یک برنامه هماهنگی خانواده است: وظایف، تاریخ‌ها، مسئولیت‌ها، نقاط پیگیری و مسیر ادامه بعد از ورود.",
+      connects: "در این نقطه مسیر آماده ورود به ارزیابی کامل یا اجرای مرحله‌ای است؛ اگر تناسب وجود داشته باشد، همکاری دقیق‌تر تعریف می‌شود.",
+    },
+    en: {
+      lead: "The final step keeps the move human: family timing, children’s school needs, spouse or partner planning, task ownership and clear communication.",
+      sections: [
+        { title: "What this step solves", body: "Relocation is not one person’s file. This step makes decisions, responsibilities and expectations manageable for the whole family." },
+        { title: "What Vida Familia coordinates", body: "Shared calendar, task owners, school and language needs, spouse or partner priorities, decision points and follow-up rhythm." },
+        { title: "What the family provides", body: "Who owns each task, work and study constraints, children’s needs, daily-life preferences and decisions that must be made before moving." },
+        { title: "Common mistakes", body: "Focusing only on the main applicant, ignoring school and language, leaving tasks unassigned or keeping hard decisions until the final days." },
+      ],
+      outcome: "The practical outcome is a family coordination plan: tasks, dates, owners, follow-up points and the continuation path after arrival.",
+      connects: "At this point the route is ready for full assessment or phased execution; if the fit is real, the next collaboration can be defined precisely.",
+    },
+    es: {
+      lead: "La última etapa mantiene la mudanza humana: calendario familiar, colegio de los hijos, planificación de pareja, reparto de tareas y comunicación clara.",
+      sections: [
+        { title: "Qué resuelve esta etapa", body: "La reubicación no es el expediente de una sola persona. Ordena decisiones, responsabilidades y expectativas para toda la familia." },
+        { title: "Qué coordina Vida Familia", body: "Calendario compartido, responsables de tareas, colegio e idioma, prioridades de pareja, puntos de decisión y ritmo de seguimiento." },
+        { title: "Qué aporta la familia", body: "Responsables de cada parte, límites laborales y académicos, necesidades de hijos, preferencias de vida diaria y decisiones previas a la mudanza." },
+        { title: "Errores frecuentes", body: "Mirar solo al solicitante principal, ignorar colegio e idioma, no repartir tareas o dejar decisiones difíciles para el final." },
+      ],
+      outcome: "El resultado práctico es un plan de coordinación familiar: tareas, fechas, responsables, puntos de seguimiento y continuación tras la llegada.",
+      connects: "En este punto la ruta está lista para evaluación completa o ejecución por fases; si encaja, la colaboración se define con precisión.",
+    },
+  },
+};
 
 export function ServicesPage({ locale }: { locale: Locale }) {
   const c = pageCopy[locale];
@@ -144,28 +293,47 @@ export function PathwayStepPage({ locale, slug }: { locale: Locale; slug: string
   const localized = <T extends Record<Locale, string>>(item: T) => item[locale];
   const previousSlug = index > 0 ? pathwayStepSlugs[index - 1] : undefined;
   const nextSlug = index < pathwayStepSlugs.length - 1 ? pathwayStepSlugs[index + 1] : undefined;
+  const stepDetail = pathwayStepDetails[slug as PathwayStepSlug][locale];
 
   return (
-    <PageShell locale={locale} eyebrow={journey.labels.continue + " / " + service.index} title={localized(service.title)} intro={detail} path={"/services/pathway/" + slug}>
+    <PageShell locale={locale} eyebrow={journey.labels.continue + " / " + service.index} title={localized(service.title)} intro={stepDetail.lead} path={"/services/pathway/" + slug}>
       <section className="content-section service-flow-detail-section">
         <article className="service-flow-panel pathway-step-page-panel" id={"service-step-" + service.index}>
           <p className="eyebrow">{journey.title}</p>
           <h2>{localized(service.title)}</h2>
           <p>{localized(service.text)}</p>
           <p>{detail}</p>
-          <div>
+          <div className="pathway-step-nav">
             {previousSlug ? <Link className="text-link" to={routeFor(locale, "/services/pathway/" + previousSlug)}>{journey.labels.previous}</Link> : null}
             {nextSlug ? <Link className="button button-small button-outline" to={routeFor(locale, "/services/pathway/" + nextSlug)}>{journey.labels.next}</Link> : <Link className="button button-small button-outline" to={routeFor(locale, "/apply")}>{locale === "fa" ? "ارزیابی شرایط من" : locale === "es" ? "Evaluar mi situación" : "Assess my situation"}</Link>}
             <Link className="text-link" to={routeFor(locale, "/services#service-steps")}>{journey.labels.back}</Link>
           </div>
         </article>
       </section>
-      <section className="content-section service-steps-overview">
-        <SectionHeading eyebrow={journey.labels.back} title={journey.title} />
-        <div className="services-grid">
-          {serviceHighlights.map((item, itemIndex) => (
-            <ServiceCard key={item.index} index={item.index} title={localized(item.title)} text={localized(item.text)} href={routeFor(locale, "/services/pathway/" + pathwayStepSlugs[itemIndex])} />
-          ))}
+
+      <section className="content-section pathway-detail-grid" aria-label={localized(service.title)}>
+        {stepDetail.sections.map((section, sectionIndex) => (
+          <article className="pathway-detail-card" key={section.title}>
+            <span>{String(sectionIndex + 1).padStart(2, "0")}</span>
+            <h3>{section.title}</h3>
+            <p>{section.body}</p>
+          </article>
+        ))}
+      </section>
+
+      <section className="content-section pathway-outcome-panel">
+        <div>
+          <p className="eyebrow">{locale === "fa" ? "خروجی عملی" : locale === "es" ? "Resultado práctico" : "Practical outcome"}</p>
+          <h2>{stepDetail.outcome}</h2>
+        </div>
+        <div>
+          <p className="eyebrow">{locale === "fa" ? "اتصال به مرحله بعد" : locale === "es" ? "Conexión con la siguiente etapa" : "How it connects"}</p>
+          <p>{stepDetail.connects}</p>
+          <div className="pathway-step-nav">
+            {previousSlug ? <Link className="text-link" to={routeFor(locale, "/services/pathway/" + previousSlug)}>{journey.labels.previous}</Link> : null}
+            {nextSlug ? <Link className="button button-small button-outline" to={routeFor(locale, "/services/pathway/" + nextSlug)}>{journey.labels.next}</Link> : <Link className="button button-small button-outline" to={routeFor(locale, "/apply")}>{locale === "fa" ? "ارزیابی شرایط من" : locale === "es" ? "Evaluar mi situación" : "Assess my situation"}</Link>}
+            <Link className="text-link" to={routeFor(locale, "/services#service-steps")}>{journey.labels.back}</Link>
+          </div>
         </div>
       </section>
     </PageShell>
