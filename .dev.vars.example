@@ -1,7 +1,7 @@
 PUBLIC_SITE_URL=http://localhost:5173
 ALLOWED_ORIGINS=http://localhost:5173,https://vidafamilia.es,https://www.vidafamilia.es
-ADMIN_EMAIL=albertosaeedi@gmail.com
-ADMIN_NOTIFICATION_EMAILS=albertosaeedi@gmail.com,saeediamirahmad8849@gmail.com,sharif.saeedi0709@gmail.com
+ADMIN_EMAIL=vidafamilia.team@gmail.com
+ADMIN_NOTIFICATION_EMAILS=vidafamilia.team@gmail.com,albertosaeedi@gmail.com,saeediamirahmad8849@gmail.com,sharif.saeedi0709@gmail.com
 ADMIN_API_TOKEN=
 RESEND_API_KEY=
 FROM_EMAIL=no-reply@vidafamilia.es

@@ -40,10 +40,12 @@ const DEFAULT_ALLOWED_ORIGINS = [
 ];
 const DEFAULT_SITE_URL = "https://vidafamilia.es";
 const DEFAULT_ADMIN_NOTIFICATION_EMAILS = [
+  "vidafamilia.team@gmail.com",
   "albertosaeedi@gmail.com",
   "saeediamirahmad8849@gmail.com",
   "sharif.saeedi0709@gmail.com",
 ];
+const EMAIL_DISCLAIMER = "Vida Familia provides educational, relocation and coordination services. No visa or residency outcome is guaranteed, and legal matters may require licensed professionals.";
 
 class ApiError extends Error {
   constructor(public readonly status: number, message: string, public readonly fields?: string[]) {
@@ -181,7 +183,10 @@ async function assertAdmin(request: Request, env: Bindings): Promise<void> {
 }
 
 function adminRecipients(env: Bindings): string[] {
-  const configured = (env.ADMIN_NOTIFICATION_EMAILS || env.ADMIN_EMAIL || "").split(",").map((email) => email.trim()).filter(Boolean);
+  const configured = (env.ADMIN_NOTIFICATION_EMAILS || env.ADMIN_EMAIL || "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter((email) => EMAIL_PATTERN.test(email));
   return configured.length ? configured : DEFAULT_ADMIN_NOTIFICATION_EMAILS;
 }
 
@@ -198,7 +203,8 @@ function rowsTable(rows: Array<[string, string | number | null | undefined]>): s
 }
 
 function emailLayout(title: string, body: string): string {
-  return `<!doctype html><html><body style="margin:0;background:#f7f1e6;padding:24px"><main style="max-width:720px;margin:auto;background:#fffdf8;border:1px solid #eadfce;border-radius:18px;overflow:hidden"><header style="background:#081e35;color:white;padding:26px 30px"><p style="margin:0 0 6px;color:#f1bf00;font:700 11px Arial;letter-spacing:.16em">VIDA FAMILIA</p><h1 style="margin:0;font:500 28px Georgia,serif">${escapeHtml(title)}</h1></header><section style="padding:28px 30px;color:#17202a;font:15px/1.7 Arial,sans-serif">${body}</section><footer style="padding:18px 30px;background:#f7f1e6;color:#6f6b63;font:12px/1.6 Arial,sans-serif">Spain & Argentina through real experience. This message is informational and does not guarantee any immigration, admission, work, residency, or citizenship outcome.</footer></main></body></html>`;
+  const direction = /[\u0600-\u06FF]/.test(title) ? "rtl" : "ltr";
+  return `<!doctype html><html><body style="margin:0;background:#f7f1e6;padding:24px"><main dir="${direction}" style="max-width:720px;margin:auto;background:#fffdf8;border:1px solid #eadfce;border-radius:18px;overflow:hidden"><header style="background:#081e35;color:white;padding:26px 30px"><p style="margin:0 0 6px;color:#f1bf00;font:700 11px Arial;letter-spacing:.16em">VIDA FAMILIA</p><h1 style="margin:0;font:500 28px Georgia,serif">${escapeHtml(title)}</h1></header><section style="padding:28px 30px;color:#17202a;font:15px/1.7 Arial,sans-serif">${body}</section><footer style="padding:18px 30px;background:#f7f1e6;color:#6f6b63;font:12px/1.6 Arial,sans-serif">Spain & Argentina through real experience.<br>${escapeHtml(EMAIL_DISCLAIMER)}</footer></main></body></html>`;
 }
 
 type EmailMessage = {
@@ -210,30 +216,39 @@ type EmailMessage = {
 };
 
 async function sendEmail(env: Bindings, message: EmailMessage): Promise<{ ok: boolean; skipped?: boolean; error?: string }> {
+  const recipients = [...new Set(message.to.map((email) => email.trim().toLowerCase()).filter((email) => EMAIL_PATTERN.test(email)))];
+  if (!recipients.length) {
+    console.log(JSON.stringify({ message: "Email skipped: no valid recipients", subject: message.subject }));
+    return { ok: true, skipped: true };
+  }
   if (!env.RESEND_API_KEY || !env.FROM_EMAIL) {
     console.log(JSON.stringify({ message: "Email skipped: RESEND_API_KEY or FROM_EMAIL not configured", subject: message.subject }));
     return { ok: true, skipped: true };
   }
   const payload: JsonRecord = {
     from: env.FROM_EMAIL,
-    to: message.to,
+    to: recipients,
     subject: message.subject,
     html: message.html,
     text: message.text,
   };
-  if (message.replyTo) payload.reply_to = message.replyTo;
+  if (message.replyTo && EMAIL_PATTERN.test(message.replyTo)) payload.reply_to = message.replyTo;
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    console.error(JSON.stringify({ message: "Resend email failed", status: response.status, subject: message.subject, detail: detail.slice(0, 500) }));
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      console.error(JSON.stringify({ message: "Resend email failed", status: response.status, subject: message.subject }));
+      return { ok: false, error: "Email provider failed" };
+    }
+    return { ok: true };
+  } catch (error) {
+    console.error(JSON.stringify({ message: "Resend email request failed", subject: message.subject, error: error instanceof Error ? error.message : String(error) }));
     return { ok: false, error: "Email provider failed" };
   }
-  return { ok: true };
 }
 
 async function verifyTurnstileIfConfigured(request: Request, env: Bindings, token: string): Promise<void> {
@@ -558,9 +573,11 @@ async function createConsultationRequest(request: Request, env: Bindings, ctx: E
 }
 
 async function notifyConsultation(env: Bindings, payload: { id: string; referenceCode: string; locale: Locale; fullName: string; email: string; whatsapp: string }): Promise<void> {
+  const applicantTitle = payload.locale === "fa" ? "درخواست مشاوره شما دریافت شد" : payload.locale === "es" ? "Solicitud de consulta recibida" : "Consultation request received";
+  const referenceLabel = payload.locale === "fa" ? "کد پیگیری" : payload.locale === "es" ? "Referencia" : "Reference";
   await Promise.allSettled([
     sendEmail(env, { to: adminRecipients(env), subject: `New consultation request: ${payload.fullName} — ${payload.referenceCode}`, html: emailLayout("New consultation request", rowsTable([["Reference", payload.referenceCode], ["Name", payload.fullName], ["Email", payload.email], ["WhatsApp", payload.whatsapp], ["Admin detail placeholder", `${siteUrl(env)}/dashboard`]])), text: `Reference: ${payload.referenceCode}\nName: ${payload.fullName}\nEmail: ${payload.email}`, replyTo: payload.email }),
-    sendEmail(env, { to: [payload.email], subject: `Vida Familia consultation — ${payload.referenceCode}`, html: emailLayout("Consultation request received", `<p>${localizedLeadMessage(payload.locale)}</p><p><strong>${escapeHtml(payload.referenceCode)}</strong></p>`), text: `Reference: ${payload.referenceCode}\n${localizedLeadMessage(payload.locale)}` }),
+    sendEmail(env, { to: [payload.email], subject: `Vida Familia consultation — ${payload.referenceCode}`, html: emailLayout(applicantTitle, `<p>${localizedLeadMessage(payload.locale)}</p><p><strong>${referenceLabel}:</strong> ${escapeHtml(payload.referenceCode)}</p>`), text: `${referenceLabel}: ${payload.referenceCode}\n${localizedLeadMessage(payload.locale)}\n${EMAIL_DISCLAIMER}` }),
   ]);
 }
 
@@ -578,7 +595,9 @@ async function subscribeNewsletter(request: Request, env: Bindings, ctx: Executi
     ON CONFLICT(email) DO UPDATE SET updated_at = excluded.updated_at, locale = excluded.locale, interest = excluded.interest, source = excluded.source, status = 'subscribed', consent = 1`)
     .bind(crypto.randomUUID(), now, now, email, locale, optionalString(input.interest, 160), optionalString(input.source, 80))
     .run();
-  ctx.waitUntil(sendEmail(env, { to: [email], subject: "Vida Familia — newsletter", html: emailLayout("Vida Familia newsletter", `<p>${locale === "fa" ? "عضویت شما ثبت شد." : locale === "es" ? "Tu suscripción se ha registrado." : "Your subscription has been saved."}</p>`), text: "Vida Familia newsletter subscription saved." }).catch((error) => console.error(JSON.stringify({ message: "Newsletter email failed", error: error instanceof Error ? error.message : String(error) }))));
+  const newsletterTitle = locale === "fa" ? "عضویت شما در خبرنامه ثبت شد" : locale === "es" ? "Suscripción registrada" : "Newsletter subscription saved";
+  const newsletterBody = locale === "fa" ? "عضویت شما ثبت شد. فقط ایمیل‌های کاربردی و مرتبط با مسیر اسپانیا و آرژانتین ارسال می‌کنیم." : locale === "es" ? "Tu suscripción se ha registrado. Solo enviaremos mensajes prácticos y relacionados con las rutas de España y Argentina." : "Your subscription has been saved. We only send practical updates related to Spain and Argentina pathways.";
+  ctx.waitUntil(sendEmail(env, { to: [email], subject: "Vida Familia newsletter", html: emailLayout(newsletterTitle, `<p>${newsletterBody}</p>`), text: `${newsletterTitle}\n${newsletterBody}` }).catch((error) => console.error(JSON.stringify({ message: "Newsletter email failed", error: error instanceof Error ? error.message : String(error) }))));
   return json({ ok: true, message: locale === "fa" ? "عضویت ثبت شد." : locale === "es" ? "Suscripción registrada." : "Subscription saved." }, 201);
 }
 
@@ -611,6 +630,72 @@ function calculateQuiz(input: JsonRecord): { suggested: string[]; score: number;
   return { suggested: unique, score: Math.min(score, 100), nextStep: score >= 60 ? "Continue to the full assessment form." : "Review budget, timing and documents before applying." };
 }
 
+function quizApplicantEmail(locale: Locale, result: { suggested: string[]; score: number; nextStep: string }): { subject: string; title: string; html: string; text: string } {
+  const paths = result.suggested.join(", ");
+  if (locale === "fa") {
+    const title = "نتیجه آزمون مسیر Vida Familia";
+    return {
+      subject: "نتیجه آزمون مسیر Vida Familia",
+      title,
+      html: `<p>نتیجه اولیه شما ثبت شد.</p><p><strong>امتیاز آمادگی:</strong> ${result.score}/100</p><p><strong>مسیرهای پیشنهادی:</strong> ${escapeHtml(paths)}</p><p><strong>گام بعدی:</strong> ${escapeHtml(result.nextStep)}</p><p>این نتیجه یک ارزیابی اولیه است و جایگزین بررسی کامل مدارک و شرایط فردی نیست.</p>`,
+      text: `${title}\nReadiness: ${result.score}/100\nSuggested paths: ${paths}\nNext step: ${result.nextStep}\n${EMAIL_DISCLAIMER}`,
+    };
+  }
+  if (locale === "es") {
+    const title = "Resultado de tu quiz de ruta";
+    return {
+      subject: "Resultado de tu quiz de ruta Vida Familia",
+      title,
+      html: `<p>Tu resultado inicial se ha registrado.</p><p><strong>Puntuación de preparación:</strong> ${result.score}/100</p><p><strong>Vías sugeridas:</strong> ${escapeHtml(paths)}</p><p><strong>Siguiente paso:</strong> ${escapeHtml(result.nextStep)}</p><p>Este resultado es una orientación inicial y no sustituye una revisión completa de documentos y circunstancias personales.</p>`,
+      text: `${title}\nReadiness: ${result.score}/100\nSuggested paths: ${paths}\nNext step: ${result.nextStep}\n${EMAIL_DISCLAIMER}`,
+    };
+  }
+  const title = "Your pathway quiz result";
+  return {
+    subject: "Your Vida Familia pathway quiz result",
+    title,
+    html: `<p>Your initial pathway result has been registered.</p><p><strong>Readiness score:</strong> ${result.score}/100</p><p><strong>Suggested paths:</strong> ${escapeHtml(paths)}</p><p><strong>Next step:</strong> ${escapeHtml(result.nextStep)}</p><p>This is an initial direction and does not replace a full review of documents and personal circumstances.</p>`,
+    text: `${title}\nReadiness: ${result.score}/100\nSuggested paths: ${paths}\nNext step: ${result.nextStep}\n${EMAIL_DISCLAIMER}`,
+  };
+}
+
+async function notifyQuizResult(env: Bindings, payload: { id: string; locale: Locale; input: JsonRecord; result: { suggested: string[]; score: number; nextStep: string }; email: string | null; consent: boolean }): Promise<void> {
+  const adminRows: Array<[string, string | number | null]> = [
+    ["Quiz ID", payload.id],
+    ["Locale", payload.locale],
+    ["Contact email", payload.email],
+    ["Email result requested", payload.consent ? "yes" : "no"],
+    ["Target preference", optionalString(payload.input.target_country_preference, 80)],
+    ["Goal", optionalString(payload.input.goal, 160)],
+    ["Budget", optionalString(payload.input.budget_range, 160)],
+    ["Income", optionalString(payload.input.income_range, 160)],
+    ["Family size", optionalString(payload.input.family_size, 30)],
+    ["Timeline", optionalString(payload.input.timeline, 80)],
+    ["Education level", optionalString(payload.input.education_level, 160)],
+    ["Work background", optionalString(payload.input.work_background, 600)],
+    ["Documents ready", optionalString(payload.input.documents_ready, 160)],
+    ["WhatsApp", optionalString(payload.input.whatsapp, 40)],
+    ["Source", optionalString(payload.input.source, 80)],
+    ["Readiness score", payload.result.score],
+    ["Suggested paths", payload.result.suggested.join(", ")],
+    ["Next step", payload.result.nextStep],
+  ];
+  const jobs: Promise<{ ok: boolean; skipped?: boolean; error?: string }>[] = [
+    sendEmail(env, {
+      to: adminRecipients(env),
+      subject: `New pathway quiz result: ${payload.result.score}/100`,
+      html: emailLayout("New pathway quiz result", rowsTable(adminRows)),
+      text: adminRows.map(([label, value]) => `${label}: ${value ?? ""}`).join("\n"),
+      replyTo: payload.email ?? undefined,
+    }),
+  ];
+  if (payload.email && payload.consent) {
+    const applicant = quizApplicantEmail(payload.locale, payload.result);
+    jobs.push(sendEmail(env, { to: [payload.email], subject: applicant.subject, html: emailLayout(applicant.title, applicant.html), text: applicant.text }));
+  }
+  await Promise.allSettled(jobs);
+}
+
 async function createQuizResult(request: Request, env: Bindings, ctx: ExecutionContext): Promise<Response> {
   assertOriginAllowed(request, env);
   assertJsonRequest(request);
@@ -621,14 +706,59 @@ async function createQuizResult(request: Request, env: Bindings, ctx: ExecutionC
   const result = calculateQuiz(input);
   const id = crypto.randomUUID();
   const email = optionalString(input.contact_email, 254)?.toLowerCase() ?? null;
-  const consent = input.consent === true ? 1 : 0;
+  const consent = input.consent === true;
   await env.DB.prepare(`INSERT INTO quiz_results (id, locale, target_country_preference, goal, budget_range, income_range, family_size, timeline, education_level, work_background, documents_ready, suggested_paths_json, readiness_score, contact_email, whatsapp, consent, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .bind(id, locale, optionalString(input.target_country_preference, 80), optionalString(input.goal, 160), optionalString(input.budget_range, 160), optionalString(input.income_range, 160), optionalString(input.family_size, 30), optionalString(input.timeline, 80), optionalString(input.education_level, 160), optionalString(input.work_background, 600), optionalString(input.documents_ready, 160), JSON.stringify(result.suggested), result.score, email, optionalString(input.whatsapp, 40), consent, optionalString(input.source, 80))
+    .bind(id, locale, optionalString(input.target_country_preference, 80), optionalString(input.goal, 160), optionalString(input.budget_range, 160), optionalString(input.income_range, 160), optionalString(input.family_size, 30), optionalString(input.timeline, 80), optionalString(input.education_level, 160), optionalString(input.work_background, 600), optionalString(input.documents_ready, 160), JSON.stringify(result.suggested), result.score, email, optionalString(input.whatsapp, 40), consent ? 1 : 0, optionalString(input.source, 80))
     .run();
-  if (email && EMAIL_PATTERN.test(email) && consent) {
-    ctx.waitUntil(sendEmail(env, { to: [email], subject: "Vida Familia pathway quiz", html: emailLayout("Your pathway quiz result", `<p>${escapeHtml(result.suggested.join(", "))}</p><p>${escapeHtml(result.nextStep)}</p>`), text: `${result.suggested.join(", ")}\n${result.nextStep}` }).catch((error) => console.error(JSON.stringify({ message: "Quiz result email failed", error: error instanceof Error ? error.message : String(error) }))));
-  }
+  ctx.waitUntil(notifyQuizResult(env, { id, locale, input, result, email: email && EMAIL_PATTERN.test(email) ? email : null, consent }).catch((error) => console.error(JSON.stringify({ message: "Quiz notification failed", quizId: id, error: error instanceof Error ? error.message : String(error) }))));
   return json({ ok: true, id, suggested_paths: result.suggested, readiness_score: result.score, next_step: result.nextStep }, 201);
+}
+
+function guideApplicantEmail(locale: Locale, guideSlug: string): { subject: string; title: string; html: string; text: string } {
+  if (locale === "fa") {
+    const title = "درخواست راهنمای شما ثبت شد";
+    return {
+      subject: "درخواست راهنمای Vida Familia ثبت شد",
+      title,
+      html: `<p>درخواست شما برای راهنمای <strong>${escapeHtml(guideSlug)}</strong> ثبت شد.</p><p>در حال حاضر فایل دانلود عمومی برای این راهنما در سایت قرار نگرفته است. پس از آماده‌شدن فایل یا لینک واقعی، آن را برای شما ارسال می‌کنیم.</p>`,
+      text: `${title}\nGuide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.\n${EMAIL_DISCLAIMER}`,
+    };
+  }
+  if (locale === "es") {
+    const title = "Tu solicitud de guía se ha registrado";
+    return {
+      subject: "Solicitud de guía Vida Familia registrada",
+      title,
+      html: `<p>Tu solicitud para la guía <strong>${escapeHtml(guideSlug)}</strong> se ha registrado.</p><p>Actualmente no hay un archivo o enlace público de descarga para esta guía. Cuando el enlace real esté disponible, te lo enviaremos.</p>`,
+      text: `${title}\nGuide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.\n${EMAIL_DISCLAIMER}`,
+    };
+  }
+  const title = "Your guide request has been registered";
+  return {
+    subject: "Vida Familia guide request registered",
+    title,
+    html: `<p>Your request for <strong>${escapeHtml(guideSlug)}</strong> has been registered.</p><p>There is not yet a published public download file or guide link for this resource. When the real link is available, we will send it to you.</p>`,
+    text: `${title}\nGuide: ${guideSlug}\nThe guide file/link is not published yet. We will send it when available.\n${EMAIL_DISCLAIMER}`,
+  };
+}
+
+async function notifyGuideUnlock(env: Bindings, payload: { id: string; locale: Locale; guideSlug: string; email: string; fullName: string | null; whatsapp: string | null; interest: string | null; source: string | null; timestamp: string }): Promise<void> {
+  const applicant = guideApplicantEmail(payload.locale, payload.guideSlug);
+  const adminRows: Array<[string, string | number | null]> = [
+    ["Guide unlock ID", payload.id],
+    ["Guide", payload.guideSlug],
+    ["Email", payload.email],
+    ["Name", payload.fullName],
+    ["WhatsApp", payload.whatsapp],
+    ["Interest", payload.interest],
+    ["Locale", payload.locale],
+    ["Source", payload.source],
+    ["Timestamp", payload.timestamp],
+  ];
+  await Promise.allSettled([
+    sendEmail(env, { to: [payload.email], subject: applicant.subject, html: emailLayout(applicant.title, applicant.html), text: applicant.text }),
+    sendEmail(env, { to: adminRecipients(env), subject: `Guide request: ${payload.guideSlug}`, html: emailLayout("New guide request", rowsTable(adminRows)), text: adminRows.map(([label, value]) => `${label}: ${value ?? ""}`).join("\n"), replyTo: payload.email }),
+  ]);
 }
 
 async function unlockGuide(request: Request, env: Bindings, ctx: ExecutionContext): Promise<Response> {
@@ -642,14 +772,14 @@ async function unlockGuide(request: Request, env: Bindings, ctx: ExecutionContex
   if (!EMAIL_PATTERN.test(email) || !guideSlug || input.consent !== true) throw new ApiError(422, "Please check the highlighted fields", !EMAIL_PATTERN.test(email) ? ["email"] : !guideSlug ? ["guide_slug"] : ["consent"]);
   await verifyTurnstileIfConfigured(request, env, normalizeString(input.turnstileToken, 2048));
   const id = crypto.randomUUID();
+  const fullName = optionalString(input.full_name, 100);
+  const whatsapp = optionalString(input.whatsapp, 40);
+  const interest = optionalString(input.interest, 160);
+  const source = optionalString(input.source, 80);
   await env.DB.prepare("INSERT INTO guide_unlocks (id, locale, guide_slug, full_name, email, whatsapp, interest, consent, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .bind(id, locale, guideSlug, optionalString(input.full_name, 100), email, optionalString(input.whatsapp, 40), optionalString(input.interest, 160), 1, optionalString(input.source, 80))
+    .bind(id, locale, guideSlug, fullName, email, whatsapp, interest, 1, source)
     .run();
-  const link = `${siteUrl(env)}/resources#${encodeURIComponent(guideSlug)}`;
-  ctx.waitUntil(sendEmail(env, { to: [email], subject: `Vida Familia guide — ${guideSlug}`, html: emailLayout("Your Vida Familia guide", `<p>${locale === "fa" ? "لینک راهنما:" : locale === "es" ? "Enlace de la guía:" : "Guide link:"} <a href="${escapeHtml(link)}">${escapeHtml(link)}</a></p>`), text: `Guide link: ${link}` }).catch((error) => console.error(JSON.stringify({ message: "Guide email failed", error: error instanceof Error ? error.message : String(error) }))));
-  if (/(budget|rentista|student|madrid|family)/i.test(`${guideSlug} ${normalizeString(input.interest, 160)}`)) {
-    ctx.waitUntil(sendEmail(env, { to: adminRecipients(env), subject: `High-intent guide unlock: ${guideSlug}`, html: emailLayout("Guide unlock", rowsTable([["Guide", guideSlug], ["Email", email], ["Name", optionalString(input.full_name, 100)], ["Interest", optionalString(input.interest, 160)]])), text: `Guide: ${guideSlug}\nEmail: ${email}` }).catch((error) => console.error(JSON.stringify({ message: "Guide admin email failed", error: error instanceof Error ? error.message : String(error) }))));
-  }
+  ctx.waitUntil(notifyGuideUnlock(env, { id, locale, guideSlug, email, fullName, whatsapp, interest, source, timestamp: new Date().toISOString() }).catch((error) => console.error(JSON.stringify({ message: "Guide notification failed", guideUnlockId: id, error: error instanceof Error ? error.message : String(error) }))));
   return json({ ok: true, id, message: locale === "fa" ? "راهنما برای شما ارسال می‌شود." : locale === "es" ? "Te enviaremos la guía." : "The guide will be sent to you." }, 201);
 }
 
