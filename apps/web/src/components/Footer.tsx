@@ -45,10 +45,13 @@ export function Footer({ locale }: { locale: Locale }) {
   return (
     <footer className="site-footer">
       <div className="footer-main">
-        <div className="footer-brand"><img src="/assets/logo.png" alt="Vida Familia" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} /><h2>VIDA<br />FAMILIA</h2><p>{c.footerLine}</p></div>
-        <div className="footer-links"><p className="eyebrow">{f.explore}</p><Link to={routeFor(locale, "/about")}>{c.nav.story}</Link><Link to={routeFor(locale, "/services")}>{c.nav.services}</Link><Link to={routeFor(locale, "/resources")}>{c.nav.resources}</Link><Link to={routeFor(locale, "/contact")}>{f.contact}</Link></div>
-        <div className="footer-links"><p className="eyebrow">{f.legal}</p><Link to={routeFor(locale, "/privacy")}>{f.privacy}</Link><Link to={routeFor(locale, "/terms")}>{f.terms}</Link><Link to={routeFor(locale, "/legal-disclaimer")}>{f.disclaimer}</Link></div>
-        <div className="footer-cta"><p className="eyebrow">{f.start}</p><h3>{c.qualificationTitle}</h3><Link to={routeFor(locale, "/apply")}>{c.applyCta}<ArrowUpLeft size={18} /></Link><NewsletterForm locale={locale} compact /><div className="social-links" aria-label="Social media placeholders"><span aria-label="Instagram"><Instagram size={18} /></span><span aria-label="YouTube"><Youtube size={18} /></span></div></div>
+        <div className="footer-stack">
+          <div className="footer-brand"><img src="/assets/logo.png" alt="Vida Familia" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} /><h2>VIDA<br />FAMILIA</h2><p>{c.footerLine}</p></div>
+          <div className="footer-links"><p className="eyebrow">{f.explore}</p><Link to={routeFor(locale, "/about")}>{c.nav.story}</Link><Link to={routeFor(locale, "/services")}>{c.nav.services}</Link><Link to={routeFor(locale, "/resources")}>{c.nav.resources}</Link><Link to={routeFor(locale, "/contact")}>{f.contact}</Link></div>
+          <div className="footer-links"><p className="eyebrow">{f.legal}</p><Link to={routeFor(locale, "/privacy")}>{f.privacy}</Link><Link to={routeFor(locale, "/terms")}>{f.terms}</Link><Link to={routeFor(locale, "/legal-disclaimer")}>{f.disclaimer}</Link></div>
+          <div className="footer-cta"><p className="eyebrow">{f.start}</p><h3>{c.qualificationTitle}</h3><Link to={routeFor(locale, "/apply")}>{c.applyCta}<ArrowUpLeft size={18} /></Link><div className="social-links" aria-label="Social media placeholders"><span aria-label="Instagram"><Instagram size={18} /></span><span aria-label="YouTube"><Youtube size={18} /></span></div></div>
+        </div>
+        <div className="footer-newsletter"><NewsletterForm locale={locale} compact /></div>
       </div>
       <DisclaimerBox compact>{c.legalShort}</DisclaimerBox>
       <div className="footer-bottom"><span>© {new Date().getFullYear()} VIDA FAMILIA. {c.rights}</span><span>{f.destinations}</span></div>

@@ -9,7 +9,8 @@ import { LeadForm } from "../components/LeadForm";
 import { PageShell } from "../components/PageShell";
 import { QualificationCTA } from "../components/QualificationCTA";
 import { SectionHeading } from "../components/SectionHeading";
-import { destinations, servicePages } from "../data/siteData";
+import { ServiceCard } from "../components/ServiceCard";
+import { destinations, serviceHighlights, servicePages } from "../data/siteData";
 import { routeFor } from "../lib/locale";
 
 const pageCopy = {
@@ -61,9 +62,114 @@ export function DestinationPage({ locale, country }: { locale: Locale; country: 
   return <PageShell locale={locale} eyebrow={locale === "fa" ? `${country === "spain" ? "اسپانیا" : "آرژانتین"} · مقصد` : locale === "es" ? `${country === "spain" ? "España" : "Argentina"} · destino` : `${country.toUpperCase()} · destination`} title={title} intro={intro} path={`/${country}`} tone={country}><section className="content-section editorial-story"><div><p className="eyebrow">{locale === "fa" ? "زندگی واقعی" : locale === "es" ? "Vida real" : "Real life"}</p><h2>{locale === "fa" ? `زندگی در ${title} فقط پرونده اقامت نیست` : locale === "es" ? `Vivir en ${title} no es solo un expediente` : `Life in ${title} is more than an application`}</h2></div><p>{locale === "fa" ? "محله، هزینه، مدرسه، زبان، رفت‌وآمد و شبکه حمایتی به اندازه مدارک اهمیت دارند. برنامه ما این تصمیم‌ها را در یک تصویر واحد کنار هم می‌گذارد." : locale === "es" ? "Barrio, costes, colegios, idioma, transporte y red de apoyo importan tanto como los documentos. Nuestro plan conecta todas estas decisiones." : "Neighborhood, cost, school, language, transport and support networks matter as much as documents. Our plan connects them."}</p></section><section className="content-section"><SectionHeading eyebrow={locale === "fa" ? "مسیرها" : locale === "es" ? "Vías" : "Pathways"} title={locale === "fa" ? "مسیرهای اصلی" : locale === "es" ? "Vías principales" : "Core pathways"} /><div className="pathway-grid">{services.map((service) => <Link key={service.slug} to={routeFor(locale, `/services/${country}/${service.slug}`)}><span>{country === "spain" ? "ES" : "AR"}</span><h3>{service.title[locale]}</h3><p>{service.summary[locale]}</p><ArrowUpLeft /></Link>)}</div></section><section className="content-section tinted-section"><SectionHeading eyebrow={locale === "fa" ? "استقرار" : locale === "es" ? "Instalación" : "Settlement"} title={locale === "fa" ? "جزئیات زندگی روزمره" : locale === "es" ? "Detalles de la vida diaria" : "Everyday settlement details"} /><div className="tag-cloud">{practical.map((item) => <span key={item}><bdi>{item}</bdi></span>)}</div></section><QualificationCTA locale={locale} /><DisclaimerBox>{locale === "fa" ? "شرایط اقامت، مالیات، کار و تابعیت تغییرپذیر و پرونده‌محور است. این صفحه آموزشی است و باید پیش از اقدام با منبع رسمی و متخصص مناسب تأیید شود." : locale === "es" ? "Residencia, fiscalidad, trabajo y ciudadanía cambian y dependen del caso. Confirma la información con fuentes oficiales y profesionales." : "Residency, tax, work and citizenship rules change and depend on the case. Confirm information with official sources and qualified professionals."}</DisclaimerBox></PageShell>;
 }
 
+const journeyCopy = {
+  fa: {
+    labels: { next: "مرحله بعد", previous: "مرحله قبل", continue: "ادامه مسیر", back: "بازگشت به مراحل" },
+    title: "از تصمیم تا استقرار",
+    routesTitle: "مسیرهای خدماتی",
+    details: [
+      "ابتدا مقصد، هدف، بودجه، زمان‌بندی و محدودیت‌های واقعی خانواده کنار هم دیده می‌شوند.",
+      "مدارک اصلی، ترجمه‌ها، زمان تأیید و ترتیب اقدام‌ها قبل از عجله برای ارسال پرونده منظم می‌شوند.",
+      "خانه، بانک، بیمه، ثبت‌های محلی و ریتم روزهای اول از قبل در برنامه قرار می‌گیرند.",
+      "تصمیم یک نفر روی مدرسه، کار، زبان و آرامش همه اثر دارد، پس مسیر خانواده یکپارچه دیده می‌شود.",
+    ],
+  },
+  en: {
+    labels: { next: "Next step", previous: "Previous step", continue: "Continue the path", back: "Back to steps" },
+    title: "From decision to settlement",
+    routesTitle: "Service routes",
+    details: [
+      "First we connect destination, goal, budget, timing and the family’s real constraints.",
+      "We organize documents, translations, validation timing and sequence before rushing the file.",
+      "Housing, banking, insurance, local registrations and first days are planned early.",
+      "One person’s decision affects school, work, language and family stability, so the plan stays connected.",
+    ],
+  },
+  es: {
+    labels: { next: "Siguiente paso", previous: "Paso anterior", continue: "Continuar la ruta", back: "Volver a los pasos" },
+    title: "De la decisión a la instalación",
+    routesTitle: "Rutas de servicio",
+    details: [
+      "Primero conectamos destino, objetivo, presupuesto, calendario y límites reales de la familia.",
+      "Ordenamos documentos, traducciones, tiempos de validación y secuencia antes de presentar.",
+      "Vivienda, banco, seguro, registros locales y primeros días entran en el plan desde el inicio.",
+      "La decisión de una persona afecta colegio, trabajo, idioma y calma familiar, por eso miramos el conjunto.",
+    ],
+  },
+} as const;
+
+export const pathwayStepSlugs = ["pathway-strategy", "document-readiness", "housing-settlement", "family-coordination"] as const;
+
 export function ServicesPage({ locale }: { locale: Locale }) {
   const c = pageCopy[locale];
-  return <PageShell locale={locale} eyebrow="SERVICES" title={c.servicesTitle} intro={c.servicesIntro} path="/services"><section className="content-section"><div className="pathway-grid pathway-grid-wide">{servicePages.map((service) => <Link key={`${service.country}-${service.slug}`} to={routeFor(locale, `/services/${service.country}/${service.slug}`)}><span>{service.country === "spain" ? "ES" : "AR"}</span><h3>{service.title[locale]}</h3><p>{service.summary[locale]}</p><ArrowUpLeft /></Link>)}</div></section><section className="content-section"><SectionHeading eyebrow={locale === "fa" ? "حمایت عملی" : locale === "es" ? "Apoyo práctico" : "Practical support"} title={locale === "fa" ? "خدمات تکمیلی استقرار" : locale === "es" ? "Apoyo práctico de instalación" : "Practical settlement support"} /><div className="icon-feature-grid"><article><Home /><h3>{locale === "fa" ? "مسکن" : locale === "es" ? "Vivienda" : "Housing"}</h3><p>{locale === "fa" ? "استراتژی جست‌وجو، مدارک اجاره و هماهنگی عملی." : locale === "es" ? "Estrategia de búsqueda, documentos de alquiler y coordinación práctica." : "Search strategy, rental documents and practical coordination."}</p></article><article><Building2 /><h3>{locale === "fa" ? "امور اداری" : locale === "es" ? "Administración" : "Administration"}</h3><p>{locale === "fa" ? "ثبت‌های محلی، بانک، بیمه و زمان‌بندی امور." : locale === "es" ? "Registros locales, banca, seguro y calendario." : "Local registrations, banking, insurance and timing."}</p></article><article><GraduationCap /><h3>{locale === "fa" ? "آموزش" : locale === "es" ? "Educación" : "Education"}</h3><p>{locale === "fa" ? "دانشگاه، مدرسه، زبان و انطباق تحصیلی." : locale === "es" ? "Universidad, colegio, idioma y adaptación académica." : "University, school, language and academic transition."}</p></article><article><BriefcaseBusiness /><h3>{locale === "fa" ? "کسب‌وکار" : locale === "es" ? "Empresa" : "Business"}</h3><p>{locale === "fa" ? "هماهنگی ساختار کسب‌وکار و ارجاع تخصصی." : locale === "es" ? "Coordinación de estructura empresarial y derivaciones profesionales." : "Business structure coordination and specialist referrals."}</p></article></div></section><QualificationCTA locale={locale} /></PageShell>;
+  const journey = journeyCopy[locale];
+  const localized = <T extends Record<Locale, string>>(item: T) => item[locale];
+
+  return (
+    <PageShell locale={locale} eyebrow={locale === "fa" ? "خدمات" : locale === "es" ? "Servicios" : "Services"} title={c.servicesTitle} intro={c.servicesIntro} path="/services">
+      <section id="service-steps" className="content-section service-steps-overview">
+        <SectionHeading eyebrow={journey.labels.continue} title={journey.title} />
+        <div className="services-grid">
+          {serviceHighlights.map((service, index) => (
+            <ServiceCard key={service.index} index={service.index} title={localized(service.title)} text={localized(service.text)} href={routeFor(locale, "/services/pathway/" + pathwayStepSlugs[index])} />
+          ))}
+        </div>
+      </section>
+
+      <section className="content-section">
+        <SectionHeading eyebrow={locale === "fa" ? "مسیرها" : locale === "es" ? "Rutas" : "Routes"} title={journey.routesTitle} />
+        <div className="pathway-grid pathway-grid-wide">
+          {servicePages.map((service) => <Link key={service.country + "-" + service.slug} to={routeFor(locale, "/services/" + service.country + "/" + service.slug)}><span>{service.country === "spain" ? "ES" : "AR"}</span><h3>{service.title[locale]}</h3><p>{service.summary[locale]}</p><ArrowUpLeft /></Link>)}
+        </div>
+      </section>
+
+      <section className="content-section">
+        <SectionHeading eyebrow={locale === "fa" ? "حمایت عملی" : locale === "es" ? "Apoyo práctico" : "Practical support"} title={locale === "fa" ? "خدمات تکمیلی استقرار" : locale === "es" ? "Apoyo práctico de instalación" : "Practical settlement support"} />
+        <div className="icon-feature-grid"><article><Home /><h3>{locale === "fa" ? "مسکن" : locale === "es" ? "Vivienda" : "Housing"}</h3><p>{locale === "fa" ? "استراتژی جست‌وجو، مدارک اجاره و هماهنگی عملی." : locale === "es" ? "Estrategia de búsqueda, documentos de alquiler y coordinación práctica." : "Search strategy, rental documents and practical coordination."}</p></article><article><Building2 /><h3>{locale === "fa" ? "امور اداری" : locale === "es" ? "Administración" : "Administration"}</h3><p>{locale === "fa" ? "ثبت‌های محلی، بانک، بیمه و زمان‌بندی امور." : locale === "es" ? "Registros locales, banca, seguro y calendario." : "Local registrations, banking, insurance and timing."}</p></article><article><GraduationCap /><h3>{locale === "fa" ? "آموزش" : locale === "es" ? "Educación" : "Education"}</h3><p>{locale === "fa" ? "دانشگاه، مدرسه، زبان و انطباق تحصیلی." : locale === "es" ? "Universidad, colegio, idioma y adaptación académica." : "University, school, language and academic transition."}</p></article><article><BriefcaseBusiness /><h3>{locale === "fa" ? "کسب‌وکار" : locale === "es" ? "Empresa" : "Business"}</h3><p>{locale === "fa" ? "هماهنگی ساختار کسب‌وکار و ارجاع تخصصی." : locale === "es" ? "Coordinación de estructura empresarial y derivaciones profesionales." : "Business structure coordination and specialist referrals."}</p></article></div>
+      </section>
+      <QualificationCTA locale={locale} />
+    </PageShell>
+  );
+}
+
+export function PathwayStepPage({ locale, slug }: { locale: Locale; slug: string }) {
+  const index = pathwayStepSlugs.indexOf(slug as (typeof pathwayStepSlugs)[number]);
+  if (index < 0) return null;
+
+  const journey = journeyCopy[locale];
+  const service = serviceHighlights[index];
+  if (!service) return null;
+
+  const detail = journey.details[index] ?? "";
+  const localized = <T extends Record<Locale, string>>(item: T) => item[locale];
+  const previousSlug = index > 0 ? pathwayStepSlugs[index - 1] : undefined;
+  const nextSlug = index < pathwayStepSlugs.length - 1 ? pathwayStepSlugs[index + 1] : undefined;
+
+  return (
+    <PageShell locale={locale} eyebrow={journey.labels.continue + " / " + service.index} title={localized(service.title)} intro={detail} path={"/services/pathway/" + slug}>
+      <section className="content-section service-flow-detail-section">
+        <article className="service-flow-panel pathway-step-page-panel" id={"service-step-" + service.index}>
+          <p className="eyebrow">{journey.title}</p>
+          <h2>{localized(service.title)}</h2>
+          <p>{localized(service.text)}</p>
+          <p>{detail}</p>
+          <div>
+            {previousSlug ? <Link className="text-link" to={routeFor(locale, "/services/pathway/" + previousSlug)}>{journey.labels.previous}</Link> : null}
+            {nextSlug ? <Link className="button button-small button-outline" to={routeFor(locale, "/services/pathway/" + nextSlug)}>{journey.labels.next}</Link> : <Link className="button button-small button-outline" to={routeFor(locale, "/apply")}>{locale === "fa" ? "ارزیابی شرایط من" : locale === "es" ? "Evaluar mi situación" : "Assess my situation"}</Link>}
+            <Link className="text-link" to={routeFor(locale, "/services#service-steps")}>{journey.labels.back}</Link>
+          </div>
+        </article>
+      </section>
+      <section className="content-section service-steps-overview">
+        <SectionHeading eyebrow={journey.labels.back} title={journey.title} />
+        <div className="services-grid">
+          {serviceHighlights.map((item, itemIndex) => (
+            <ServiceCard key={item.index} index={item.index} title={localized(item.title)} text={localized(item.text)} href={routeFor(locale, "/services/pathway/" + pathwayStepSlugs[itemIndex])} />
+          ))}
+        </div>
+      </section>
+    </PageShell>
+  );
 }
 
 export function LifestylePage({ locale, type }: { locale: Locale; type: "family-life" | "student-life" | "business-residency" }) {

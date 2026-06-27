@@ -7,7 +7,7 @@ import { trackEvent } from "./lib/analytics";
 import { localeFromPath, pathWithoutLocale, textDirection } from "./lib/locale";
 import { DashboardPage } from "./pages/DashboardPage";
 import { HomePage } from "./pages/HomePage";
-import { AboutPage, ApplyPage, ContactPage, DestinationPage, LegalPage, LifestylePage, ResourcesPage, ServicesPage } from "./pages/InfoPages";
+import { AboutPage, ApplyPage, ContactPage, DestinationPage, LegalPage, LifestylePage, PathwayStepPage, pathwayStepSlugs, ResourcesPage, ServicesPage } from "./pages/InfoPages";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { ServiceDetailPage } from "./pages/ServiceDetailPage";
 
@@ -63,6 +63,10 @@ export default function App() {
   else if (path === "/spain") page = <DestinationPage locale={locale} country="spain" />;
   else if (path === "/argentina") page = <DestinationPage locale={locale} country="argentina" />;
   else if (path === "/services") page = <ServicesPage locale={locale} />;
+  else if (path.startsWith("/services/pathway/")) {
+    const slug = path.split("/").pop() ?? "";
+    page = pathwayStepSlugs.includes(slug as (typeof pathwayStepSlugs)[number]) ? <PathwayStepPage locale={locale} slug={slug} /> : <NotFoundPage locale={locale} />;
+  }
   else if (path === "/family-life" || path === "/student-life" || path === "/business-residency") page = <LifestylePage locale={locale} type={path.slice(1) as "family-life" | "student-life" | "business-residency"} />;
   else if (path === "/resources") page = <ResourcesPage locale={locale} />;
   else if (path === "/apply") page = <ApplyPage locale={locale} />;

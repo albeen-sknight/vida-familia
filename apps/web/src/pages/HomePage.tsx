@@ -20,6 +20,7 @@ import { contentPillars, destinations, familyMembers, packageGroups, serviceHigh
 import { routeFor } from "../lib/locale";
 
 const siteUrl = "https://vidafamilia.es";
+const pathwayStepSlugs = ["pathway-strategy", "document-readiness", "housing-settlement", "family-coordination"] as const;
 
 const homeCopy = {
   fa: {
@@ -121,33 +122,6 @@ export function HomePage({ locale }: { locale: Locale }) {
   const c = getCopy(locale);
   const page = homeCopy[locale];
   const localized = <T extends Record<Locale, string>>(item: T) => item[locale];
-  const home = routeFor(locale, "/");
-  const journeyLabels = locale === "fa"
-    ? { next: "مرحله بعد", previous: "مرحله قبل", continue: "ادامه مسیر", back: "بازگشت به مراحل" }
-    : locale === "es"
-      ? { next: "Siguiente paso", previous: "Paso anterior", continue: "Continuar la ruta", back: "Volver a los pasos" }
-      : { next: "Next step", previous: "Previous step", continue: "Continue the path", back: "Back to steps" };
-  const journeyDetails = locale === "fa"
-    ? [
-      "ابتدا مقصد، هدف، بودجه، زمان‌بندی و محدودیت‌های واقعی خانواده کنار هم دیده می‌شوند.",
-      "مدارک اصلی، ترجمه‌ها، زمان تأیید و ترتیب اقدام‌ها قبل از عجله برای ارسال پرونده منظم می‌شوند.",
-      "خانه، بانک، بیمه، ثبت‌های محلی و ریتم روزهای اول از قبل در برنامه قرار می‌گیرند.",
-      "تصمیم یک نفر روی مدرسه، کار، زبان و آرامش همه اثر دارد، پس مسیر خانواده یکپارچه دیده می‌شود.",
-    ]
-    : locale === "es"
-      ? [
-        "Primero conectamos destino, objetivo, presupuesto, calendario y límites reales de la familia.",
-        "Ordenamos documentos, traducciones, tiempos de validación y secuencia antes de presentar.",
-        "Vivienda, banco, seguro, registros locales y primeros días entran en el plan desde el inicio.",
-        "La decisión de una persona afecta colegio, trabajo, idioma y calma familiar, por eso miramos el conjunto.",
-      ]
-      : [
-        "First we connect destination, goal, budget, timing and the family’s real constraints.",
-        "We organize documents, translations, validation timing and sequence before rushing the file.",
-        "Housing, banking, insurance, local registrations and first days are planned early.",
-        "One person’s decision affects school, work, language and family stability, so the plan stays connected.",
-      ];
-
   return (
     <>
       <SEOHead locale={locale} title={locale === "fa" ? "VIDA FAMILIA | اسپانیا و آرژانتین از نگاه یک خانواده واقعی" : locale === "es" ? "VIDA FAMILIA | España y Argentina desde la experiencia real" : "VIDA FAMILIA | Spain & Argentina through real experience"} description={c.heroNote} path={locale === "fa" ? "/" : `/${locale}`} keywords={locale === "fa" ? ["مهاجرت به اسپانیا", "مهاجرت به آرژانتین", "زندگی در مادرید", "اقامت خانوادگی"] : locale === "es" ? ["residencia España", "reubicación familiar", "residencia Argentina"] : ["Spain family relocation", "Argentina residency", "Madrid student life"]} />
@@ -196,21 +170,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         <section id="services" className="services-section section-pad">
           <div className="container">
             <div className="section-split"><SectionHeading eyebrow={c.servicesKicker} title={c.servicesTitle} /><p>{page.servicesIntro}</p></div>
-            <div className="services-grid">{serviceHighlights.map((service) => <ServiceCard key={service.index} index={service.index} title={localized(service.title)} text={localized(service.text)} href={`${home}#service-step-${service.index}`} />)}</div>
-            <div className="service-flow-panels" aria-label={c.servicesTitle}>
-              {serviceHighlights.map((service, index) => (
-                <article className="service-flow-panel" id={`service-step-${service.index}`} key={`detail-${service.index}`}>
-                  <p className="eyebrow">{journeyLabels.continue} / {service.index}</p>
-                  <h3>{localized(service.title)}</h3>
-                  <p>{journeyDetails[index]}</p>
-                  <div>
-                    {index > 0 ? <a className="text-link" href={`${home}#service-step-${serviceHighlights[index - 1]?.index ?? service.index}`}>{journeyLabels.previous}</a> : null}
-                    {index < serviceHighlights.length - 1 ? <a className="button button-small button-outline" href={`${home}#service-step-${serviceHighlights[index + 1]?.index ?? service.index}`}>{journeyLabels.next}</a> : <Link className="button button-small button-outline" to={routeFor(locale, "/apply")}>{c.applyCta}</Link>}
-                    <a className="text-link" href={`${home}#services`}>{journeyLabels.back}</a>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <div className="services-grid">{serviceHighlights.map((service, index) => <ServiceCard key={service.index} index={service.index} title={localized(service.title)} text={localized(service.text)} href={routeFor(locale, `/services/pathway/${pathwayStepSlugs[index]}`)} />)}</div>
           </div>
         </section>
 
