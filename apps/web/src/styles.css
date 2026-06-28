@@ -2413,6 +2413,57 @@ body { background: #020812; }
   color: #9ed0ff;
 }
 
+.legal-copy {
+  max-width: 920px !important;
+  color: #f8fafc;
+}
+
+.legal-updated {
+  display: inline-flex;
+  margin-bottom: 1.2rem !important;
+  padding: .42rem .72rem;
+  border: 1px solid rgba(255,199,0,.22);
+  border-radius: 999px;
+  background: rgba(255,199,0,.07);
+  color: #ffe6a4 !important;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+.legal-copy > section {
+  padding: clamp(1rem, 2vw, 1.35rem) 0 !important;
+  border-top-color: rgba(248,250,252,.13) !important;
+}
+
+.legal-copy h2 {
+  color: #f8fafc !important;
+  font-size: clamp(1.15rem, 2vw, 1.55rem) !important;
+  line-height: 1.28;
+}
+
+[dir="rtl"] .legal-copy h2 {
+  line-height: 1.45;
+}
+
+.legal-copy p {
+  color: rgba(248,250,252,.78) !important;
+  line-height: 1.9;
+}
+
+.legal-contact {
+  margin-top: 1.4rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgba(248,250,252,.13);
+  border-radius: 1rem;
+  background: linear-gradient(145deg, rgba(248,250,252,.065), rgba(8,30,53,.26));
+}
+
+.legal-contact a {
+  color: #fff7d6;
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
 .pathway-grid > a,
 .pathway-grid > a *,
 .service-flow-panel,

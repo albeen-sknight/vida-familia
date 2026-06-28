@@ -465,17 +465,190 @@ export function ContactPage({ locale }: { locale: Locale }) {
 export function LegalPage({ locale, type }: { locale: Locale; type: "privacy" | "terms" | "legal-disclaimer" }) {
   const content = {
     privacy: {
-      title: { fa: "حریم خصوصی", en: "Privacy policy", es: "Política de privacidad" }, intro: { fa: "نحوه استفاده از اطلاعاتی که داوطلبانه در فرم‌ها ارائه می‌کنید.", en: "How we use information you voluntarily provide through forms.", es: "Cómo usamos la información que facilitas voluntariamente." },
-      sections: locale === "fa" ? [["اطلاعاتی که دریافت می‌کنیم", "نام، اطلاعات تماس و پاسخ‌های ارزیابی که خودتان ارسال می‌کنید."], ["هدف استفاده", "فقط برای ارزیابی اولیه، پاسخگویی، امنیت و نگهداری سوابق ضروری."], ["نگهداری و دسترسی", "دسترسی محدود است و اطلاعات بیش از نیاز عملی نگهداری نمی‌شود. سیاست حذف نهایی پیش از راه‌اندازی توسط مالک تأیید می‌شود."], ["حقوق شما", "برای درخواست دسترسی، اصلاح یا حذف، از نشانی رسمی که پیش از راه‌اندازی درج می‌شود استفاده کنید."]] : locale === "es" ? [["Datos recogidos", "Nombre, contacto y respuestas que envías."], ["Finalidad", "Evaluación inicial, respuesta, seguridad y registros necesarios."], ["Conservación y acceso", "Acceso limitado y conservación solo durante el tiempo necesario. El propietario validará la política final antes del lanzamiento."], ["Tus derechos", "Podrás solicitar acceso, rectificación o eliminación en el correo oficial que se publicará."]] : [["Information collected", "Name, contact details and assessment answers you submit."], ["Purpose", "Initial assessment, response, security and necessary records only."], ["Retention and access", "Access is limited and data is not kept longer than operationally needed. The owner will confirm final retention before launch."], ["Your rights", "Use the official address published before launch to request access, correction or deletion."]],
+      fa: {
+        title: "حریم خصوصی",
+        intro: "این سیاست توضیح می‌دهد ویدا فامیلیا چگونه اطلاعاتی را که از طریق وب‌سایت و فرم‌ها ارائه می‌کنید دریافت، استفاده و نگهداری می‌کند.",
+        updated: "آخرین به‌روزرسانی: ۲۴ ژوئن ۲۰۲۶",
+        sections: [
+          ["مسئول وب‌سایت و راه تماس", "ویدا فامیلیا این وب‌سایت را برای ارائه اطلاعات، ارزیابی اولیه، هماهنگی خدمات و پاسخ‌گویی به پیام‌ها اداره می‌کند. برای پرسش‌های مربوط به حریم خصوصی می‌توانید به info@vidafamilia.es پیام بدهید."],
+          ["داده‌هایی که دریافت می‌کنیم", "ممکن است نام، ایمیل، شماره واتس‌اپ، کشور فعلی، مقصد یا علاقه‌مندی، پاسخ‌های فرم ارزیابی، پیام‌های تماس، درخواست راهنما، ترجیح زبان و اطلاعات فنی پایه مانند زمان ارسال، صفحه مبدأ و داده‌های امنیتی لازم دریافت شود."],
+          ["هدف استفاده از داده‌ها", "از اطلاعات برای پاسخ‌گویی، ارزیابی اولیه تناسب مسیر، هماهنگی خدمات، ارسال پیام‌های مرتبط، امنیت و جلوگیری از سوءاستفاده، بهبود خدمات، و نگهداری سوابق اداری یا ضروری استفاده می‌شود."],
+          ["مبنای رضایت و ضرورت", "وقتی فرم ارسال می‌کنید یا درخواست راهنما می‌گذارید، اطلاعات را داوطلبانه ارائه می‌کنید. بسته به نوع ارتباط، استفاده از داده‌ها می‌تواند بر رضایت شما، ضرورت پاسخ‌گویی یا هماهنگی، و منافع مشروع عملیاتی و امنیتی متکی باشد."],
+          ["پردازش و نگهداری", "داده‌ها ممکن است در ابزارهای میزبانی وب‌سایت، ایمیل، پایگاه داده، فرم‌ها، امنیت و ارائه‌دهندگان خدماتی که برای اداره سایت لازم هستند پردازش یا نگهداری شود. دسترسی فقط برای اعضای تیم ویدا فامیلیا، مدیران لازم، ارائه‌دهندگان مرتبط و متخصصان واجد صلاحیت در صورت نیاز به هماهنگی یا پاسخ‌گویی محدود می‌شود."],
+          ["مدت نگهداری", "اطلاعات فقط تا زمانی نگهداری می‌شود که برای پاسخ‌گویی، هماهنگی خدمات، سوابق اداری یا الزامات قابل اعمال به‌طور منطقی لازم باشد، یا تا زمانی که درخواست حذف معتبر و قابل اجرا دریافت شود."],
+          ["حقوق شما", "می‌توانید درخواست دسترسی، اصلاح، حذف یا پس‌گرفتن رضایت خود را از طریق info@vidafamilia.es ارسال کنید. ممکن است برای امنیت و جلوگیری از دسترسی غیرمجاز، پیش از انجام درخواست، نیاز به تأیید هویت یا جزئیات بیشتر باشد."],
+          ["امنیت", "ویدا فامیلیا از اقدامات فنی و سازمانی معقول برای محافظت از اطلاعات استفاده می‌کند، اما هیچ سامانه اینترنتی، ایمیل یا پایگاه داده‌ای امنیت مطلق ندارد."],
+          ["کاربران بین‌المللی و خانواده‌ها", "این وب‌سایت برای کاربران و خانواده‌هایی در زمینه اسپانیا، آرژانتین، ایران و دیگر کشورها استفاده می‌شود. اگر اطلاعات مربوط به فرد زیر سن قانونی ارسال شود، باید توسط والد یا سرپرست قانونی انجام شود."],
+          ["کوکی‌ها و ذخیره‌سازی فنی", "سایت ممکن است از کوکی‌ها یا ذخیره‌سازی فنی ضروری برای عملکرد، ترجیح زبان یا جلسه، امنیت و ابزارهای ضداسپم استفاده کند. اگر ابزارهای تحلیل فعال باشند، ممکن است برای فهم عملکرد صفحات و بهبود تجربه کاربری داده‌های آماری محدود ثبت شود. می‌توانید کوکی‌ها را از تنظیمات مرورگر خود کنترل یا حذف کنید."],
+          ["به‌روزرسانی این سیاست", "ممکن است این سیاست با تغییر خدمات، ابزارهای عملیاتی یا الزامات قابل اعمال به‌روزرسانی شود. نسخه منتشرشده در همین صفحه، نسخه جاری سیاست حریم خصوصی است."],
+        ],
+      },
+      en: {
+        title: "Privacy policy",
+        intro: "This policy explains how Vida Familia receives, uses and protects information you provide through the website and its forms.",
+        updated: "Last updated: 24 June 2026",
+        sections: [
+          ["Who operates the site and how to contact us", "Vida Familia operates this website to provide information, initial assessment, service coordination and responses to messages. For privacy questions, contact info@vidafamilia.es."],
+          ["Information we collect", "We may collect name, email, WhatsApp number, current country, destination or interest, assessment answers, contact messages, guide requests, language preference and basic technical metadata such as submission time, source page and security data needed to operate the site."],
+          ["Why we use information", "We use information to reply, assess initial fit, coordinate services, send relevant messages, maintain security, prevent abuse, improve the service and keep necessary administrative records."],
+          ["Consent and lawful basis", "When you submit a form or request a guide, you provide information voluntarily. Depending on the interaction, processing may rely on your consent, the need to respond or coordinate, and legitimate operational and security interests."],
+          ["Processing and storage", "Information may be processed or stored through website hosting, email, database, form, security and other service providers used to operate the site. Access is limited to the Vida Familia team, necessary administrators, relevant providers and qualified professionals when needed for coordination or response."],
+          ["Retention", "Information is kept only as long as reasonably necessary for response, coordination, administrative records or applicable requirements, or until a valid deletion request is handled where applicable."],
+          ["Your rights", "You may request access, correction, deletion or withdrawal of consent by contacting info@vidafamilia.es. To protect privacy and prevent unauthorized access, we may ask for identity confirmation or additional details before acting on a request."],
+          ["Security", "Vida Familia uses reasonable technical and organizational measures to protect information, but no internet service, email system or database can be guaranteed absolutely secure."],
+          ["International users and families", "The site may be used by people and families connected with Spain, Argentina, Iran and other countries. If information about a minor is submitted, it should be provided by a parent or legal guardian."],
+          ["Cookies and technical storage", "The site may use essential cookies or technical storage for functionality, language or session preferences, security and anti-spam tools. If analytics tools are enabled, limited statistical data may be used to understand page performance and improve the user experience. You can control or delete cookies through your browser settings."],
+          ["Updates to this policy", "This policy may be updated as services, operational tools or applicable requirements change. The version published on this page is the current privacy policy."],
+        ],
+      },
+      es: {
+        title: "Política de privacidad",
+        intro: "Esta política explica cómo Vida Familia recibe, usa y protege la información que proporcionas a través del sitio web y sus formularios.",
+        updated: "Última actualización: 24 de junio de 2026",
+        sections: [
+          ["Quién opera el sitio y contacto", "Vida Familia opera este sitio para ofrecer información, evaluación inicial, coordinación de servicios y respuesta a mensajes. Para consultas de privacidad, escribe a info@vidafamilia.es."],
+          ["Datos que recogemos", "Podemos recoger nombre, correo electrónico, WhatsApp, país actual, destino o interés, respuestas de evaluación, mensajes de contacto, solicitudes de guías, preferencia de idioma y metadatos técnicos básicos como hora de envío, página de origen y datos de seguridad necesarios para operar el sitio."],
+          ["Para qué usamos los datos", "Usamos la información para responder, valorar el encaje inicial, coordinar servicios, enviar mensajes relacionados, mantener seguridad, prevenir abusos, mejorar el servicio y conservar registros administrativos necesarios."],
+          ["Consentimiento y base de uso", "Cuando envías un formulario o solicitas una guía, proporcionas datos voluntariamente. Según la interacción, el uso puede basarse en tu consentimiento, la necesidad de responder o coordinar, y los intereses legítimos operativos y de seguridad."],
+          ["Tratamiento y almacenamiento", "La información puede procesarse o almacenarse mediante alojamiento web, correo electrónico, base de datos, formularios, seguridad y otros proveedores necesarios para operar el sitio. El acceso se limita al equipo de Vida Familia, administradores necesarios, proveedores relevantes y profesionales cualificados cuando haga falta para coordinar o responder."],
+          ["Conservación", "Los datos se conservan solo durante el tiempo razonablemente necesario para responder, coordinar, mantener registros administrativos o cumplir requisitos aplicables, o hasta tramitar una solicitud válida de eliminación cuando proceda."],
+          ["Tus derechos", "Puedes solicitar acceso, rectificación, eliminación o retirada del consentimiento escribiendo a info@vidafamilia.es. Para proteger la privacidad y evitar accesos no autorizados, podemos pedir confirmación de identidad o detalles adicionales."],
+          ["Seguridad", "Vida Familia aplica medidas técnicas y organizativas razonables para proteger la información, pero ningún servicio de internet, sistema de correo o base de datos puede garantizar seguridad absoluta."],
+          ["Usuarios internacionales y familias", "El sitio puede ser usado por personas y familias vinculadas con España, Argentina, Irán y otros países. Si se envía información de un menor, debe hacerlo un padre, madre o tutor legal."],
+          ["Cookies y almacenamiento técnico", "El sitio puede usar cookies esenciales o almacenamiento técnico para funcionamiento, preferencias de idioma o sesión, seguridad y herramientas antispam. Si se habilitan herramientas de analítica, pueden usarse datos estadísticos limitados para entender el rendimiento de páginas y mejorar la experiencia. Puedes controlar o eliminar cookies desde la configuración del navegador."],
+          ["Actualizaciones de esta política", "Esta política puede actualizarse cuando cambien los servicios, herramientas operativas o requisitos aplicables. La versión publicada en esta página es la política de privacidad vigente."],
+        ],
+      },
     },
     terms: {
-      title: { fa: "شرایط استفاده", en: "Terms of use", es: "Condiciones de uso" }, intro: { fa: "قواعد استفاده از وب‌سایت و ارتباط با ویدا فامیلیا.", en: "Rules for using this website and engaging with Vida Familia.", es: "Reglas para usar este sitio y relacionarse con Vida Familia." },
-      sections: locale === "fa" ? [["استفاده آموزشی", "محتوا عمومی و آموزشی است و پیشنهاد حقوقی، مالیاتی یا مالی شخصی نیست."], ["عدم تضمین", "هیچ نتیجه ویزا، اقامت، پذیرش، کار یا تابعیت تضمین نمی‌شود."], ["پیشنهاد خدمات", "دامنه، هزینه، مسئولیت و شرایط هر همکاری فقط در پیشنهاد یا قرارداد مکتوب معتبر است."], ["مالکیت محتوا", "استفاده شخصی مجاز است؛ بازنشر تجاری بدون اجازه کتبی مجاز نیست."]] : locale === "es" ? [["Uso educativo", "El contenido es general y no constituye asesoramiento jurídico, fiscal o financiero personal."], ["Sin garantía", "No se garantiza visado, residencia, admisión, empleo ni ciudadanía."], ["Propuesta de servicios", "Alcance, precio y responsabilidades solo valen por escrito."], ["Contenido", "Se permite uso personal, no republicación comercial sin permiso."]] : [["Educational use", "Content is general and not personal legal, tax or financial advice."], ["No guarantee", "No visa, residency, admission, work or citizenship result is guaranteed."], ["Service proposals", "Scope, price and responsibility are valid only when agreed in writing."], ["Content ownership", "Personal use is allowed; commercial republication requires written permission."]],
+      fa: {
+        title: "شرایط استفاده",
+        intro: "این شرایط، قواعد استفاده از وب‌سایت و ارتباط اولیه با ویدا فامیلیا را توضیح می‌دهد.",
+        updated: "آخرین به‌روزرسانی: ۲۴ ژوئن ۲۰۲۶",
+        sections: [
+          ["پذیرش شرایط", "با استفاده از این وب‌سایت، خواندن محتوا یا ارسال فرم، می‌پذیرید که استفاده شما از سایت تابع این شرایط است. اگر با این شرایط موافق نیستید، نباید از فرم‌ها یا خدمات ارتباطی سایت استفاده کنید."],
+          ["استفاده از وب‌سایت", "این وب‌سایت برای اطلاع‌رسانی، آموزش عمومی، معرفی خدمات و دریافت درخواست‌های اولیه طراحی شده است. استفاده از آن باید قانونی، محترمانه و بدون تلاش برای اختلال، دسترسی غیرمجاز یا سوءاستفاده باشد."],
+          ["محتوای آموزشی و پیشنهاد خدمات", "محتوای سایت عمومی است و به‌تنهایی جایگزین مشاوره فردی حقوقی، مالیاتی، مهاجرتی، مالی، تحصیلی یا حرفه‌ای نیست. هر پیشنهاد خدمات باید متناسب با شرایط فردی و به‌صورت مشخص تأیید شود."],
+          ["استفاده نادرست از فرم‌ها", "ارسال اطلاعات دروغین، پیام اسپم، سوءاستفاده خودکار، تلاش برای دورزدن ابزارهای امنیتی یا ارسال اطلاعات شخص ثالث بدون اجازه مجاز نیست."],
+          ["اطلاعات ارائه‌شده توسط کاربر", "شما مسئول هستید اطلاعاتی که ارسال می‌کنید درست، کامل، به‌روز و قانونی باشد. تصمیم‌ها و برنامه‌ریزی‌ها می‌تواند به صحت همین اطلاعات وابسته باشد."],
+          ["رسمی‌شدن خدمات", "مشاوره، هماهنگی یا خدمات پولی فقط زمانی رسمی می‌شود که دامنه، قیمت، مسئولیت‌ها، زمان‌بندی و شرایط به‌صورت کتبی بین طرفین تأیید شود. مکاتبه اولیه یا ارسال فرم به‌معنای پذیرش پرونده نیست."],
+          ["هزینه‌ها، دامنه و زمان‌بندی", "هر قیمت، دامنه کار، مسئولیت یا زمان‌بندی فقط زمانی معتبر است که در پیشنهاد، پیام یا توافق مکتوب مشخص تأیید شده باشد. هزینه‌های رسمی، اشخاص ثالث و تغییرات دولتی ممکن است جداگانه اعمال شوند."],
+          ["مالکیت فکری", "متن، ساختار، طراحی، نام‌ها و محتوای سایت متعلق به ویدا فامیلیا یا استفاده‌شده با مجوز است. استفاده شخصی مجاز است، اما بازنشر تجاری، کپی گسترده یا استفاده تبلیغاتی بدون اجازه کتبی مجاز نیست."],
+          ["پیوندها و ابزارهای شخص ثالث", "سایت ممکن است به منابع رسمی، ابزارها، سرویس‌های پرداخت، ایمیل، فرم، نقشه، تحلیل یا وب‌سایت‌های دیگر اشاره کند. ویدا فامیلیا مسئول محتوای مستقل، سیاست‌ها یا عملکرد اشخاص ثالث نیست."],
+          ["محدودیت مسئولیت", "تا حد مجاز قانون، ویدا فامیلیا مسئول تصمیم‌هایی که صرفاً بر اساس محتوای عمومی سایت گرفته می‌شود، یا خسارت ناشی از تغییر قوانین، تصمیم مقامات، تأخیرها، خطای کاربر یا سرویس‌های شخص ثالث نیست."],
+          ["تغییر شرایط", "ممکن است این شرایط با تغییر خدمات یا الزامات قابل اعمال به‌روزرسانی شود. ادامه استفاده از سایت پس از انتشار نسخه جدید به‌معنای پذیرش همان نسخه است."],
+          ["تماس", "برای پرسش درباره این شرایط می‌توانید به info@vidafamilia.es پیام بدهید."],
+        ],
+      },
+      en: {
+        title: "Terms of use",
+        intro: "These terms explain the rules for using the website and starting communication with Vida Familia.",
+        updated: "Last updated: 24 June 2026",
+        sections: [
+          ["Acceptance of terms", "By using this website, reading its content or submitting a form, you agree that your use is governed by these terms. If you do not agree, you should not use the forms or communication features."],
+          ["Use of the website", "The website is provided for information, general education, service presentation and initial requests. Use must be lawful, respectful and free from attempts to disrupt, gain unauthorized access or abuse the site."],
+          ["Educational content and service proposals", "Website content is general and does not replace individualized legal, tax, immigration, financial, academic or professional advice. Any service proposal must be confirmed for the specific situation."],
+          ["Misuse of forms", "False submissions, spam, automated abuse, attempts to bypass security tools or submission of third-party personal information without permission are not allowed."],
+          ["User-provided information", "You are responsible for providing information that is accurate, complete, updated and lawful. Planning and coordination may depend on the accuracy of that information."],
+          ["When services become formal", "Consultations, coordination or paid services become formal only when scope, pricing, responsibilities, timelines and conditions are confirmed in writing. Initial messages or form submissions do not mean case acceptance."],
+          ["Pricing, scope and timelines", "Any price, scope of work, responsibility or timeline is valid only when confirmed in a written proposal, message or agreement. Official fees, third-party costs and authority changes may apply separately."],
+          ["Intellectual property", "Text, structure, design, names and website content belong to Vida Familia or are used with permission. Personal use is allowed; commercial republication, large-scale copying or promotional use requires written permission."],
+          ["External links and third-party tools", "The site may refer to official sources, tools, payment services, email, forms, maps, analytics or other websites. Vida Familia is not responsible for independent third-party content, policies or performance."],
+          ["Limitation of liability", "To the extent permitted by law, Vida Familia is not responsible for decisions made solely from general website content, or for losses caused by rule changes, authority decisions, delays, user error or third-party services."],
+          ["Changes to these terms", "These terms may be updated as services or applicable requirements change. Continued use of the site after a new version is published means acceptance of that version."],
+          ["Contact", "For questions about these terms, contact info@vidafamilia.es."],
+        ],
+      },
+      es: {
+        title: "Condiciones de uso",
+        intro: "Estas condiciones explican las reglas para usar el sitio web e iniciar comunicación con Vida Familia.",
+        updated: "Última actualización: 24 de junio de 2026",
+        sections: [
+          ["Aceptación de las condiciones", "Al usar este sitio, leer su contenido o enviar un formulario, aceptas que tu uso se rige por estas condiciones. Si no estás de acuerdo, no debes usar los formularios ni las funciones de contacto."],
+          ["Uso del sitio web", "El sitio se ofrece para información, educación general, presentación de servicios y solicitudes iniciales. El uso debe ser legal, respetuoso y sin intentos de interrumpir, acceder sin autorización o abusar del sitio."],
+          ["Contenido educativo y propuestas de servicio", "El contenido del sitio es general y no sustituye asesoramiento individualizado legal, fiscal, migratorio, financiero, académico o profesional. Cualquier propuesta de servicio debe confirmarse para la situación concreta."],
+          ["Uso indebido de formularios", "No se permiten envíos falsos, spam, abuso automatizado, intentos de eludir herramientas de seguridad ni envío de datos de terceros sin permiso."],
+          ["Información proporcionada por el usuario", "Eres responsable de proporcionar información exacta, completa, actualizada y lícita. La planificación y coordinación pueden depender de la precisión de esa información."],
+          ["Cuándo los servicios son formales", "Las consultas, coordinación o servicios de pago solo se formalizan cuando alcance, precio, responsabilidades, tiempos y condiciones se confirman por escrito. Un mensaje inicial o formulario no implica aceptación del caso."],
+          ["Precios, alcance y plazos", "Cualquier precio, alcance, responsabilidad o plazo solo es válido cuando se confirma en una propuesta, mensaje o acuerdo escrito. Tasas oficiales, costes de terceros y cambios de autoridad pueden aplicarse aparte."],
+          ["Propiedad intelectual", "Textos, estructura, diseño, nombres y contenido del sitio pertenecen a Vida Familia o se usan con permiso. Se permite uso personal; la republicación comercial, copia masiva o uso promocional requiere permiso escrito."],
+          ["Enlaces externos y herramientas de terceros", "El sitio puede remitir a fuentes oficiales, herramientas, pagos, correo, formularios, mapas, analítica u otros sitios. Vida Familia no responde por contenido, políticas o funcionamiento independiente de terceros."],
+          ["Limitación de responsabilidad", "En la medida permitida por la ley, Vida Familia no responde por decisiones tomadas solo a partir de contenido general del sitio, ni por pérdidas causadas por cambios normativos, decisiones de autoridades, retrasos, error del usuario o servicios de terceros."],
+          ["Cambios en estas condiciones", "Estas condiciones pueden actualizarse cuando cambien los servicios o requisitos aplicables. El uso continuado del sitio tras publicarse una nueva versión implica aceptación de esa versión."],
+          ["Contacto", "Para consultas sobre estas condiciones, escribe a info@vidafamilia.es."],
+        ],
+      },
     },
     "legal-disclaimer": {
-      title: { fa: "سلب مسئولیت حقوقی", en: "Legal disclaimer", es: "Aviso legal" }, intro: { fa: "مرز خدمات آموزشی و هماهنگی ویدا فامیلیا با خدمات تخصصی تنظیم‌شده.", en: "The boundary between Vida Familia's education/coordination and regulated professional services.", es: "El límite entre educación/coordinación y servicios profesionales regulados." },
-      sections: locale === "fa" ? [["ماهیت خدمات", "ویدا فامیلیا تجربه، آموزش جابه‌جایی و هماهنگی ارائه می‌دهد؛ دفتر وکالت یا مرجع دولتی نیست."], ["متخصصان مجاز", "امور حقوقی، مالیاتی یا مالی ممکن است به وکیل، حسابدار یا متخصص دارای مجوز ارجاع شود."], ["اطلاعات متغیر", "قوانین، مبالغ، رویه‌ها و زمان‌ها تغییر می‌کنند و باید پیش از اقدام از منبع رسمی تأیید شوند."], ["تصمیم نهایی", "تصمیم هر مرجع مستقل است و هیچ نتیجه‌ای تحت کنترل یا تضمین ویدا فامیلیا نیست."]] : locale === "es" ? [["Naturaleza", "Vida Familia ofrece experiencia, educación de reubicación y coordinación; no es un despacho ni autoridad."], ["Profesionales habilitados", "Lo jurídico, fiscal o financiero puede derivarse a profesionales habilitados."], ["Información cambiante", "Normas, importes, prácticas y plazos cambian y deben confirmarse oficialmente."], ["Decisión final", "Cada autoridad decide independientemente; Vida Familia no controla ni garantiza resultados."]] : [["Nature of service", "Vida Familia offers lived experience, relocation education and coordination; it is not a law firm or authority."], ["Licensed professionals", "Legal, tax or financial matters may be referred to qualified professionals."], ["Changing information", "Rules, amounts, practice and timing change and must be officially confirmed."], ["Final decision", "Authorities decide independently; Vida Familia neither controls nor guarantees results."]],
+      fa: {
+        title: "سلب مسئولیت حقوقی",
+        intro: "این صفحه مرز خدمات آموزشی و هماهنگی ویدا فامیلیا را با خدمات تخصصی تنظیم‌شده روشن می‌کند.",
+        updated: "آخرین به‌روزرسانی: ۲۴ ژوئن ۲۰۲۶",
+        sections: [
+          ["ماهیت خدمات ویدا فامیلیا", "ویدا فامیلیا خدمات آموزشی، جابه‌جایی، هماهنگی و ارزیابی اولیه ارائه می‌دهد. هدف، کمک به فهم مسیر، آماده‌سازی تصمیم‌ها و هماهنگی مراحل عملی است؛ ویدا فامیلیا مرجع دولتی، دانشگاه، کارفرما، بانک، دفتر املاک یا دفتر وکالت نیست."],
+          ["نقش آموزشی و هماهنگی", "محتوا، فرم‌ها، گفت‌وگوها و راهنماها برای شفاف‌سازی، سازمان‌دهی اطلاعات و هماهنگی بهتر طراحی شده‌اند. این خدمات به‌تنهایی جایگزین تصمیم‌گیری رسمی یا مشاوره تخصصی فردی نیستند."],
+          ["بدون تضمین نتیجه", "هیچ ویزا، اقامت، پذیرش دانشگاهی، شغل، مسکن، شهروندی، وقت سفارت، پاسخ اداره، تصمیم دولتی یا نتیجه اداری تضمین نمی‌شود. تصمیم نهایی همیشه به مرجع، مؤسسه یا طرف ثالث مربوط وابسته است."],
+          ["مشاوره حقوقی، مالیاتی، مالی یا مهاجرتی", "ویدا فامیلیا مشاوره حقوقی، مالیاتی، مالی، مهاجرتی یا تخصصی تنظیم‌شده ارائه نمی‌دهد مگر اینکه به‌صورت روشن توسط متخصص واجد صلاحیت مربوط ارائه شود. برای امور تنظیم‌شده باید از متخصص مناسب مشورت بگیرید."],
+          ["تغییر قوانین و رویه‌ها", "قواعد رسمی، الزامات، هزینه‌ها، وقت‌ها، فرم‌ها، رویه‌های اداری و معیارهای تصمیم‌گیری ممکن است تغییر کنند. پیش از اقدام، اطلاعات باید از منابع رسمی یا متخصص واجد صلاحیت تأیید شود."],
+          ["مسئولیت کاربر", "کاربر مسئول ارائه اطلاعات درست، کامل و به‌روز است. هر تصمیم، ارسال مدرک یا اقدام عملی که بر اساس اطلاعات ناقص یا نادرست انجام شود، می‌تواند بر نتیجه اثر بگذارد."],
+          ["اشخاص ثالث", "ممکن است در برخی موارد به متخصصان، مؤسسات، پلتفرم‌ها، دانشگاه‌ها، ارائه‌دهندگان خدمات، بانک‌ها، بیمه‌ها یا منابع رسمی ارجاع داده شود. ویدا فامیلیا کنترل‌کننده تصمیم، قیمت، زمان‌بندی یا عملکرد مستقل اشخاص ثالث نیست."],
+          ["تفاوت اسپانیا و آرژانتین", "مسیرهای اسپانیا و آرژانتین از نظر قانون، مدارک، زمان‌بندی، زبان، هزینه، مؤسسات و واقعیت زندگی روزمره متفاوت‌اند. اطلاعات یک کشور نباید بدون بررسی جداگانه برای کشور دیگر فرض شود."],
+          ["محدودیت اتکا", "مطالب سایت برای شفافیت و اطلاعات عمومی منتشر شده است. نباید تنها بر اساس این مطالب تصمیم مالی، حقوقی، مهاجرتی، تحصیلی یا خانوادگی مهم بگیرید."],
+          ["راه تماس", "برای پرسش درباره این سلب مسئولیت یا مرز خدمات، به info@vidafamilia.es پیام بدهید."],
+        ],
+      },
+      en: {
+        title: "Legal disclaimer",
+        intro: "This page clarifies the boundary between Vida Familia’s educational and coordination services and regulated professional services.",
+        updated: "Last updated: 24 June 2026",
+        sections: [
+          ["Nature of Vida Familia services", "Vida Familia provides educational, relocation, coordination and initial assessment services. The purpose is to help people understand pathways, organize decisions and coordinate practical steps; Vida Familia is not a government authority, university, employer, bank, real estate office or law firm."],
+          ["Educational and coordination role", "Content, forms, conversations and guides are designed to improve clarity, organize information and coordinate next steps. They do not replace official decisions or individualized professional advice."],
+          ["No guarantee of outcome", "No visa, residence permit, university admission, employment, housing, citizenship, appointment, authority response, government decision or administrative outcome is guaranteed. Final decisions always depend on the relevant authority, institution or third party."],
+          ["Legal, tax, financial or immigration advice", "Vida Familia does not provide legal, tax, financial, immigration or other regulated professional advice unless it is explicitly provided by a qualified professional in that field. For regulated matters, users should consult an appropriate professional."],
+          ["Changing rules and procedures", "Official rules, requirements, fees, appointments, forms, administrative practice and decision criteria may change. Before acting, information should be confirmed through official sources or qualified professionals."],
+          ["User responsibility", "Users are responsible for providing truthful, complete and updated information. Any decision, document submission or practical step based on incomplete or inaccurate information may affect the outcome."],
+          ["Third parties", "In some cases, users may be referred to professionals, institutions, platforms, universities, service providers, banks, insurers or official sources. Vida Familia does not control independent third-party decisions, prices, timing or performance."],
+          ["Spain and Argentina differences", "Spain and Argentina pathways differ in law, documents, timing, language, costs, institutions and daily-life reality. Information about one country should not be assumed to apply to the other without separate confirmation."],
+          ["Limitation of reliance", "Website materials are published for transparency and general information. You should not make major financial, legal, immigration, academic or family decisions solely from this content."],
+          ["Contact route", "For questions about this disclaimer or the boundaries of the service, contact info@vidafamilia.es."],
+        ],
+      },
+      es: {
+        title: "Aviso legal",
+        intro: "Esta página aclara el límite entre los servicios educativos y de coordinación de Vida Familia y los servicios profesionales regulados.",
+        updated: "Última actualización: 24 de junio de 2026",
+        sections: [
+          ["Naturaleza de los servicios de Vida Familia", "Vida Familia ofrece servicios educativos, de reubicación, coordinación y evaluación inicial. Su finalidad es ayudar a entender vías, ordenar decisiones y coordinar pasos prácticos; Vida Familia no es autoridad gubernamental, universidad, empleador, banco, agencia inmobiliaria ni despacho jurídico."],
+          ["Rol educativo y de coordinación", "El contenido, formularios, conversaciones y guías buscan aportar claridad, organizar información y coordinar próximos pasos. No sustituyen decisiones oficiales ni asesoramiento profesional individualizado."],
+          ["Sin garantía de resultado", "No se garantiza visado, residencia, admisión universitaria, empleo, vivienda, ciudadanía, cita, respuesta de una autoridad, decisión gubernamental ni resultado administrativo. Las decisiones finales dependen siempre de la autoridad, institución o tercero correspondiente."],
+          ["Asesoramiento legal, fiscal, financiero o migratorio", "Vida Familia no presta asesoramiento legal, fiscal, financiero, migratorio ni otro servicio profesional regulado salvo que sea prestado expresamente por un profesional cualificado en esa materia. Para asuntos regulados, el usuario debe consultar al profesional adecuado."],
+          ["Cambios en normas y procedimientos", "Las reglas oficiales, requisitos, tasas, citas, formularios, práctica administrativa y criterios de decisión pueden cambiar. Antes de actuar, la información debe confirmarse mediante fuentes oficiales o profesionales cualificados."],
+          ["Responsabilidad del usuario", "El usuario es responsable de aportar información veraz, completa y actualizada. Cualquier decisión, envío documental o paso práctico basado en información incompleta o inexacta puede afectar al resultado."],
+          ["Terceros", "En algunos casos se puede derivar a profesionales, instituciones, plataformas, universidades, proveedores, bancos, aseguradoras o fuentes oficiales. Vida Familia no controla decisiones, precios, tiempos ni funcionamiento independiente de terceros."],
+          ["Diferencias entre España y Argentina", "Las vías de España y Argentina difieren en ley, documentos, plazos, idioma, costes, instituciones y realidad cotidiana. La información de un país no debe asumirse aplicable al otro sin confirmación separada."],
+          ["Limitación de confianza", "Los materiales del sitio se publican por transparencia e información general. No debes tomar decisiones importantes financieras, legales, migratorias, académicas o familiares basándote solo en este contenido."],
+          ["Vía de contacto", "Para consultas sobre este aviso o los límites del servicio, escribe a info@vidafamilia.es."],
+        ],
+      },
     },
-  }[type];
-  return <PageShell locale={locale} eyebrow={locale === "fa" ? "حقوقی" : locale === "es" ? "Legal" : "Legal"} title={content.title[locale]} intro={content.intro[locale]} path={`/${type}`}><section className="content-section legal-copy"><p className="legal-updated">{locale === "fa" ? "نسخه آماده‌سازی پیش از راه‌اندازی · ۲۴ ژوئن ۲۰۲۶" : locale === "es" ? "Versión pre-lanzamiento · 24 junio 2026" : "Pre-launch version · 24 June 2026"}</p>{content.sections.map(([heading, text]) => <section key={heading}><h2>{heading}</h2><p>{text}</p></section>)}<DisclaimerBox>{locale === "fa" ? "مالک باید پیش از راه‌اندازی نهایی، هویت حقوقی، نشانی تماس، دوره نگهداری داده و الزامات محلی حریم خصوصی را با متخصص مناسب تأیید کند." : locale === "es" ? "Antes del lanzamiento, el propietario debe validar identidad legal, contacto, retención y requisitos locales con un profesional." : "Before launch, the owner should validate legal identity, contact details, retention period and local privacy requirements with a qualified professional."}</DisclaimerBox></section></PageShell>;
+  }[type][locale];
+
+  return (
+    <PageShell locale={locale} eyebrow={locale === "fa" ? "حقوقی" : "Legal"} title={content.title} intro={content.intro} path={`/${type}`}>
+      <section className="content-section legal-copy">
+        <p className="legal-updated">{content.updated}</p>
+        {content.sections.map(([heading, text]) => (
+          <section key={heading}>
+            <h2>{heading}</h2>
+            <p>{text}</p>
+          </section>
+        ))}
+        <p className="legal-contact">
+          {locale === "fa" ? "راه تماس: " : locale === "es" ? "Contacto: " : "Contact: "}
+          <a href="mailto:info@vidafamilia.es" dir="ltr">info@vidafamilia.es</a>
+        </p>
+      </section>
+    </PageShell>
+  );
 }
