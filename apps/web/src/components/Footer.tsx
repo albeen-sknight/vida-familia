@@ -16,6 +16,9 @@ const footerCopy = {
     terms: "شرایط استفاده",
     disclaimer: "سلب مسئولیت حقوقی",
     destinations: "اسپانیا · آرژانتین",
+    social: "شبکه‌های اجتماعی",
+    instagram: "اینستاگرام",
+    youtube: "یوتیوب",
   },
   en: {
     explore: "Explore",
@@ -26,6 +29,9 @@ const footerCopy = {
     terms: "Terms",
     disclaimer: "Legal disclaimer",
     destinations: "Spain · Argentina",
+    social: "Social media",
+    instagram: "Instagram",
+    youtube: "YouTube",
   },
   es: {
     explore: "Explorar",
@@ -36,6 +42,9 @@ const footerCopy = {
     terms: "Términos",
     disclaimer: "Aviso legal",
     destinations: "España · Argentina",
+    social: "Redes sociales",
+    instagram: "Instagram",
+    youtube: "YouTube",
   },
 } as const;
 
@@ -49,7 +58,7 @@ export function Footer({ locale }: { locale: Locale }) {
           <div className="footer-brand"><img src="/assets/logo.png" alt="Vida Familia" loading="lazy" onError={(event) => { event.currentTarget.style.display = "none"; }} /><h2>VIDA<br />FAMILIA</h2><p>{c.footerLine}</p></div>
           <div className="footer-links"><p className="eyebrow">{f.explore}</p><Link to={routeFor(locale, "/about")}>{c.nav.story}</Link><Link to={routeFor(locale, "/services")}>{c.nav.services}</Link><Link to={routeFor(locale, "/resources")}>{c.nav.resources}</Link><Link to={routeFor(locale, "/contact")}>{f.contact}</Link></div>
           <div className="footer-links"><p className="eyebrow">{f.legal}</p><Link to={routeFor(locale, "/privacy")}>{f.privacy}</Link><Link to={routeFor(locale, "/terms")}>{f.terms}</Link><Link to={routeFor(locale, "/legal-disclaimer")}>{f.disclaimer}</Link></div>
-          <div className="footer-cta"><p className="eyebrow">{f.start}</p><h3>{c.qualificationTitle}</h3><Link to={routeFor(locale, "/apply")}>{c.applyCta}<ArrowUpLeft size={18} /></Link><div className="social-links" aria-label="Social media placeholders"><span aria-label="Instagram"><Instagram size={18} /></span><span aria-label="YouTube"><Youtube size={18} /></span></div></div>
+          <div className="footer-cta"><p className="eyebrow">{f.start}</p><h3>{c.qualificationTitle}</h3><Link to={routeFor(locale, "/apply")}>{c.applyCta}<ArrowUpLeft size={18} /></Link><div className="social-links" aria-label={f.social}><a href="https://www.instagram.com/vidafamilia.es/" target="_blank" rel="noopener noreferrer" aria-label={f.instagram}><Instagram size={18} aria-hidden="true" /><span>{f.instagram}</span></a><a href="https://www.youtube.com/@vidafamilia.global" target="_blank" rel="noopener noreferrer" aria-label={f.youtube}><Youtube size={18} aria-hidden="true" /><span>{f.youtube}</span></a></div></div>
         </div>
         <div className="footer-newsletter"><NewsletterForm locale={locale} compact /></div>
       </div>

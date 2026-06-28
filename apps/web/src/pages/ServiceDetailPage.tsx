@@ -22,7 +22,7 @@ export function ServiceDetailPage({ locale, service }: { locale: Locale; service
   const features = locale === "fa" ? ["نقشه راه شخصی", "چک‌لیست مرحله‌ای", "هماهنگی و پیگیری"] : locale === "es" ? ["Hoja de ruta personal", "Lista por fases", "Coordinación y seguimiento"] : ["Personal roadmap", "Phased checklist", "Coordination & follow-up"];
 
   return (
-    <PageShell locale={locale} eyebrow={`${service.country === "spain" ? "SPAIN" : "ARGENTINA"} · SERVICE PATHWAY`} title={title} intro={summary} path={path} tone={service.country}>
+    <PageShell locale={locale} eyebrow={`${service.country === "spain" ? "SPAIN" : "ARGENTINA"} · SERVICE PATHWAY`} title={title} intro={summary} path={path} tone={service.country} contentClassName="service-page-content">
       <JsonLd data={{ "@context": "https://schema.org", "@type": "Service", name: title, description: summary, url: `https://vidafamilia.es${path}`, provider: { "@type": "Organization", name: "Vida Familia", url: "https://vidafamilia.es" }, areaServed: service.country === "spain" ? "Spain" : "Argentina", serviceType: title }} />
 
       <section className="content-section two-column-intro"><div><SectionHeading eyebrow="01 · FIT" title={locale === "fa" ? "این مسیر برای چه کسانی است؟" : locale === "es" ? "¿Para quién es esta vía?" : "Who is this for?"} /></div><ul className="check-list large">{service.audience.map((item) => <li key={item[locale]}><UserRoundCheck />{item[locale]}</li>)}</ul></section>

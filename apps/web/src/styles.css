@@ -2795,3 +2795,143 @@ html[dir="rtl"] .hero-side-argentina,
   inset-inline-end: auto !important;
   direction: ltr;
 }
+
+/* Service and country detail readability, scoped away from the homepage and guide pages. */
+.page-content:is(.service-page-content, .country-page-content) .two-column-intro,
+.page-content:is(.service-page-content, .country-page-content) .tinted-section,
+.page-content:is(.service-page-content, .country-page-content) .mistake-section,
+.page-content:is(.service-page-content, .country-page-content) .documents-section,
+.page-content:is(.service-page-content, .country-page-content) .included-grid article,
+.page-content:is(.service-page-content, .country-page-content) .timeline article,
+.page-content:is(.service-page-content, .country-page-content) .faq-item,
+.page-content:is(.service-page-content, .country-page-content) .next-path,
+.page-content:is(.service-page-content, .country-page-content) .package-card {
+  color: #f8fafc;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .section-heading > p,
+.page-content:is(.service-page-content, .country-page-content) .section-split > p,
+.page-content:is(.service-page-content, .country-page-content) .content-lead,
+.page-content:is(.service-page-content, .country-page-content) .two-column-intro p,
+.page-content:is(.service-page-content, .country-page-content) .editorial-story > p,
+.page-content:is(.service-page-content, .country-page-content) .tinted-section p,
+.page-content:is(.service-page-content, .country-page-content) .mistake-section p,
+.page-content:is(.service-page-content, .country-page-content) .mistake-grid p,
+.page-content:is(.service-page-content, .country-page-content) .documents-section > div > p,
+.page-content:is(.service-page-content, .country-page-content) .documents-section li,
+.page-content:is(.service-page-content, .country-page-content) .included-grid article p,
+.page-content:is(.service-page-content, .country-page-content) .timeline p,
+.page-content:is(.service-page-content, .country-page-content) .faq-item p,
+.page-content:is(.service-page-content, .country-page-content) .next-path p,
+.page-content:is(.service-page-content, .country-page-content) .package-card > p:not(.package-tier),
+.page-content:is(.service-page-content, .country-page-content) .package-card li,
+.page-content:is(.service-page-content, .country-page-content) .check-list li {
+  color: rgba(248, 250, 252, .82) !important;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .section-heading h2,
+.page-content:is(.service-page-content, .country-page-content) .included-grid article h3,
+.page-content:is(.service-page-content, .country-page-content) .timeline h3,
+.page-content:is(.service-page-content, .country-page-content) .faq-item summary,
+.page-content:is(.service-page-content, .country-page-content) .package-card h3,
+.page-content:is(.service-page-content, .country-page-content) .next-path h3 {
+  color: #f8fafc !important;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .included-grid article > span,
+.page-content:is(.service-page-content, .country-page-content) .documents-section li span,
+.page-content:is(.service-page-content, .country-page-content) .package-tier {
+  color: #f1bf00 !important;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .included-grid article,
+.page-content:is(.service-page-content, .country-page-content) .timeline article,
+.page-content:is(.service-page-content, .country-page-content) .faq-item,
+.page-content:is(.service-page-content, .country-page-content) .package-card,
+.page-content:is(.service-page-content, .country-page-content) .next-path {
+  border-color: rgba(255, 255, 255, .16) !important;
+  background: linear-gradient(145deg, rgba(255, 255, 255, .075), rgba(255, 255, 255, .035)) !important;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .package-featured {
+  background: linear-gradient(145deg, rgba(127, 21, 26, .72), rgba(8, 30, 53, .78)) !important;
+  box-shadow: 0 22px 70px rgba(0, 0, 0, .24);
+}
+
+.page-content:is(.service-page-content, .country-page-content) .package-card ul {
+  border-color: rgba(255, 255, 255, .16) !important;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .package-card li svg,
+.page-content:is(.service-page-content, .country-page-content) .check-list svg,
+.page-content:is(.service-page-content, .country-page-content) .faq-item summary svg {
+  color: #f1bf00;
+  flex: 0 0 auto;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .timeline article > div {
+  border: 1px solid rgba(241, 191, 0, .35);
+  background: rgba(241, 191, 0, .1);
+  color: #f1bf00;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .timeline article:not(:last-child)::after {
+  border-top-color: rgba(255, 255, 255, .24);
+}
+
+.page-content:is(.service-page-content, .country-page-content) .faq-list {
+  border-top-color: rgba(255, 255, 255, .16);
+}
+
+.page-content:is(.service-page-content, .country-page-content) .faq-item summary {
+  gap: 1rem;
+  line-height: 1.65;
+}
+
+.page-content:is(.service-page-content, .country-page-content) .faq-item p {
+  margin: 0 0 1.35rem;
+  line-height: 1.9;
+}
+
+[dir="rtl"] .page-content:is(.service-page-content, .country-page-content) .faq-item summary {
+  text-align: right;
+}
+
+[dir="rtl"] .page-content:is(.service-page-content, .country-page-content) .faq-item summary svg {
+  margin-inline-start: .35rem;
+  margin-inline-end: 0;
+}
+
+.site-footer .social-links {
+  flex-wrap: wrap;
+  gap: .45rem !important;
+}
+
+.site-footer .social-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-height: 32px;
+  padding: .35rem .62rem;
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 999px;
+  color: rgba(248, 250, 252, .82);
+  font-size: .72rem;
+  font-weight: 700;
+}
+
+.site-footer .social-links a:hover {
+  border-color: rgba(241, 191, 0, .55);
+  color: #f8fafc;
+  background: rgba(241, 191, 0, .08);
+}
+
+.site-footer .social-links a span {
+  display: inline !important;
+  width: auto !important;
+  height: auto !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: inherit !important;
+}

@@ -51,6 +51,7 @@ export function PageShell({
   path,
   children,
   tone = "navy",
+  contentClassName,
 }: {
   locale: Locale;
   eyebrow: string;
@@ -59,6 +60,7 @@ export function PageShell({
   path: string;
   children: React.ReactNode;
   tone?: "navy" | "spain" | "argentina";
+  contentClassName?: string;
 }) {
   const localizedEyebrow = eyebrowCopy[locale][eyebrow] ?? eyebrow;
   const heroImage = resolveHeroImage(path);
@@ -85,7 +87,7 @@ export function PageShell({
         </span>
       </section>
 
-      <div className="page-content">
+      <div className={contentClassName ? `page-content ${contentClassName}` : "page-content"}>
         {children}
         {path === "/contact" ? <PresenceSection locale={locale} embedded /> : null}
       </div>
