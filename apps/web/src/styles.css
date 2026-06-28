@@ -2779,24 +2779,32 @@ body { background: #020812; }
 
 /* Current launch polish: homepage hero width, story marker and quote treatment. */
 .hero-content {
-  width: min(1580px, calc(100% - 2.5rem)) !important;
+  width: min(1640px, calc(100% - 2rem)) !important;
   margin-inline: auto !important;
   gap: clamp(1.25rem, 3.2vw, 4rem) !important;
   padding: clamp(1rem, 1.8vw, 1.45rem) !important;
 }
 
-.hero-side-spain {
-  left: 3.2rem !important;
+.hero-side-label-left {
+  direction: ltr !important;
+  left: clamp(2.1rem, 3.4vw, 4rem) !important;
   right: auto !important;
   inset-inline-start: auto !important;
   inset-inline-end: auto !important;
 }
 
-.hero-side-argentina {
-  right: 3.2rem !important;
+.hero-side-label-right {
+  direction: ltr !important;
+  right: clamp(2.1rem, 3.4vw, 4rem) !important;
   left: auto !important;
   inset-inline-start: auto !important;
   inset-inline-end: auto !important;
+}
+
+.hero-side-label-left p,
+.hero-side-label-right p {
+  direction: ltr !important;
+  text-align: center;
 }
 
 .hero-heading {
