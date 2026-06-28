@@ -488,6 +488,7 @@ body[data-locale="fa"] h3 { text-wrap: balance; }
 .hero-image, .hero-overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hero-image { height: 100%; object-fit: cover; object-position: center; filter: saturate(.9) contrast(1.06) brightness(.84); transform: scale(1.012); animation: hero-breathe 16s ease-in-out infinite alternate; }
 .hero-overlay { height: 100%; z-index: 1; background: linear-gradient(180deg, rgba(2,11,21,.62), rgba(2,11,21,.04) 23%, rgba(2,11,21,.08) 66%, #061625 100%); }
+.hero-decor { position: absolute; inset: 0; z-index: 3; pointer-events: none; direction: ltr; unicode-bidi: isolate; }
 .hero-frame { position: absolute; z-index: 3; inset: 7rem 2rem 2.25rem; display: flex; justify-content: space-between; align-items: flex-end; border: solid rgba(255,255,255,.16); border-width: 0 1px 1px; padding: 1rem; color: rgba(255,255,255,.55); font: 700 .56rem/1 "Manrope", sans-serif; letter-spacing: .18em; text-transform: uppercase; }
 .hero-frame::before, .hero-frame::after { content: ""; position: absolute; top: 0; width: 12%; border-top: 1px solid rgba(255,255,255,.16); }
 .hero-frame::before { left: 0; }
@@ -2776,25 +2777,6 @@ body { background: #020812; }
 /* ============================================================
    END FINAL FRONTEND DENSITY AND FOOTER CLEANUP
    ============================================================ */
-
-/* RTL-only hero side-label correction: keep geographic markers on visual sides. */
-html[dir="rtl"] .hero-side-spain,
-[dir="rtl"] .hero-side-spain {
-  left: 3.2rem !important;
-  right: auto !important;
-  inset-inline-start: auto !important;
-  inset-inline-end: auto !important;
-  direction: ltr;
-}
-
-html[dir="rtl"] .hero-side-argentina,
-[dir="rtl"] .hero-side-argentina {
-  right: 3.2rem !important;
-  left: auto !important;
-  inset-inline-start: auto !important;
-  inset-inline-end: auto !important;
-  direction: ltr;
-}
 
 /* Service and country detail readability, scoped away from the homepage and guide pages. */
 .page-content:is(.service-page-content, .country-page-content) .two-column-intro,
