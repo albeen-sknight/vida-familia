@@ -32,7 +32,7 @@ export const familyMembers = [
   {
     initials: "OD",
     name: l("امیر سعیدی", "Amir Saeedi", "Amir Saeedi"),
-    image: "/assets/team/amir-saeedi.jpg",
+    image: "/assets/team/amir-saeedi-2026.jpg",
     imageAlt: "Amir Saeedi",
     imagePosition: "50% 27%",
     role: l("برادر بزرگ‌تر", "Older brother", "Hermano mayor"),
