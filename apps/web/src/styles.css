@@ -2779,25 +2779,32 @@ body { background: #020812; }
 
 /* Current launch polish: homepage hero width, story marker and quote treatment. */
 .hero-content {
-  width: min(1280px, calc(100% - 1.5rem)) !important;
+  width: min(1500px, calc(100% - 3.75rem)) !important;
   margin-inline: auto !important;
-  gap: clamp(1.25rem, 4.5vw, 5.6rem) !important;
+  gap: clamp(1.25rem, 3.2vw, 4rem) !important;
+  padding: clamp(1rem, 1.8vw, 1.45rem) !important;
 }
 
 .hero-heading {
-  flex: 1 1 62% !important;
+  flex: 1 1 60% !important;
 }
 
 .hero-intro {
-  flex: 0 1 500px !important;
+  flex: 0 1 540px !important;
 }
 
 [dir="rtl"] .hero-heading {
   text-align: right;
+  flex-basis: 56% !important;
+}
+
+[dir="rtl"] .hero-intro {
+  flex-basis: 560px !important;
 }
 
 [dir="rtl"] .hero-content h1 {
   margin-inline-start: auto;
+  margin-inline-end: 0;
 }
 
 .hero-actions {
@@ -2814,7 +2821,10 @@ body { background: #020812; }
 
 .story-grid {
   position: relative;
-  grid-template-columns: minmax(0, 1.05fr) minmax(250px, .78fr) !important;
+  grid-template-columns: minmax(0, .94fr) minmax(320px, .74fr) !important;
+  max-width: 1120px;
+  margin-inline: auto;
+  gap: clamp(1rem, 2.2vw, 2rem) !important;
 }
 
 .story-grid > *:not(.story-number) {
@@ -2825,18 +2835,18 @@ body { background: #020812; }
 .story-number {
   position: absolute;
   z-index: 0;
-  inset-block-start: clamp(-1.35rem, -2vw, -.45rem);
-  inset-inline-start: clamp(-.35rem, 1vw, .75rem);
-  color: rgba(241,191,0,.075) !important;
-  font-size: clamp(5rem, 11vw, 9rem) !important;
+  inset-block-start: clamp(-1.7rem, -2vw, -.7rem);
+  inset-inline-start: clamp(.85rem, 2vw, 1.8rem);
+  color: rgba(241,191,0,.035) !important;
+  font-size: clamp(5.8rem, 10vw, 8.5rem) !important;
   line-height: .8 !important;
   pointer-events: none;
   user-select: none;
 }
 
 [dir="rtl"] .story-number {
-  inset-inline-start: auto;
-  inset-inline-end: clamp(-.35rem, 1vw, .75rem);
+  inset-inline-start: clamp(.85rem, 2vw, 1.8rem);
+  inset-inline-end: auto;
 }
 
 .story-grid blockquote {
@@ -2845,15 +2855,11 @@ body { background: #020812; }
 }
 
 .story-grid blockquote span {
-  inset: .55rem .85rem auto auto !important;
-  color: rgba(241,191,0,.16) !important;
-  font-size: clamp(2.4rem, 5vw, 3.8rem) !important;
-  line-height: .8;
-  pointer-events: none;
+  display: none !important;
 }
 
 [dir="rtl"] .story-grid blockquote span {
-  inset: .55rem auto auto .85rem !important;
+  display: none !important;
 }
 
 @media (max-width: 900px) {
@@ -2865,6 +2871,7 @@ body { background: #020812; }
 @media (max-width: 720px) {
   .hero-content {
     width: min(100% - .9rem, 1280px) !important;
+    padding: .85rem !important;
   }
 
   .hero-actions {
@@ -2880,7 +2887,7 @@ body { background: #020812; }
   }
 
   .story-grid blockquote {
-    padding-block-start: 1.6rem !important;
+    padding-block-start: 1rem !important;
   }
 
   .story-grid blockquote span {
