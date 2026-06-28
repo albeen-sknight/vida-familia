@@ -2776,3 +2776,42 @@ body { background: #020812; }
 /* ============================================================
    END FINAL FRONTEND DENSITY AND FOOTER CLEANUP
    ============================================================ */
+
+/* Surgical hero side-label fix: geographic labels should not follow page direction. */
+.hero-side {
+  direction: ltr !important;
+  display: inline-grid !important;
+  justify-items: center;
+  gap: .45rem !important;
+  min-block-size: max-content;
+  padding: .75rem .45rem;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(2,8,18,.08);
+  box-sizing: border-box;
+}
+
+.hero-side-spain {
+  left: clamp(1.8rem, 3vw, 3.2rem) !important;
+  right: auto !important;
+  inset-inline-start: auto !important;
+  inset-inline-end: auto !important;
+}
+
+.hero-side-argentina {
+  right: clamp(1.8rem, 3vw, 3.2rem) !important;
+  left: auto !important;
+  inset-inline-start: auto !important;
+  inset-inline-end: auto !important;
+}
+
+.hero-side p {
+  margin: 0;
+  white-space: nowrap;
+  direction: ltr !important;
+}
+
+@media (max-width: 720px) {
+  .hero-side {
+    display: none !important;
+  }
+}
