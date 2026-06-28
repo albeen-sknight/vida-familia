@@ -27,7 +27,7 @@ const homeCopy = {
     storyEyebrow: "THE DIFFERENCE",
     storyTitle: "ما فقط مشاور مهاجرت نیستیم",
     storyBody: "سایت‌های معمولی قانون را توضیح می‌دهند. ما از هزینه‌های واقعی، اشتباه‌ها، انتخاب خانه و دانشگاه، فشار روزهای اول و درس‌هایی می‌گوییم که خودمان زندگی کرده‌ایم، سپس به افراد آماده کمک می‌کنیم مسیرشان را درست بسازند.",
-    quote: "قانون مهم است؛ اما دانستن اینکه یک خانواده واقعاً چگونه زندگی را از نو می‌سازد، چیز دیگری است.",
+    quote: "«قانون مهم است؛ اما دانستن اینکه یک خانواده واقعاً چگونه زندگی را از نو می‌سازد، چیز دیگری است.»",
     familyIntro: "سه زاویه از یک روایت واقعی؛ کسب‌وکار، دانشگاه و مسیر فنی در اسپانیا.",
     familyNarratives: [
       "برنامه‌ریزی مالی و کسب‌وکار، اقامت و جابه‌جایی خانواده، و تصمیم‌های واقعی درباره خرید یا اجاره خانه.",
@@ -58,7 +58,7 @@ const homeCopy = {
     storyEyebrow: "THE DIFFERENCE",
     storyTitle: "We are more than immigration consultants",
     storyBody: "Generic sites explain rules. We talk about real costs, wrong turns, housing and university decisions, the pressure of the first days and lessons we have lived, then help prepared people build a proper route.",
-    quote: "Law matters. Understanding how a family actually rebuilds a life is something else.",
+    quote: "“Law matters. Understanding how a family actually rebuilds a life is something else.”",
     familyIntro: "Three perspectives from one lived story: business, university and a technical career in Spain.",
     familyNarratives: [
       "Business and financial planning, residency and family relocation, plus real property and rental decisions.",
@@ -89,7 +89,7 @@ const homeCopy = {
     storyEyebrow: "LA DIFERENCIA",
     storyTitle: "Somos más que consultores migratorios",
     storyBody: "Las páginas genéricas explican normas. Nosotros hablamos de costes reales, errores, decisiones de vivienda y universidad, la presión de los primeros días y lecciones vividas, y ayudamos a personas preparadas a construir bien su ruta.",
-    quote: "La ley importa; entender cómo una familia reconstruye de verdad su vida es otra cosa.",
+    quote: "“La ley importa; entender cómo una familia reconstruye de verdad su vida es otra cosa.”",
     familyIntro: "Tres miradas de una historia vivida: empresa, universidad y carrera técnica en España.",
     familyNarratives: [
       "Empresa y planificación financiera, residencia y traslado familiar, además de decisiones reales de compra o alquiler.",
@@ -148,7 +148,7 @@ export function HomePage({ locale }: { locale: Locale }) {
           <div className="container story-grid scene-reveal">
             <div className="story-number">01</div>
             <div><SectionHeading eyebrow={page.storyEyebrow} title={page.storyTitle} inverse /><p className="story-lead">{page.storyBody}</p><Link className="text-link" to={routeFor(locale, "/about")}>{c.learnMore}<span>↗</span></Link></div>
-            <blockquote><span>“</span>{page.quote}</blockquote>
+            <blockquote><span aria-hidden="true">“</span>{page.quote}</blockquote>
           </div>
         </section>
 

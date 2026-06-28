@@ -34,7 +34,7 @@ export const familyMembers = [
     name: l("امیر سعیدی", "Amir Saeedi", "Amir Saeedi"),
     image: "/assets/team/amir-saeedi.jpg",
     imageAlt: "Amir Saeedi",
-    imagePosition: "50% 15%",
+    imagePosition: "50% 27%",
     role: l("برادر بزرگ‌تر", "Older brother", "Hermano mayor"),
     title: l("دندانپزشکی در دانشگاه کمپلوتنس", "Dentistry at Complutense", "Odontología en la Complutense"),
     note: l("تجربه ورود به دانشگاه، زبان، درس و زندگی دانشجویی در مادرید.", "University entry, language, study and student life in Madrid.", "Acceso universitario, idioma, estudios y vida estudiantil en Madrid."),
@@ -45,7 +45,7 @@ export const familyMembers = [
     image: "/assets/team/alberto-saeedi.jpg",
     imageAlt: "Alberto Saeedi",
     imagePosition: "50% 30%",
-    role: l("ASIR، امنیت سایبری و IT", "ASIR, cybersecurity & IT", "ASIR, ciberseguridad e IT"),
+    role: l("برادر کوچک‌تر", "Younger brother", "Hermano menor"),
     title: l(
       "ASIR؛ مدیریت سیستم‌های کامپیوتری و شبکه",
       "ASIR, cybersecurity & IT work",

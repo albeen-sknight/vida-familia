@@ -2776,3 +2776,114 @@ body { background: #020812; }
 /* ============================================================
    END FINAL FRONTEND DENSITY AND FOOTER CLEANUP
    ============================================================ */
+
+/* Current launch polish: homepage hero width, story marker and quote treatment. */
+.hero-content {
+  width: min(1280px, calc(100% - 1.5rem)) !important;
+  margin-inline: auto !important;
+  gap: clamp(1.25rem, 4.5vw, 5.6rem) !important;
+}
+
+.hero-heading {
+  flex: 1 1 62% !important;
+}
+
+.hero-intro {
+  flex: 0 1 500px !important;
+}
+
+[dir="rtl"] .hero-heading {
+  text-align: right;
+}
+
+[dir="rtl"] .hero-content h1 {
+  margin-inline-start: auto;
+}
+
+.hero-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.hero-actions .button {
+  justify-content: center;
+}
+
+.hero-frame span:first-child {
+  opacity: .62;
+}
+
+.story-grid {
+  position: relative;
+  grid-template-columns: minmax(0, 1.05fr) minmax(250px, .78fr) !important;
+}
+
+.story-grid > *:not(.story-number) {
+  position: relative;
+  z-index: 1;
+}
+
+.story-number {
+  position: absolute;
+  z-index: 0;
+  inset-block-start: clamp(-1.35rem, -2vw, -.45rem);
+  inset-inline-start: clamp(-.35rem, 1vw, .75rem);
+  color: rgba(241,191,0,.075) !important;
+  font-size: clamp(5rem, 11vw, 9rem) !important;
+  line-height: .8 !important;
+  pointer-events: none;
+  user-select: none;
+}
+
+[dir="rtl"] .story-number {
+  inset-inline-start: auto;
+  inset-inline-end: clamp(-.35rem, 1vw, .75rem);
+}
+
+.story-grid blockquote {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.story-grid blockquote span {
+  inset: .55rem .85rem auto auto !important;
+  color: rgba(241,191,0,.16) !important;
+  font-size: clamp(2.4rem, 5vw, 3.8rem) !important;
+  line-height: .8;
+  pointer-events: none;
+}
+
+[dir="rtl"] .story-grid blockquote span {
+  inset: .55rem auto auto .85rem !important;
+}
+
+@media (max-width: 900px) {
+  .hero-content {
+    width: min(100% - 1rem, 1280px) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-content {
+    width: min(100% - .9rem, 1280px) !important;
+  }
+
+  .hero-actions {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .story-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .story-number {
+    display: none !important;
+  }
+
+  .story-grid blockquote {
+    padding-block-start: 1.6rem !important;
+  }
+
+  .story-grid blockquote span {
+    font-size: 2.4rem !important;
+  }
+}
