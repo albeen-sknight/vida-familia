@@ -18,8 +18,8 @@ export function HeroBanner({ locale }: { locale: Locale }) {
         <img className="hero-image" src="/assets/banner.png" alt="Vida Familia, Spain and Argentina" fetchPriority="high" onError={(event) => { event.currentTarget.style.display = "none"; }} />
         <div className="hero-overlay" />
         <div className="hero-frame" aria-hidden="true"><span>VIDA / 01</span><span>{sceneLabel}</span></div>
-        <div className="hero-side hero-side-label-left hero-side-spain" dir="ltr"><span>ES</span><p>MADRID</p></div>
-        <div className="hero-side hero-side-label-right hero-side-argentina" dir="ltr"><span>AR</span><p>BUENOS AIRES</p></div>
+        <div className="hero-side hero-side-spain"><span>ES</span><p>MADRID</p></div>
+        <div className="hero-side hero-side-argentina"><span>AR</span><p>BUENOS AIRES</p></div>
       </ParallaxStage>
 
       <div className="hero-content">
